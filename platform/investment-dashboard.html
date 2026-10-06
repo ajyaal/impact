@@ -73,6 +73,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stack{display:flex;height:22px;border-radius:4px;overflow:hidden;gap:2px;margin:6px 0 8px}.stack div{min-width:2px}
 .caprow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}.caprow:last-child{border:0}
 .caprow b{font-variant-numeric:tabular-nums}.caprow i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;background:var(--surface);border:1px solid var(--line);overflow:hidden;flex:none;cursor:pointer;font-size:10.5px;font-weight:700;letter-spacing:.3px;color:#fff;vertical-align:middle}
+.logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:2px}
+.logo.none{background:var(--surface2);color:var(--muted);cursor:default}
+.logo.lg{width:44px;height:44px;font-size:13px;border-radius:9px}
+.logo:hover{outline:2px solid var(--accent);outline-offset:1px}
+.oppcell{display:flex;gap:10px;align-items:flex-start}
+.who b{display:block;font-weight:500}.who small{color:var(--muted);font-size:11.5px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.prow{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.prow .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow .btn{padding:4px 8px;font-size:12px}
 .hint{grid-column:1/-1;font-size:12px;color:var(--muted);margin:-4px 0 0}
 .kpi{padding:14px 16px;cursor:default}
 .kpi .t{font-size:12.5px;color:var(--ink2);font-weight:600;display:flex;justify-content:space-between;gap:6px}
@@ -179,7 +190,9 @@ td .id{color:var(--muted);font-size:12px}
 .sec:first-child{border:0;padding:0;margin-top:0}
 .flags{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:12.5px;margin-bottom:12px}
 .flags ul{margin:4px 0 0;padding-left:18px}
-.form{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 14px}
+.form input,.form select,.form textarea{min-width:0;max-width:100%}
+.form input[type=file]{font-size:12px;padding:5px}
 .form .full{grid-column:1/-1}
 .form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink2);font-weight:600}
 .form label em{color:var(--crit);font-style:normal}
@@ -341,9 +354,13 @@ body.ro .im-only{display:none!important}
             <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn" id="snapBtn">Record snapshot now</button></div>
             <div class="tscroll" id="snapTbl"></div>
           </div>
+          <div class="card" style="grid-column:1/-1">
+            <h3>Partner Logos <small>hover a logo anywhere to see the name; click it to filter by that partner</small></h3>
+            <div class="plist" id="plist"></div>
+          </div>
           <div class="card">
             <h3>Data Management</h3>
-            <p class="note" style="margin-bottom:12px">Data is saved in this browser. Back it up as JSON, or move it to another browser by restoring a backup.</p>
+            <p class="note" style="margin-bottom:12px">Data and partner logos are saved in this browser. Back them up as JSON, or move them to another browser by restoring a backup.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn" id="backupBtn">Download backup (JSON)</button>
               <button class="btn" id="restoreBtn">Restore backup…</button><input type="file" id="restoreFile" accept=".json" hidden>
@@ -383,7 +400,8 @@ const L = {
   approvalBody:["Unit Director","Investment Committee","Director General","Board"],
   closure:["Not commercially viable","Customer declined","Not strategically aligned","Regulatory / legal barrier","Superseded by another opportunity","Other"],
   yn:["Y","N"],
-  avoid:["Potential","Validated","Realised"]
+  avoid:["Potential","Validated","Realised"],
+  partnerRole:["Client","Investor","JV / Co-investor","Operator / Concessionaire","Landowner / Enabler"]
 };
 const ACTIVE = L.stage.slice(0,6), PRE = L.stage.slice(0,4), CLOSED = ["Rejected","Withdrawn"];
 const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"var(--bad)","On Hold":"var(--hold)"};
@@ -391,7 +409,7 @@ const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"va
 /* field schema: key, header (matches workbook), type, list, mandatory */
 const F = [
  ["id","Investment ID","text",null,1],["name","Opportunity","text",null,1],["sector","Sector","sel","sector",1],["model","Delivery Model","sel","model"],
- ["objective","Strategic Objective","sel","objective",1],["unit","Owning Unit","sel","unit"],["owner","Opportunity Owner","text",null,1],["customer","Customer / Partner","text",null,1],
+ ["objective","Strategic Objective","sel","objective",1],["unit","Owning Unit","sel","unit"],["owner","Opportunity Owner","text",null,1,"Owner — named person"],["customer","Customer / Partner","text",null,1,"Partner — company / client / investor"],["partnerRole","Partner Role","sel","partnerRole"],
  ["custType","Customer Type","sel","custType"],["stage","Stage","sel","stage",1],["status","Status","sel","status",1],["priority","Priority","sel","priority"],["confidence","Estimate Confidence","sel","confidence",1],
  ["totalCapex","Total Project CAPEX (AED)","num"],["raktaCapex","RAKTA CAPEX Required (AED)","num"],["baselineCapex","Counterfactual RAKTA CAPEX (AED)","num"],["avoidStatus","CAPEX Avoidance Status","sel","avoid"],["baselineSource","CAPEX Baseline Source","text"],
  ["annualRev","Expected Annual Revenue (AED)","num"],["term","Term (Years)","num"],["contracted","Contracted Value (AED)","num"],
@@ -412,11 +430,27 @@ const store = {
 let DATA = migrate(store.get("data",null) || clone(SEED));
 let SNAPS = store.get("snaps",[]);
 let ASOF = store.get("asof",SEED_ASOF);
+let LOGOS = store.get("logos",{});   /* partner name (lower-case) -> resized data URL */
 const urlRole = new URLSearchParams(location.search).get("role");
 let ROLE = ["im","sd","dg"].includes(urlRole) ? urlRole : store.get("role","im");
 const S = {view:"home",filters:{},tab:"All",q:"",timing:null,sort:{k:"id",d:1},page:1};
 const PER = 10;
 
+const pkey=n=>String(n||"").trim().toLowerCase();
+const LOGO_TONES=["#12305A","#1E63C6","#0F766E","#7C3AED","#B45309","#BE185D","#475569","#15803D"];
+function initials(n){const w=String(n).replace(/[^\p{L}\p{N} ]+/gu," ").trim().split(/\s+/).filter(Boolean);return ((w[0]||"?")[0]+(w.length>1?w[1][0]:(w[0]||"")[1]||"")).toUpperCase()}
+function logoHtml(name,role,cls=""){
+  if(!name) return `<span class="logo none ${cls}" data-tip="No partner recorded">—</span>`;
+  const src=LOGOS[pkey(name)], h=[...pkey(name)].reduce((a,c)=>a*31+c.charCodeAt(0)>>>0,7);
+  const tip=`<b>${esc(name)}</b>${role?"<br>"+esc(role):""}<br><span style=opacity:.75>Click to filter</span>`;
+  return `<span class="logo ${cls}" data-partner="${esc(name)}" data-tip="${esc(tip)}" role="img" aria-label="${esc(name)}" style="${src?"":"background:"+LOGO_TONES[h%LOGO_TONES.length]}">${src?`<img src="${src}" alt="">`:esc(initials(name))}</span>`;
+}
+function resizeImage(file){return new Promise((ok,no)=>{
+  if(!/^image\//.test(file.type)) return no(new Error("Please choose an image file (PNG, JPG or SVG)."));
+  const fr=new FileReader(); fr.onerror=()=>no(new Error("Couldn't read the file")); fr.onload=()=>{const im=new Image();im.onload=()=>{
+    const k=Math.min(1,128/Math.max(im.width||128,im.height||128)),c=document.createElement("canvas");c.width=Math.max(1,Math.round((im.width||128)*k));c.height=Math.max(1,Math.round((im.height||128)*k));
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/png"))};im.onerror=()=>no(new Error("That image couldn't be opened"));im.src=fr.result};fr.readAsDataURL(file)})}
+function setLogo(name,url){const k=pkey(name);if(!k)return;if(url)LOGOS[k]=url;else delete LOGOS[k];store.set("logos",LOGOS)}
 function clone(x){return JSON.parse(JSON.stringify(x))}
 /* v1 stored a single "capex" field = total project CAPEX */
 function migrate(d){d.forEach(o=>{if("capex" in o){if(o.totalCapex==null)o.totalCapex=o.capex;delete o.capex}});return d}
@@ -443,6 +477,7 @@ function flags(o,od,active){
   ["objective","owner","customer","confidence","nextAction","due","lastUpdated"].forEach(k=>{ if(miss(k) && (active||k==="objective"||k==="owner")) f.push(FK[k][1]+" missing")});
   const si=L.stage.indexOf(o.stage);
   if(si<0) f.push("Stage not recognised");
+  if(o.owner&&(pkey(o.owner)===pkey(o.unit)||L.unit.some(u=>pkey(u)===pkey(o.owner)))) f.push("Owner looks like a department — enter the named person");
   if(si>=2&&si<=5){ if(miss("annualRev")) f.push("Expected Annual Revenue required (Business Case+)"); if(miss("term")) f.push("Term required (Business Case+)") }
   if(si>=3&&si<=5){ if(miss("gateDate")) f.push("Gate Date required (Approved+)"); if(miss("approvalBody")) f.push("Approval Body required (Approved+)") }
   if(si===4||si===5){ if(miss("contracted")) f.push("Contracted Value required (Contracted / Operational)") }
@@ -540,7 +575,7 @@ function renderChrome(){
 }
 function renderFilters(){
   const all=rows();
-  const defs=[["sector","Sector"],["stage","Stage"],["status","Status"],["unit","Owning Unit"],["objective","Strategic Objective"],["model","Delivery Model"],["custType","Customer Type"],["priority","Priority"]];
+  const defs=[["customer","Partner"],["sector","Sector"],["stage","Stage"],["status","Status"],["unit","Owning Unit"],["objective","Strategic Objective"],["model","Delivery Model"],["custType","Customer Type"],["priority","Priority"]];
   const el=document.getElementById("filters");
   el.innerHTML=`<span class="lbl">Filter</span>`+defs.map(([k,lab])=>{
     const vals=[...new Set(all.map(r=>r[k]).filter(Boolean))].sort((a,b)=>{const l=L[FK[k][3]]||[];return (l.indexOf(a)+1||99)-(l.indexOf(b)+1||99)||String(a).localeCompare(b)});
@@ -657,7 +692,7 @@ function attention(rs){
     .sort((a,b)=>(a.due?0:1)-(b.due?0:1)||String(a.due).localeCompare(String(b.due))||(a.status==="Delayed"?-1:0)-(b.status==="Delayed"?-1:0)||a.id.localeCompare(b.id));
 }
 const C = {
-  opp:{h:"Opportunity",wrap:1,f:r=>`<div class="id">${esc(r.id)}</div>${esc(r.name)}`},
+  opp:{h:"Opportunity",wrap:1,f:r=>`<div class="oppcell">${logoHtml(r.customer,r.partnerRole)}<div><div class="id">${esc(r.id)}</div>${esc(r.name)}</div></div>`},
   stage:{h:"Stage",f:r=>`<span class="pill">${esc(r.stage)}</span>`},
   status:{h:"Status",f:r=>statusHtml(r.status)},
   next:{h:"Next Action",wrap:1,f:r=>esc(r.nextAction||"—")},
@@ -667,16 +702,16 @@ const C = {
   issue:{h:"Key Issue / Dependency",wrap:1,f:r=>esc(r.issue||"—")},
   life:{h:"Contract Revenue",num:1,f:r=>aed(r._.life,false)},
   capex:{h:"RAKTA CAPEX",num:1,f:r=>r.raktaCapex!=null?aed(r.raktaCapex,false):"—"},
-  owner:{h:"Opportunity Owner",f:r=>esc(r.owner||"—")},
+  owner:{h:"Owner",f:r=>ownerHtml(r)},
   dg:{h:"Decision / Escalation Needed",wrap:1,f:r=>esc(r.dgDetail||"—")}
 };
 
 /* ---------- render: opportunities table ---------- */
 const TCOLS=[
   ["id","ID",r=>`<span class="id">${esc(r.id)}</span>`,"idc"],
+  ["customer","Partner",r=>logoHtml(r.customer,r.partnerRole)],
   ["name","Opportunity",r=>esc(r.name),"wrapc"],
   ["sector","Sector",r=>esc(r.sector||"")],
-  ["customer","Customer / Partner",r=>esc(r.customer||"")],
   ["stage","Stage",r=>`<span class="pill">${esc(r.stage)}</span>`],
   ["status","Status",r=>statusHtml(r.status)],
   ["_life","Contract Revenue (AED)",r=>aed(r._.life,false),"num"],
@@ -684,9 +719,10 @@ const TCOLS=[
   ["confidence","Confidence",r=>confHtml(r.confidence)],
   ["nextAction","Next Action",r=>esc(r.nextAction||""),"wrapc"],
   ["due","Due Date",dueHtml],
-  ["owner","Owner",r=>esc(r.owner||"")],
+  ["owner","Owner / Unit",ownerHtml],
   ["_flags","DQ",r=>r._.flags.length?`<span class="dq" data-tip="${esc(r._.flags.join("<br>"))}">${r._.flags.length}</span>`:`<span class="dq okk">✓</span>`]
 ];
+function ownerHtml(r){return `<div class="who"><b>${r.owner?esc(r.owner):'<span class="note">No owner</span>'}</b><small>${esc(r.unit||"No unit")}</small></div>`}
 function tableRows(rs){
   let t=rs;
   if(S.tab==="Closed") t=t.filter(r=>CLOSED.includes(r.stage));
@@ -751,6 +787,12 @@ function renderSnaps(){
     SNAPS.slice().reverse().map(s=>`<tr style="cursor:default"><td>${fdate(s.date)}</td>${SNAPK.map(([k])=>`<td class="num">${["open","contracted","opRev","external","avoided"].includes(k)?(s[k]==null?"—":aed(s[k])):s[k]??"—"}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
+function renderPartners(){
+  const el=document.getElementById("plist"); if(!el) return;
+  const names=[...new Set(DATA.map(d=>d.customer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  el.innerHTML=names.length?names.map(nm=>{const c=DATA.filter(d=>d.customer===nm).length;return `<div class="prow">${logoHtml(nm)}<span class="nm" title="${esc(nm)}">${esc(nm)}<br><span class="note">${c} opportunit${c===1?"y":"ies"}</span></span>
+    <button class="btn" data-up="${esc(nm)}">${LOGOS[pkey(nm)]?"Replace":"Upload"}</button>${LOGOS[pkey(nm)]?`<button class="btn danger" data-rm="${esc(nm)}" aria-label="Remove logo">✕</button>`:""}</div>`}).join(""):`<div class="empty">No partners recorded yet</div>`;
+}
 function render(){
   renderChrome(); renderFilters();
   const rs=filtered(), k=kpis(rs);
@@ -759,7 +801,7 @@ function render(){
   renderDonut(rs); renderNA(rs); renderRing(k); renderStrip(k); renderCapital(k); renderAttnMini(rs);
   hbars("objectives",groupBy(rs.filter(r=>r._.active),"objective"),"gold");
   hbars("models",groupBy(rs.filter(r=>r._.active),"model"));
-  renderTable(rs); renderDecisions(rs); renderQuality(rs); renderSnaps();
+  renderTable(rs); renderDecisions(rs); renderQuality(rs); renderSnaps(); renderPartners();
 }
 
 /* ---------- drawer: view / edit ---------- */
@@ -768,13 +810,13 @@ function openDrawer(){drawer.classList.add("on");scrim.classList.add("on")}
 function closeDrawer(){drawer.classList.remove("on");scrim.classList.remove("on")}
 function showDetail(id){
   const o=DATA.find(x=>x.id===id); if(!o) return; const d=derive(o);
-  document.getElementById("dId").textContent=o.id+" · "+(o.sector||"");
+  document.getElementById("dId").innerHTML=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:4px">${logoHtml(o.customer,o.partnerRole,"lg")}<span>${esc(o.id)} · ${esc(o.sector||"")}</span></div>`;
   document.getElementById("dTitle").textContent=o.name;
   const kv=(pairs)=>`<dl class="kv">${pairs.map(([k,v])=>`<dt>${k}</dt><dd>${v||"<span class='note'>—</span>"}</dd>`).join("")}</dl>`;
   const g=k=>esc(o[k]??"");
   document.getElementById("dBody").innerHTML=
     (d.flags.length?`<div class="flags"><b>${d.flags.length} data quality flag${d.flags.length>1?"s":""}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:"")+
-    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Estimate Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Owning Unit",g("unit")],["Opportunity Owner",g("owner")],["Customer / Partner",g("customer")+(o.custType?` <span class="note">(${g("custType")})</span>`:"")]])+
+    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Estimate Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Partner",g("customer")+[o.partnerRole,o.custType].filter(Boolean).map(x=>` <span class="note">· ${esc(x)}</span>`).join("")],["Owner (person)",g("owner")],["Owning Unit",g("unit")]])+
     `<div class="sec">Financials (AED)</div>`+kv([["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?o.term+" years":""],["Indicative Contract Revenue",aed(d.life,false)],["Stage Weight (planning)",Math.round(d.prob*100)+"%"],["Weighted Pipeline Revenue",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
     `<div class="sec">Capital &amp; CAPEX avoidance (AED)</div>`+kv([["Total Project CAPEX",o.totalCapex!=null?aed(o.totalCapex,false):""],["RAKTA CAPEX Required",o.raktaCapex!=null?aed(o.raktaCapex,false):""],["External Capital",d.external?aed(d.external,false):""],["Counterfactual RAKTA CAPEX",o.baselineCapex!=null?aed(o.baselineCapex,false):"N/A — no avoidance claimed"],["CAPEX Avoided",d.avoidStatus?aed(d.avoided,false)+` <span class="pill">${esc(d.avoidStatus)}</span>`:""],["Baseline Source",g("baselineSource")]])+
     `<div class="sec">Next Action</div>`+kv([["Next Action",g("nextAction")],["Action Owner",g("actionOwner")],["Due Date",o.due?dueHtml(Object.assign({},o,{_:d}))+(d.overdue?` <span class="late">(${d.overdue} days overdue)</span>`:""):""],["Key Issue / Dependency",g("issue")],["Progress Note",g("note")],["Last Updated",fdate(o.lastUpdated)]])+
@@ -784,12 +826,12 @@ function showDetail(id){
 }
 function nextId(){const m=Math.max(0,...DATA.map(o=>+(String(o.id).match(/(\d+)$/)||[0,0])[1]));return "INV-"+String(m+1).padStart(3,"0")}
 function inputFor(f,v){
-  const [k,lab,type,list,req]=f; const val=esc(v??"");
+  const [k,head,type,list,req,disp]=f; const lab=disp||head; const val=esc(v??"");
   const l=`<span>${lab}${req?" <em>*</em>":""}</span>`;
   let inp;
   if(type==="sel") inp=`<select name="${k}"><option value="">—</option>${L[list].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}${v&&!L[list].includes(v)?`<option selected>${val}</option>`:""}</select>`;
   else if(type==="area") inp=`<textarea name="${k}">${val}</textarea>`;
-  else inp=`<input name="${k}" type="${type==="num"?"number":type==="date"?"date":"text"}" ${type==="num"?'min="0" step="any"':""} value="${val}" ${k==="id"?"readonly class='calc'":""}>`;
+  else inp=`<input name="${k}" type="${type==="num"?"number":type==="date"?"date":"text"}" ${type==="num"?'min="0" step="any"':""} value="${val}" ${k==="id"?"readonly class='calc'":""} ${k==="owner"?'placeholder="Full name, e.g. A. Al Zaabi"':""} ${k==="customer"?'list="partnerList" placeholder="e.g. RAKEZ"':""}>`;
   return `<label class="${type==="area"?"full":""}" data-k="${k}">${l}${inp}</label>`;
 }
 function showForm(id){
@@ -798,7 +840,15 @@ function showForm(id){
   document.getElementById("dTitle").textContent=isNew?"Add Investment Opportunity":"Edit: "+o.name;
   const grp=(t,keys)=>`<h4>${t}</h4>`+keys.map(k=>inputFor(FK[k],o[k])).join("");
   document.getElementById("dBody").innerHTML=`<form class="form" id="oppForm" autocomplete="off">
-    ${grp("Identity",["id","name","sector","model","objective","unit","owner","customer","custType"])}
+    ${grp("Identity",["id","name","sector","model","objective"])}
+    <h4>Partner</h4>
+    ${["customer","partnerRole","custType"].map(k=>inputFor(FK[k],o[k])).join("")}
+    <label>Partner logo <span class="note" style="font-weight:400">(PNG / JPG / SVG, shared by every opportunity with this partner)</span>
+      <span style="display:flex;gap:8px;align-items:center"><span id="logoPrev"></span><input type="file" id="logoIn" accept="image/*"></span></label>
+    <datalist id="partnerList">${[...new Set(DATA.map(d=>d.customer).filter(Boolean))].sort().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+    <h4>Accountability</h4>
+    ${["owner","unit"].map(k=>inputFor(FK[k],o[k])).join("")}
+    <p class="hint">Owner is the individual to follow up with; Owning Unit is the department.</p>
     ${grp("Stage & health",["stage","status","priority","confidence"])}
     <p class="hint">Estimate Confidence = quality of the commercial / financial evidence behind the numbers (High: customer or contract evidence · Medium: reasonable assumptions · Low: preliminary estimate). It is not the probability of closing.</p>
     ${grp("Revenue (AED)",["annualRev","term","contracted"])}
@@ -818,6 +868,10 @@ function showForm(id){
   const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=aed(d.weighted,false)+` (${Math.round(d.prob*100)}% planning weight)`;
     document.getElementById("cExt").value=x.raktaCapex!=null?aed(d.external,false):"Enter RAKTA CAPEX";document.getElementById("cAv").value=d.avoidStatus?aed(d.avoided,false):"N/A";
     const ff=document.getElementById("formFlags");ff.hidden=!d.flags.length;ff.innerHTML=`<b>Will be flagged:</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`};
+  let newLogo=null;
+  const prev=()=>{const nm=form.querySelector("[name=customer]").value.trim();document.getElementById("logoPrev").innerHTML=newLogo?`<span class="logo"><img src="${newLogo}" alt=""></span>`:logoHtml(nm)};
+  form.querySelector("[name=customer]").addEventListener("input",prev); prev();
+  document.getElementById("logoIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{newLogo=await resizeImage(f);prev()}catch(err){toast(err.message)}};
   form.addEventListener("input",upd); upd();
   document.getElementById("cancelForm").onclick=()=>isNew?closeDrawer():showDetail(id);
   document.getElementById("saveForm").onclick=()=>{
@@ -826,6 +880,7 @@ function showForm(id){
     if(bad.length){toast("Please complete: "+bad.map(k=>FK[k][1]).join(", "));return}
     if(isNew&&DATA.some(d=>d.id===x.id)) x.id=nextId();
     x.lastUpdated=TODAY;
+    if(newLogo&&x.customer) setLogo(x.customer,newLogo);
     if(isNew) DATA.push(x); else DATA[DATA.findIndex(d=>d.id===id)]=x;
     save(); toast(isNew?`${x.id} added`:`${x.id} updated`); showDetail(x.id);
   };
@@ -901,7 +956,7 @@ function exportRows(list,fmt){
 function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
 function template(){
   const hdr=F.filter(f=>f[0]!=="note").map(f=>f[1]+(f[4]?" *":"")).concat(["Progress Note"]);
-  const ex=["INV-0XX","Example opportunity","Parking","PPP","FN1 – Financial Sustainability","Investment","Name of owner","Customer name","Government","Opportunity","On Track","P2","Low","","","","","","","","","Describe the next step","Investment Manager",TODAY,"","N","","","","","","",TODAY,"Latest progress"];
+  const ex=["INV-0XX","Example opportunity","Parking","PPP","FN1 – Financial Sustainability","Investment","Full name of owner","Partner company","Client","Government","Opportunity","On Track","P2","Low","","","","","","","","","Describe the next step","Investment Manager",TODAY,"","N","","","","","","",TODAY,"Latest progress"];
   if(window.XLSX){
     const ws=XLSX.utils.aoa_to_sheet([hdr,ex]); ws["!cols"]=hdr.map(()=>({wch:22}));
     const lists=XLSX.utils.aoa_to_sheet([["Sector","Stage","Status","Confidence","Priority","Customer Type","Delivery Model","Strategic Objective","Owning Unit","Approval Body","Closure Reason","CAPEX Avoidance Status"],
@@ -930,6 +985,9 @@ document.addEventListener("click",e=>{
   if(t.closest("#clearTiming")){S.timing=null;render();return}
   const tm=t.closest("[data-timing]"); if(tm){S.timing=tm.dataset.timing;S.tab="All";S.page=1;go("opps");return}
   const st=t.closest("[data-stage]"); if(st){S.tab=st.dataset.stage;S.timing=null;S.page=1;go("opps");return}
+  const lg=t.closest("[data-partner]"); if(lg&&!t.closest("#v-manage")&&!t.closest("#oppForm")){S.filters.customer=lg.dataset.partner;S.page=1;closeDrawer();render();toast("Filtered by "+lg.dataset.partner);return}
+  const up=t.closest("[data-up]"); if(up){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.onchange=async()=>{try{setLogo(up.dataset.up,await resizeImage(inp.files[0]));render();toast("Logo saved for "+up.dataset.up)}catch(err){toast(err.message)}};inp.click();return}
+  const rm=t.closest("[data-rm]"); if(rm){setLogo(rm.dataset.rm,null);render();return}
   const ss=t.closest("[data-status]"); if(ss){S.filters.status=ss.dataset.status;S.page=1;render();return}
   const hb=t.closest(".hb[data-fk]"); if(hb&&hb.dataset.fk){S.filters[hb.dataset.fk]=hb.dataset.fv==="Unassigned"?"":hb.dataset.fv;S.page=1;render();return}
   const tab=t.closest("[data-tab]"); if(tab){S.tab=tab.dataset.tab;S.page=1;render();return}
@@ -958,10 +1016,10 @@ document.getElementById("snapBtn").onclick=()=>{
   const k=kpis(rows()); const s={date:TODAY,...Object.fromEntries(SNAPK.map(([x])=>[x,k[x]]))};
   SNAPS=SNAPS.filter(x=>x.date!==TODAY).concat(s); store.set("snaps",SNAPS); render(); toast("Snapshot recorded for "+fdate(TODAY));
 };
-document.getElementById("backupBtn").onclick=()=>download(new Blob([JSON.stringify({version:1,asof:ASOF,data:DATA,snapshots:SNAPS},null,1)],{type:"application/json"}),`RAKTA_Investment_Backup_${TODAY}.json`);
+document.getElementById("backupBtn").onclick=()=>download(new Blob([JSON.stringify({version:2,asof:ASOF,data:DATA,snapshots:SNAPS,logos:LOGOS},null,1)],{type:"application/json"}),`RAKTA_Investment_Backup_${TODAY}.json`);
 const rf=document.getElementById("restoreFile");
 document.getElementById("restoreBtn").onclick=()=>rf.click();
-rf.onchange=async()=>{try{const j=JSON.parse(await rf.files[0].text());if(!Array.isArray(j.data))throw 0;DATA=j.data;SNAPS=j.snapshots||[];store.set("snaps",SNAPS);save();toast("Backup restored")}catch(e){toast("That file isn't a dashboard backup")}rf.value=""};
+rf.onchange=async()=>{try{const j=JSON.parse(await rf.files[0].text());if(!Array.isArray(j.data))throw 0;DATA=migrate(j.data);SNAPS=j.snapshots||[];if(j.logos){LOGOS=j.logos;store.set("logos",LOGOS)}store.set("snaps",SNAPS);save();toast("Backup restored")}catch(e){toast("That file isn't a dashboard backup")}rf.value=""};
 document.getElementById("resetBtn").onclick=()=>{if(confirm("Discard all changes and reload the 24 opportunities from the v4 workbook?")){DATA=clone(SEED);ASOF=SEED_ASOF;store.set("data",DATA);store.set("asof",ASOF);render();toast("Reset to workbook data")}};
 document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";store.set("theme",r.dataset.theme)};
 (()=>{const th=store.get("theme",null);if(th)document.documentElement.dataset.theme=th})();

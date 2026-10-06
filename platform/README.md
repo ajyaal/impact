@@ -32,6 +32,20 @@ The role selector controls what the screen shows. It is **not** access control.
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
 
+## Partners and owners
+
+- **Partner**: the company, client or investor RAKTA would work with. This is the workbook's
+  *Customer / Partner* column, plus an optional **Partner Role** (Client, Investor, JV / Co-investor,
+  Operator / Concessionaire, Landowner / Enabler). The partner's logo appears after the ID in every
+  table. Hover over it to see the name; click it to filter the whole dashboard by that partner.
+  Partners without a logo show coloured initials.
+- **Logos** are uploaded in the opportunity form or under *Add / Upload → Partner Logos*.
+  Each logo is resized to 128 px and shared by every opportunity with the same partner name.
+  Backups include the logos.
+- **Owner** is the named person to follow up with. **Owning Unit** is the department. The register
+  shows the owner with the unit underneath, and a Data Quality flag appears when the owner field
+  holds a department name.
+
 ## Calculation rules (from the workbook's Definitions sheet)
 
 - Indicative Contract Revenue = Expected Annual Revenue × Term. This is revenue, not NPV or profit.
