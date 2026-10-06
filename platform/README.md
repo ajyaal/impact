@@ -40,7 +40,7 @@ The role selector controls what the screen shows. It is **not** access control.
   table. Hover over it to see the name; click it to filter the whole dashboard by that partner.
   Partners without a logo show coloured initials.
 - **Logos** are uploaded in the opportunity form or under *Add / Upload → Partner Logos*.
-  Each logo is resized to 128 px and shared by every opportunity with the same partner name.
+  Each logo is stored at up to 320 px and shared by every opportunity with the same partner name.
   Backups include the logos.
 - **Owner** is the named person to follow up with. **Owning Unit** is the department. The register
   shows the owner with the unit underneath, and a Data Quality flag appears when the owner field

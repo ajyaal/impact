@@ -73,14 +73,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stack{display:flex;height:22px;border-radius:4px;overflow:hidden;gap:2px;margin:6px 0 8px}.stack div{min-width:2px}
 .caprow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}.caprow:last-child{border:0}
 .caprow b{font-variant-numeric:tabular-nums}.caprow i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
-.logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;background:var(--surface);border:1px solid var(--line);overflow:hidden;flex:none;cursor:pointer;font-size:10.5px;font-weight:700;letter-spacing:.3px;color:#fff;vertical-align:middle}
-.logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:2px}
+.logo{display:inline-grid;place-items:center;width:76px;height:42px;border-radius:8px;background:var(--surface);border:1px solid var(--line);overflow:hidden;flex:none;cursor:pointer;font-size:14px;font-weight:700;letter-spacing:.5px;color:#fff;vertical-align:middle}
+.logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:4px}
 .logo.none{background:var(--surface2);color:var(--muted);cursor:default}
-.logo.lg{width:44px;height:44px;font-size:13px;border-radius:9px}
+.logo.lg{width:120px;height:64px;font-size:20px;border-radius:10px}
 .logo:hover{outline:2px solid var(--accent);outline-offset:1px}
 .oppcell{display:flex;gap:10px;align-items:flex-start}
 .who b{display:block;font-weight:500}.who small{color:var(--muted);font-size:11.5px}
-.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
 .prow{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px}
 .prow .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prow .btn{padding:4px 8px;font-size:12px}
@@ -448,7 +448,7 @@ function logoHtml(name,role,cls=""){
 function resizeImage(file){return new Promise((ok,no)=>{
   if(!/^image\//.test(file.type)) return no(new Error("Please choose an image file (PNG, JPG or SVG)."));
   const fr=new FileReader(); fr.onerror=()=>no(new Error("Couldn't read the file")); fr.onload=()=>{const im=new Image();im.onload=()=>{
-    const k=Math.min(1,128/Math.max(im.width||128,im.height||128)),c=document.createElement("canvas");c.width=Math.max(1,Math.round((im.width||128)*k));c.height=Math.max(1,Math.round((im.height||128)*k));
+    const k=Math.min(1,320/Math.max(im.width||320,im.height||320)),c=document.createElement("canvas");c.width=Math.max(1,Math.round((im.width||128)*k));c.height=Math.max(1,Math.round((im.height||128)*k));
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/png"))};im.onerror=()=>no(new Error("That image couldn't be opened"));im.src=fr.result};fr.readAsDataURL(file)})}
 function setLogo(name,url){const k=pkey(name);if(!k)return;if(url)LOGOS[k]=url;else delete LOGOS[k];store.set("logos",LOGOS)}
 function clone(x){return JSON.parse(JSON.stringify(x))}
