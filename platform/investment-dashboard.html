@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAKTA Investment Portfolio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#F2F5F9;--surface:#FFFFFF;--surface2:#F7F9FC;--ink:#0F1E36;--ink2:#4A5873;--muted:#7A869C;--line:#E3E8EF;
+  --navy:#12305A;--navy2:#0A2244;--accent:#1E63C6;--accent-soft:#E6EFFB;--gold:#C49A00;--on-accent:#FFFFFF;
+  --ok:#2E9E5B;--warn:#D99A00;--bad:#D9480F;--hold:#6B7280;--crit:#C62828;
+  --ok-bg:#E7F5EC;--warn-bg:#FFF5DB;--bad-bg:#FDECE4;--hold-bg:#EEF0F3;
+  --shadow:0 1px 2px rgba(16,30,54,.06),0 1px 8px rgba(16,30,54,.04);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1220;--surface:#131C2E;--surface2:#18233A;--ink:#E6ECF5;--ink2:#AAB6C8;--muted:#7F8BA0;--line:#26324A;
+  --accent:#5B9BF0;--on-accent:#0B1220;--accent-soft:#1B2C4A;--ok:#4CC27D;--warn:#F0B429;--bad:#F07B47;--hold:#9AA3B2;--crit:#F06262;
+  --ok-bg:#15301F;--warn-bg:#33290D;--bad-bg:#3A1F12;--hold-bg:#232B3A;--shadow:none;}}
+:root[data-theme="dark"]{
+  --bg:#0B1220;--surface:#131C2E;--surface2:#18233A;--ink:#E6ECF5;--ink2:#AAB6C8;--muted:#7F8BA0;--line:#26324A;
+  --accent:#5B9BF0;--on-accent:#0B1220;--accent-soft:#1B2C4A;--ok:#4CC27D;--warn:#F0B429;--bad:#F07B47;--hold:#9AA3B2;--crit:#F06262;
+  --ok-bg:#15301F;--warn-bg:#33290D;--bad-bg:#3A1F12;--hold-bg:#232B3A;--shadow:none;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:200px 1fr;min-height:100vh}
+/* sidebar */
+.side{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);color:#DCE6F5;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{padding:18px 16px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand b{display:block;font-size:24px;letter-spacing:2px;color:#fff}
+.brand small{font-size:9.5px;letter-spacing:.4px;color:#AFC1DC;text-transform:uppercase}
+.nav{padding:12px 8px;display:flex;flex-direction:column;gap:2px}
+.nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;color:#C8D5EA;font-size:13.5px}
+.nav button:hover{background:rgba(255,255,255,.06)}
+.nav button.on{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+.nav svg{width:18px;height:18px;flex:none}
+.nav .count{margin-left:auto;background:var(--crit);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;font-weight:600}
+.tagline{margin-top:auto;padding:18px 16px;font-size:15px;line-height:1.35;color:#C8D5EA}
+.tagline span{color:var(--gold)}
+/* header */
+.main{min-width:0}
+.top{display:flex;gap:20px;align-items:center;padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top h1{margin:0;font-size:22px;letter-spacing:-.2px}
+.top .sub{color:var(--ink2);font-size:13.5px}
+.top .meta{margin-left:auto;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.meta .dt{font-size:11.5px;color:var(--muted);line-height:1.25}
+.meta .dt b{display:block;color:var(--ink);font-size:13px}
+.role{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.role label{font-size:11.5px;color:var(--muted)}
+.role select{border:0;background:transparent;font-weight:600;cursor:pointer}
+.viewonly{font-size:11px;color:var(--ink2);background:var(--hold-bg);border-radius:6px;padding:2px 7px}
+.wrap{padding:18px 24px 40px;display:flex;flex-direction:column;gap:16px}
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filters select{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;max-width:190px}
+.filters .lbl{font-size:12px;color:var(--muted);margin-right:2px}
+.link{all:unset;cursor:pointer;color:var(--accent);font-size:12.5px;font-weight:600}
+.link:hover{text-decoration:underline}
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px;min-width:0}
+.card h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+.card h3 .r{margin-left:auto;font-weight:400}
+.card h3 small{font-weight:400;color:var(--muted);font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{padding:14px 16px;cursor:default}
+.kpi .t{font-size:12.5px;color:var(--ink2);font-weight:600;display:flex;justify-content:space-between;gap:6px}
+.kpi .v{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:14px;font-weight:600;color:var(--ink2);margin-right:3px}
+.kpi .d{font-size:12px;color:var(--muted);margin-top:2px}
+.kpi .d .up{color:var(--ok);font-weight:600}.kpi .d .dn{color:var(--bad);font-weight:600}
+.kpi.alert .v{color:var(--crit)}
+.kpi .ic{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
+.kpi .ic svg{width:16px;height:16px}
+.grid3{display:grid;grid-template-columns:1.05fr 1.2fr .95fr;gap:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gridside{display:grid;grid-template-columns:1fr 330px;gap:12px}
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:6px}
+.frow{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:10px;cursor:pointer}
+.frow .st{font-size:12.5px;color:var(--ink2);text-align:right}
+.frow .track{display:flex;justify-content:center}
+.frow .bar{height:34px;border-radius:4px;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-weight:700;min-width:30px;transition:opacity .15s}
+.frow:hover .bar{opacity:.85}
+.frow .bar.z{background:var(--line);color:var(--muted)}
+.fval{font-size:11.5px;color:var(--muted);text-align:center;margin-top:-2px}
+/* hbar */
+.hbars{display:flex;flex-direction:column;gap:7px}
+.hb{display:grid;grid-template-columns:120px 1fr 64px;gap:10px;align-items:center;font-size:12.5px;cursor:pointer}
+.hb .n{color:var(--ink2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb .tr{height:18px;position:relative}
+.hb .f{height:100%;background:var(--accent);border-radius:0 4px 4px 0;min-width:2px}
+.hb .val{font-weight:600;font-variant-numeric:tabular-nums}
+.hb:hover .f{opacity:.85}
+.hb.gold .f{background:var(--gold)}
+/* donut */
+.donutwrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px}
+.legend div{display:flex;align-items:center;gap:8px;cursor:pointer}
+.legend i{width:10px;height:10px;border-radius:50%;flex:none}
+.legend b{margin-left:auto;padding-left:14px;font-variant-numeric:tabular-nums}
+/* next actions */
+.na{display:flex;flex-direction:column;gap:8px}
+.na button{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:8px;background:var(--surface2);border-left:3px solid var(--accent)}
+.na button:hover{background:var(--accent-soft)}
+.na b{font-size:22px;min-width:28px;font-variant-numeric:tabular-nums}
+.na .od{border-left-color:var(--crit)}.na .od b,.na .od span{color:var(--crit)}
+.na .nd{border-left-color:var(--hold)}
+.na span{font-size:13px}
+.na svg{margin-left:auto;width:14px;height:14px;color:var(--muted)}
+.ring{display:flex;align-items:center;gap:16px}
+.ring p{margin:0;font-size:12.5px;color:var(--ink2)}
+/* pills */
+.pill{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;white-space:nowrap;background:var(--accent-soft);color:var(--accent);font-weight:500}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap}
+.status i{width:9px;height:9px;border-radius:50%}
+.conf{display:inline-block;padding:1px 7px;border-radius:4px;font-size:12px}
+.conf.High{background:var(--ok-bg);color:var(--ok)}.conf.Medium{background:var(--warn-bg);color:var(--warn)}.conf.Low{background:var(--bad-bg);color:var(--bad)}.conf.TBD{background:var(--hold-bg);color:var(--hold)}
+.late{color:var(--crit);font-weight:600}
+.dq{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-size:11px;font-weight:700}
+.dq.okk{background:var(--ok-bg);color:var(--ok)}
+/* table */
+.tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:0}
+.tabs button{all:unset;cursor:pointer;padding:8px 12px;font-size:13px;color:var(--ink2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:6px 6px 0 0}
+.tbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.tbar h3{margin:0}
+.tbar .sp{flex:1}
+.search{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface);min-width:220px}
+.search input{border:0;outline:0;background:transparent;width:100%}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap}
+.btn:hover{background:var(--surface2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.danger{color:var(--crit)}
+.btn svg{width:15px;height:15px}
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:var(--surface2);text-align:left;font-size:12px;color:var(--ink2);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface2)}
+tbody tr:last-child td{border-bottom:0}
+td.wrapc{min-width:190px;max-width:300px}
+td .id,td.idc{white-space:nowrap}
+td .id{color:var(--muted);font-size:12px}
+.pager{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.pager button{all:unset;cursor:pointer;min-width:28px;height:28px;border-radius:6px;display:grid;place-items:center;color:var(--ink2)}
+.pager button.on{background:var(--navy);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.view{display:none;flex-direction:column;gap:16px}.view.on{display:flex}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+/* drawer + modal */
+.scrim{position:fixed;inset:0;background:rgba(8,18,36,.45);display:none;z-index:40}
+.scrim.on{display:block}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,100vw);background:var(--surface);z-index:41;transform:translateX(100%);transition:transform .2s;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15)}
+.drawer.on{transform:none}
+.dh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.dh h2{margin:0;font-size:17px}
+.dh .x{margin-left:auto}
+.db{padding:16px 20px;overflow:auto;flex:1}
+.df{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.kv{display:grid;grid-template-columns:170px 1fr;gap:6px 12px;font-size:13px;margin-bottom:14px}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.sec{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin:16px 0 8px;border-top:1px solid var(--line);padding-top:12px}
+.sec:first-child{border:0;padding:0;margin-top:0}
+.flags{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:12.5px;margin-bottom:12px}
+.flags ul{margin:4px 0 0;padding-left:18px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.form .full{grid-column:1/-1}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink2);font-weight:600}
+.form label em{color:var(--crit);font-style:normal}
+.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--surface);font-weight:400;font-size:13px}
+.form textarea{min-height:58px;resize:vertical}
+.form .calc{background:var(--surface2);color:var(--ink2)}
+.form .bad{border-color:var(--crit)}
+.form h4{grid-column:1/-1;margin:8px 0 0;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--ink2);cursor:pointer}
+.drop.hover{border-color:var(--accent);background:var(--accent-soft)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:8px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);font-size:12px;padding:6px 9px;border-radius:6px;z-index:70;opacity:0;max-width:260px;line-height:1.35}
+.menu{position:relative}
+.im-only{}
+body.ro .im-only{display:none!important}
+@media (max-width:1250px){.kpis{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.gridside{grid-template-columns:1fr}}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}
+  .brand{border:0;padding:10px 16px}.brand small{display:none}.brand b{font-size:18px}
+  .nav{flex-direction:row;padding:6px}.nav button span.lb{display:none}.tagline{display:none}
+  .top,.wrap{padding-left:16px;padding-right:16px}
+  .grid3,.grid2{grid-template-columns:1fr}
+  .kpi .v{font-size:23px}
+  .form{grid-template-columns:1fr}
+  .kv{grid-template-columns:1fr}.kv dt{margin-top:6px}
+  .hb{grid-template-columns:96px 1fr 56px}
+}
+@media print{.side,.filters,.tbar .btn,.im-only,.role{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><b>RAKTA</b><small>Ras Al Khaimah Transport Authority</small></div>
+    <nav class="nav" id="nav">
+      <button data-v="home" class="on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg><span class="lb">Home</span></button>
+      <button data-v="opps"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 13h3v7H4zm6.5-5h3v12h-3zM17 4h3v16h-3z"/></svg><span class="lb">Opportunities</span></button>
+      <button data-v="decisions"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg><span class="lb">Pipeline &amp; Actions</span><span class="count" id="navAttn" hidden></span></button>
+      <button data-v="quality"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6v2h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3zm-.3 11.3-1.4 1.4L10 17.4l6.7-6.7-1.4-1.4-5.3 5.3z"/></svg><span class="lb">Data Quality</span></button>
+      <button data-v="manage" class="im-only"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z"/></svg><span class="lb">Add / Upload</span></button>
+    </nav>
+    <div class="tagline">Mobility Today.<br><span>Opportunities Tomorrow.</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1>Investment Portfolio Dashboard</h1>
+        <div class="sub">Building a Sustainable Transport Future</div>
+      </div>
+      <div class="meta">
+        <div class="dt">Today<b id="today"></b></div>
+        <div class="dt">Data as of<b id="asof"></b></div>
+        <div class="role">
+          <label for="role">Viewing as</label>
+          <select id="role">
+            <option value="im">Investment Manager</option>
+            <option value="sd">Strategy Director</option>
+            <option value="dg">Director General</option>
+          </select>
+          <span class="viewonly" id="roTag" hidden>View only</span>
+        </div>
+        <button class="btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18zm0-1a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="filters" id="filters"></div>
+
+      <!-- HOME -->
+      <section class="view on" id="v-home">
+        <div class="kpis" id="kpis"></div>
+        <div class="grid3">
+          <div class="card"><h3>Pipeline by Stage <small>count · lifetime value</small></h3><div class="funnel" id="funnel"></div></div>
+          <div class="card"><h3>Lifetime Value by Sector <small>AED, active</small></h3><div class="hbars" id="sectors"></div></div>
+          <div class="card"><h3>Opportunities by Status</h3><div class="donutwrap" id="donut"></div></div>
+        </div>
+        <div class="gridside">
+          <div class="card">
+            <h3>Management Attention <small>not On Track, or overdue — earliest due first</small><span class="r"><button class="link" data-goto="decisions">View all →</button></span></h3>
+            <div class="tscroll" id="attnMini"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="card"><h3>Next Actions<span class="r"><button class="link" data-goto="opps">View all →</button></span></h3><div class="na" id="na"></div></div>
+            <div class="card"><h3>Strategic Alignment</h3><div class="ring" id="ring"></div></div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h3>Portfolio by Strategic Objective <small>lifetime value, AED</small></h3><div class="hbars" id="objectives"></div></div>
+          <div class="card"><h3>Portfolio by Delivery Model <small>lifetime value, AED</small></h3><div class="hbars" id="models"></div></div>
+        </div>
+      </section>
+
+      <!-- OPPORTUNITIES -->
+      <section class="view" id="v-opps">
+        <div class="card">
+          <div class="tbar">
+            <h3>Investment Opportunities</h3><span class="sp"></span>
+            <div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search opportunities…" aria-label="Search"></div>
+            <button class="btn pri im-only" data-act="new"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z"/></svg>New</button>
+            <button class="btn" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3"/></svg>Export</button>
+          </div>
+          <div class="tabs" id="tabs"></div>
+          <div id="timingChip" style="margin:10px 0 0"></div>
+          <div class="tscroll" style="margin-top:10px"><table id="tbl"></table></div>
+          <div class="pager" id="pager"></div>
+        </div>
+      </section>
+
+      <!-- DECISIONS -->
+      <section class="view" id="v-decisions">
+        <div class="card"><h3>Decisions Required from the DG <small>DG Decision Required = Y</small></h3><div class="tscroll" id="dgTbl"></div></div>
+        <div class="card"><h3>Management Attention <small>not On Track, or next action overdue — earliest due first</small></h3><div class="tscroll" id="attnTbl"></div></div>
+        <div class="grid2">
+          <div class="card"><h3>Weighted vs Open Pipeline by Stage <small>AED, pre-contract</small></h3><div id="weighted"></div></div>
+          <div class="card"><h3>Closed Opportunities</h3><div id="closed"></div><p class="note" style="margin-top:10px">Closed records stay in the plan with a Closure Reason so decisions remain auditable. They are excluded from all active KPIs.</p></div>
+        </div>
+      </section>
+
+      <!-- QUALITY -->
+      <section class="view" id="v-quality">
+        <div class="card">
+          <h3>Data Quality Flags <small id="dqSum"></small></h3>
+          <p class="note" style="margin-bottom:12px">Rules from the Investment Plan: mandatory fields, stage-conditional fields (Business Case+ needs revenue &amp; term; Approved+ needs gate date &amp; approval body; Contracted/Operational needs contracted value; Rejected/Withdrawn needs closure reason; DG decision flag needs detail) and rule-based status (1–14 days overdue → Attention, &gt;14 → Delayed).</p>
+          <div class="tscroll" id="dqTbl"></div>
+        </div>
+      </section>
+
+      <!-- MANAGE -->
+      <section class="view" id="v-manage">
+        <div class="grid2">
+          <div class="card">
+            <h3>Add a New Opportunity</h3>
+            <p class="note" style="margin-bottom:12px">Capture the mandatory fields now; financial and gate detail can be added progressively as the opportunity matures. Missing items appear as Data Quality flags.</p>
+            <button class="btn pri" data-act="new">+ New opportunity</button>
+          </div>
+          <div class="card">
+            <h3>Upload Investment Plan <small>.xlsx or .csv</small></h3>
+            <div class="drop" id="drop" tabindex="0">
+              <b>Drop the Investment Plan workbook here</b><br><span class="note">or click to choose a file. Reads the “Investment Plan” sheet (or the first sheet) using its header row.</span>
+              <input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;margin-top:12px;flex-wrap:wrap;font-size:13px">
+              <label><input type="radio" name="mode" value="merge" checked> Merge by Investment ID (add new, update existing)</label>
+              <label><input type="radio" name="mode" value="replace"> Replace all</label>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="btn" id="tplBtn">Download upload template</button>
+            </div>
+            <div id="importMsg" class="note" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h3>Monthly Snapshots <small>drives “vs last snapshot” on the KPI cards</small></h3>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn" id="snapBtn">Record snapshot now</button></div>
+            <div class="tscroll" id="snapTbl"></div>
+          </div>
+          <div class="card">
+            <h3>Data Management</h3>
+            <p class="note" style="margin-bottom:12px">Data is saved in this browser. Back it up as JSON, or move it to another browser by restoring a backup.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="backupBtn">Download backup (JSON)</button>
+              <button class="btn" id="restoreBtn">Restore backup…</button><input type="file" id="restoreFile" accept=".json" hidden>
+              <button class="btn danger" id="resetBtn">Reset to v4 workbook data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-modal="true" role="dialog">
+  <div class="dh"><div><div class="id" id="dId" style="color:var(--muted);font-size:12px"></div><h2 id="dTitle"></h2></div><button class="btn x" id="dClose" aria-label="Close">✕</button></div>
+  <div class="db" id="dBody"></div>
+  <div class="df" id="dFoot"></div>
+</aside>
+<div id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ---------- reference lists (Lists & Definitions sheets, v4) ---------- */
+const L = {
+  sector:["Parking","Staff Transport","Advertising","Vehicle Inspection","Maintenance","Marine Transport","Last-mile Delivery","EV Charging","Technology","Transportation","Other"],
+  stage:["Opportunity","Assessment","Business Case","Approved","Contracted","Operational","Rejected","Withdrawn"],
+  prob:{"Opportunity":.1,"Assessment":.25,"Business Case":.5,"Approved":.75,"Contracted":1,"Operational":1,"Rejected":0,"Withdrawn":0},
+  status:["On Track","Attention","Delayed","On Hold"],
+  confidence:["High","Medium","Low","TBD"],
+  priority:["P1","P2","P3"],
+  custType:["Government","Semi-Government","Private","Internal","TBD"],
+  model:["Direct Service","Service Contract","Concession","PPP","Joint Venture","Lease / Rights","TBD"],
+  objective:["FN1 – Financial Sustainability","ST1 – Cooperative System","ST2 – Governance & Legislation","BF1 – People Happiness","BF2 – Integrated Transport","BF3 – Sustainability","OP1 – Innovation","OP2 – Safety","OP3 – Communication Platform","OP4 – Institutional Excellence","DG1 – Work Environment","DG2 – Technology Systems","DG3 – Workforce","DG4 – Modern Transport","Not aligned","TBD"],
+  unit:["Investment","Planning","Digital","Operations","Licensing","Supporting Services","AV","HSE","Other"],
+  gateDecision:["Proceed","Proceed with conditions","Hold","Reject"],
+  approvalBody:["Unit Director","Investment Committee","Director General","Board"],
+  closure:["Not commercially viable","Customer declined","Not strategically aligned","Regulatory / legal barrier","Superseded by another opportunity","Other"],
+  yn:["Y","N"]
+};
+const ACTIVE = L.stage.slice(0,6), PRE = L.stage.slice(0,4), CLOSED = ["Rejected","Withdrawn"];
+const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"var(--bad)","On Hold":"var(--hold)"};
+
+/* field schema: key, header (matches workbook), type, list, mandatory */
+const F = [
+ ["id","Investment ID","text",null,1],["name","Opportunity","text",null,1],["sector","Sector","sel","sector",1],["model","Delivery Model","sel","model"],
+ ["objective","Strategic Objective","sel","objective",1],["unit","Owning Unit","sel","unit"],["owner","Opportunity Owner","text",null,1],["customer","Customer / Partner","text",null,1],
+ ["custType","Customer Type","sel","custType"],["stage","Stage","sel","stage",1],["status","Status","sel","status",1],["priority","Priority","sel","priority"],["confidence","Confidence","sel","confidence",1],
+ ["capex","Investment/CAPEX Required (AED)","num"],["annualRev","Expected Annual Revenue (AED)","num"],["term","Term (Years)","num"],["contracted","Contracted Value (AED)","num"],
+ ["nextAction","Next Action","area",null,1],["actionOwner","Action Owner","text"],["due","Due Date","date",null,1],["issue","Key Issue / Dependency","area"],
+ ["dgReq","DG Decision Required","sel","yn"],["dgDetail","DG Decision / Escalation Detail","area"],["gateDecision","Last Gate Decision","sel","gateDecision"],["gateDate","Gate Date","date"],
+ ["approvalBody","Approval Body","sel","approvalBody"],["decisionRef","Decision Reference","text"],["closure","Closure Reason","sel","closure"],["lastUpdated","Last Updated","date",null,1],["note","Progress Note","area"]
+];
+const FK = Object.fromEntries(F.map(f=>[f[0],f]));
+
+const SEED = [{"id":"INV-001","name":"RAK Academy Transportation Contract - Services","sector":"Technology","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Digital","owner":"Operations","customer":"RAK Academy","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"Medium","capex":0,"annualRev":120000,"term":5,"nextAction":"Review contract performance, margin and renewal/expansion opportunities","actionOwner":"Operations","issue":"Confirm current contract value, expiry and margin before commercial review","note":"Collaborating with RAK Knowledge regarding the opportunity; ongoing dialogue to evaluate alignment and next steps"},{"id":"INV-002","name":"Delivery and Order Services","sector":"Last-mile Delivery","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Investment","owner":"LICENSING & MONITORING","customer":"Market / Private Partner","custType":"Private","stage":"Operational","status":"On Track","priority":"P1","confidence":"Medium","capex":0,"annualRev":350000,"term":5,"nextAction":"Complete market model and PPP/B2B structure","actionOwner":"Investment Manager","issue":"Market volumes and partner commercial terms require validation","note":"Currently under active implementation; execution underway per schedule"},{"id":"INV-003","name":"RAKEZ Land Maintenance Workshop","sector":"Maintenance","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P2","confidence":"Low","capex":30000000,"annualRev":2700000,"term":15,"nextAction":"Confirm plot, develop cost estimate and preliminary workshop business case","issue":"Plot requirements, CAPEX and operating economics still require validation","note":"Pending final requirements from RAKTA and plot confirmation from RAKEZ for the project."},{"id":"INV-004","name":"Al Ghail Industrial Area / Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ / SPI","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":3000000,"annualRev":45000,"term":15,"nextAction":"Complete plot transfer/leveling pathway and develop commercial concept","issue":"Awaiting plot readiness and confirmation of development/commercial model","note":"Pending  plot confirmation from RAKEZ for the project."},{"id":"INV-005","name":"Sky Train – RAK Lagoon","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"Medium","capex":200000000,"annualRev":360000,"term":15,"nextAction":"Confirm project sponsor, feasibility scope and private-sector investment pathway","issue":"Large indicative CAPEX; feasibility, demand and funding model not yet validated"},{"id":"INV-006","name":"Al Dhait Station Commercial Opportunities","sector":"Transportation","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":7000000,"annualRev":1000000,"term":5,"nextAction":"Validate commercial uses, demand, CAPEX and delivery model for Al Dhait Station","issue":"Revenue estimate requires validation against final scope and customer demand","note":"Pending project completion."},{"id":"INV-007","name":"Staff & Employee Transportation Services","sector":"Staff Transport","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Government / Corporate Clients","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":65000,"annualRev":9750,"term":5,"nextAction":"Develop service proposition, pricing and target clients","actionOwner":"Investment Manager","issue":"Revenue depends on client pipeline, fleet capacity and service pricing","note":"Finalizing the comprehensive report for DG review."},{"id":"INV-008","name":"Driving Training Center / Driving School","sector":"Other","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Operations / SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Low","capex":14000000,"annualRev":4300000,"term":15,"nextAction":"Validate revenue, fees, CAPEX and operating model","actionOwner":"Investment Manager","issue":"Business model and financial assumptions remain under validation","note":"Report completed and submitted for DG review."},{"id":"INV-009","name":"AV Sandbox","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"RAKEZ / Industry","custType":"Private","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":5000000,"annualRev":500000,"term":15,"nextAction":"Secure land pathway and investor market sounding","actionOwner":"Investment Manager","issue":"Site selection, investor terms and commercial model remain open","note":"Pending investor proposal to evaluation."},{"id":"INV-010","name":"Payment Annexure Revenue Recovery","sector":"Other","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"AV","customer":"Contract Counterparty","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"High","capex":0,"annualRev":99330,"term":1,"nextAction":"Close recovery action and confirm receipt/accounting treatment","issue":"Track collection and closure evidence","note":"Done - one time payement"},{"id":"INV-011","name":"Al Marjan Strategic Land Development – ADNOC","sector":"Transportation","model":"Concession","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"ADNOC Distribution","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","capex":10000000,"annualRev":698000,"term":25,"nextAction":"Finalize commercial terms and contract annexures","actionOwner":"Investment Manager","issue":"NBO/commercial terms must convert into definitive agreement before implementation","note":"Contracting Phase"},{"id":"INV-012","name":"Al Nakheel Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":18500000,"annualRev":120000,"term":25,"nextAction":"Complete PPP / VfM assessment and commercial case","actionOwner":"Investment Manager","issue":"Final structure depends on feasibility, partner appetite and approvals","note":"Pending design confirmation."},{"id":"INV-013","name":"Centre of Excellence for Autonomous Solutions","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":5000000,"annualRev":500000,"term":15,"nextAction":"Confirm strategic need, scope, funding model and partner interest","issue":"Concept requires clearer business case and private-sector funding rationale","note":"Pending investor proposal to evaluation."},{"id":"INV-014","name":"Digital Twin Simulation for AV Testing","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":3000000,"annualRev":300000,"term":15,"nextAction":"Confirm use case, scope, technical owner and private-sector delivery model","issue":"Use case, benefits and funding model not yet validated","note":"Pending investor proposal to evaluation."},{"id":"INV-015","name":"AV Fleet Management System","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":3000000,"annualRev":300000,"term":15,"nextAction":"Define operating need, system scope, integration requirements and funding model","issue":"Requirements and commercial model not yet validated","note":"Pending investor proposal to evaluation."},{"id":"INV-016","name":"PoC for AV Delivery Solution","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":15,"nextAction":"Define PoC scope, delivery partner, KPIs and funding responsibilities","issue":"PoC scope, partner and commercial terms require validation","note":"Pending investor proposal to evaluation."},{"id":"INV-017","name":"Micromobility Hubs & Air-Conditioned Bus Shelters","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P2","confidence":"Low","capex":1400000,"annualRev":120000,"term":5,"nextAction":"Define hub/shelter scope, locations, revenue rights and PPP structure","issue":"Site scope, commercial rights and funding model require validation","note":"Pending NOC"},{"id":"INV-018","name":"New Hotel Transportation Contracts","sector":"Staff Transport","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Operations / SPI","custType":"Private","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"High","capex":2000000,"annualRev":200000,"term":3,"nextAction":"Build hotel pipeline, validate contract values and fleet capacity","issue":"Revenue depends on signed hotel demand, pricing and available fleet capacity","note":"Pipeline"},{"id":"INV-019","name":"IMG","sector":"Advertising","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"High","capex":0,"annualRev":1000000,"term":5,"note":"Business Opportunity currently under active review and discussion."},{"id":"INV-020","name":"Jet capsule","sector":"Marine Transport","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","custType":"Private","stage":"Assessment","status":"On Track","priority":"P2","confidence":"Medium","capex":2600000,"annualRev":99000,"term":5,"note":"Business model under review."},{"id":"INV-021","name":"Sponsorship Agreement – Commercial Evaluation and Revenue Positioning","sector":"Advertising","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Autonomous Solutions","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","capex":0,"annualRev":1000000,"term":5,"nextAction":"Review sponsorship scope, rights, deliverables and commercial obligations","actionOwner":"Investment Manager","due":"2026-07-31","note":"Business Opportunity currently under active review and discussion."},{"id":"INV-022","name":"35 -  Screens (7 Al marjan + 15 E11 + 13 in RAK overall)","sector":"Advertising","model":"Service Contract","objective":"OP1 – Innovation","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Medium","capex":0,"annualRev":1100000,"term":5,"note":"Business Opportunity currently under active review and discussion."},{"id":"INV-023","name":"Al Hamra Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion."},{"id":"INV-024","name":"Khuzam Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion."}];
+const SEED_ASOF = "2026-10-06";
+
+/* ---------- state ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem("rakta-inv-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("rakta-inv-"+k,JSON.stringify(v))}catch(e){}}
+};
+let DATA = store.get("data",null) || clone(SEED);
+let SNAPS = store.get("snaps",[]);
+let ASOF = store.get("asof",SEED_ASOF);
+const urlRole = new URLSearchParams(location.search).get("role");
+let ROLE = ["im","sd","dg"].includes(urlRole) ? urlRole : store.get("role","im");
+const S = {view:"home",filters:{},tab:"All",q:"",timing:null,sort:{k:"id",d:1},page:1};
+const PER = 10;
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function save(){ASOF=isoToday();store.set("data",DATA);store.set("asof",ASOF);render()}
+function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+const TODAY = isoToday();
+
+/* ---------- derived values ---------- */
+function n(v){const x=Number(v);return isFinite(x)&&v!==""&&v!=null?x:0}
+function daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/864e5)}
+function derive(o){
+  const life = n(o.annualRev)*n(o.term);
+  const p = L.prob[o.stage] ?? 0;
+  const od = o.due ? daysBetween(o.due,TODAY) : null;
+  const active = ACTIVE.includes(o.stage);
+  return {life, prob:p, weighted:life*p, overdue: od!=null&&od>0&&active ? od : 0, daysToDue: od==null?null:-od, active, flags:flags(o,od,active)};
+}
+function flags(o,od,active){
+  const f=[]; const miss=k=>o[k]==null||String(o[k]).trim()===""||String(o[k]).trim()==="TBD";
+  ["objective","owner","customer","confidence","nextAction","due","lastUpdated"].forEach(k=>{ if(miss(k) && (active||k==="objective"||k==="owner")) f.push(FK[k][1]+" missing")});
+  const si=L.stage.indexOf(o.stage);
+  if(si<0) f.push("Stage not recognised");
+  if(si>=2&&si<=5){ if(miss("annualRev")) f.push("Expected Annual Revenue required (Business Case+)"); if(miss("term")) f.push("Term required (Business Case+)") }
+  if(si>=3&&si<=5){ if(miss("gateDate")) f.push("Gate Date required (Approved+)"); if(miss("approvalBody")) f.push("Approval Body required (Approved+)") }
+  if(si===4||si===5){ if(miss("contracted")) f.push("Contracted Value required (Contracted / Operational)") }
+  if(CLOSED.includes(o.stage)&&miss("closure")) f.push("Closure Reason required (Rejected / Withdrawn)");
+  if(o.dgReq==="Y"&&miss("dgDetail")) f.push("DG decision detail required");
+  if(active&&od!=null&&o.status!=="On Hold"){
+    if(od>14&&o.status!=="Delayed") f.push(`Status should be Delayed (${od} days overdue)`);
+    else if(od>=1&&od<=14&&o.status==="On Track") f.push(`Status should be Attention (${od} days overdue)`);
+  }
+  if(o.lastUpdated && daysBetween(o.lastUpdated,TODAY)>45 && active) f.push("Not updated in over 45 days");
+  return f;
+}
+function rows(){ return DATA.map(o=>Object.assign({},o,{_:derive(o)})) }
+function filtered(){
+  const fs=S.filters;
+  return rows().filter(r=>Object.entries(fs).every(([k,v])=>!v||(r[k]||"")===v));
+}
+function kpis(rs){
+  const a=rs.filter(r=>r._.active), pre=a.filter(r=>PRE.includes(r.stage)), con=a.filter(r=>r.stage==="Contracted"||r.stage==="Operational");
+  const aligned=a.filter(r=>/^(FN|ST|BF|OP|DG)\d/.test(r.objective||"")).length;
+  return {
+    active:a.length,
+    open:sum(pre,r=>r._.life),
+    weighted:sum(pre,r=>r._.weighted),
+    contracted:sum(con,r=>n(r.contracted)),
+    contractedN:con.length,
+    capex:sum(a,r=>n(r.capex)),
+    overdue:a.filter(r=>r._.overdue>0).length,
+    dg:a.filter(r=>r.dgReq==="Y").length,
+    align:a.length?aligned/a.length:0,
+    annual:sum(con,r=>n(r.annualRev))
+  };
+}
+function sum(a,f){return a.reduce((s,x)=>s+f(x),0)}
+
+/* ---------- formatting ---------- */
+function aed(v,short=true){
+  v=n(v); if(!short) return v.toLocaleString("en-US");
+  const a=Math.abs(v);
+  if(a>=1e9) return (v/1e9).toFixed(a>=1e10?0:1).replace(/\.0$/,"")+"B";
+  if(a>=1e6) return (v/1e6).toFixed(a>=1e8?0:1).replace(/\.0$/,"")+"M";
+  if(a>=1e3) return Math.round(v/1e3)+"K";
+  return String(Math.round(v));
+}
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fdate(s){ if(!s) return ""; const [y,m,d]=s.split("-"); return `${+d} ${MON[m-1]} ${y}` }
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function statusHtml(s){return s?`<span class="status"><i style="background:${STATUS_C[s]||"var(--hold)"}"></i>${esc(s)}</span>`:"<span class='note'>—</span>"}
+function confHtml(c){return c?`<span class="conf ${esc(c)}">${esc(c)}</span>`:""}
+function dueHtml(r){ if(!r.due) return `<span class="note">No date</span>`; return r._.overdue>0?`<span class="late" title="${r._.overdue} days overdue">${fdate(r.due)}</span>`:fdate(r.due) }
+
+/* ---------- icons ---------- */
+const IC={
+ layers:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 10 5-10 5L2 7zm-7.6 8.3L12 14l7.6-3.7L22 11.5l-10 5-10-5zm0 4.5L12 18.5l7.6-3.7L22 16l-10 5-10-5z"/></svg>',
+ coins:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>',
+ target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+ doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6v18h12V7zM14 3v4h4M9 13h6M9 17h6"/></svg>',
+ build:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 21V10l6-4v4l6-4v4l6-4v15z"/></svg>',
+ clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ gavel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 4 6 6M11 7l6 6M9 9l6 6M12.5 5.5 18.5 11.5M4 20l7-7"/></svg>',
+ leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19c0-8 6-14 15-14 0 9-6 15-14 15M5 19l7-7"/></svg>',
+ chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>'
+};
+
+/* ---------- render: chrome ---------- */
+function renderChrome(){
+  document.body.classList.toggle("ro",ROLE!=="im");
+  document.getElementById("role").value=ROLE;
+  document.getElementById("roTag").hidden=ROLE==="im";
+  document.getElementById("today").textContent=fdate(TODAY);
+  document.getElementById("asof").textContent=fdate(ASOF);
+  if(ROLE!=="im"&&S.view==="manage") S.view="home";
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.view));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+S.view));
+}
+function renderFilters(){
+  const all=rows();
+  const defs=[["sector","Sector"],["stage","Stage"],["status","Status"],["unit","Owning Unit"],["objective","Strategic Objective"],["model","Delivery Model"],["custType","Customer Type"],["priority","Priority"]];
+  const el=document.getElementById("filters");
+  el.innerHTML=`<span class="lbl">Filter</span>`+defs.map(([k,lab])=>{
+    const vals=[...new Set(all.map(r=>r[k]).filter(Boolean))].sort((a,b)=>{const l=L[FK[k][3]]||[];return (l.indexOf(a)+1||99)-(l.indexOf(b)+1||99)||String(a).localeCompare(b)});
+    return `<select data-f="${k}" aria-label="${lab}"><option value="">All ${lab}</option>${vals.map(v=>`<option ${S.filters[k]===v?"selected":""}>${esc(v)}</option>`).join("")}</select>`;
+  }).join("")+(Object.values(S.filters).some(Boolean)?`<button class="link" id="clearF">Clear filters</button>`:"");
+}
+
+/* ---------- render: home ---------- */
+function delta(cur,key,fmt,goodUp=true){
+  const last=SNAPS[SNAPS.length-1];
+  if(!last) return `<div class="d">No snapshot yet</div>`;
+  const prev=last[key]; if(prev==null) return `<div class="d">—</div>`;
+  const diff=cur-prev; if(Math.abs(diff)<1e-9) return `<div class="d">No change vs ${fdate(last.date)}</div>`;
+  const up=diff>0, good=up===goodUp;
+  const pct=prev?` (${up?"+":""}${Math.round(diff/Math.abs(prev)*100)}%)`:"";
+  return `<div class="d"><span class="${good?"up":"dn"}">${up?"▲":"▼"} ${fmt(Math.abs(diff))}${pct}</span> vs ${fdate(last.date)}</div>`;
+}
+function renderKpis(k){
+  const c=(t,ic,v,d,cls="",tip="")=>`<div class="card kpi ${cls}" ${tip?`data-tip="${esc(tip)}"`:""}><div class="t">${t}<span class="ic">${ic}</span></div><div class="v">${v}</div>${d}</div>`;
+  const cnt=x=>String(Math.round(x)), pc=x=>Math.round(x*100)+" pts";
+  document.getElementById("kpis").innerHTML=[
+    c("Active Opportunities",IC.layers,k.active,delta(k.active,"active",cnt),"","All stages except Rejected / Withdrawn"),
+    c("Open Pipeline",IC.coins,`<small>AED</small>${aed(k.open)}`,delta(k.open,"open",aed),"","Lifetime value (annual revenue × term) of pre-contract stages: Opportunity → Approved"),
+    c("Weighted Pipeline",IC.target,`<small>AED</small>${aed(k.weighted)}`,`<div class="d">${k.open?Math.round(k.weighted/k.open*100):0}% of open pipeline</div>`,"","Open pipeline × stage probability"),
+    c("Contracted Value",IC.doc,`<small>AED</small>${aed(k.contracted)}`,`<div class="d">${k.contractedN} contracted / operational · AED ${aed(k.annual)} annual revenue</div>`,"","Contracted Value field for Contracted + Operational stages"),
+    c("Investment Required",IC.build,`<small>AED</small>${aed(k.capex)}`,delta(k.capex,"capex",aed,false),"","RAKTA's own CAPEX + one-off set-up across active opportunities"),
+    c("Overdue Actions",IC.clock,k.overdue,delta(k.overdue,"overdue",cnt,false),k.overdue?"alert":"","Active opportunities whose next action is past its due date"),
+    c("DG Decisions Pending",IC.gavel,k.dg,delta(k.dg,"dg",cnt,false),"","Active opportunities flagged DG Decision Required = Y"),
+    c("Strategic Alignment",IC.leaf,Math.round(k.align*100)+"%",delta(k.align,"align",pc),"","Share of active opportunities linked to one of the 14 RAKTA strategic objectives")
+  ].join("");
+}
+function renderFunnel(rs){
+  const a=rs.filter(r=>r._.active);
+  const st=ACTIVE.map(s=>{const g=a.filter(r=>r.stage===s);return {s,c:g.length,v:sum(g,r=>r._.life),w:sum(g,r=>r._.weighted)}});
+  const max=Math.max(1,...st.map(x=>x.c));
+  document.getElementById("funnel").innerHTML=st.map(x=>`
+    <div class="frow" data-stage="${x.s}" data-tip="<b>${x.s}</b><br>${x.c} opportunities<br>Lifetime AED ${aed(x.v)}<br>Weighted AED ${aed(x.w)} (${Math.round(L.prob[x.s]*100)}%)">
+      <div class="st">${x.s}</div>
+      <div><div class="track"><div class="bar ${x.c?"":"z"}" style="width:${Math.max(12,x.c/max*100)}%">${x.c}</div></div><div class="fval">AED ${aed(x.v)}</div></div>
+    </div>`).join("");
+}
+function hbars(id,items,cls=""){
+  const max=Math.max(1,...items.map(x=>x.v));
+  document.getElementById(id).innerHTML=items.length?items.map(x=>`
+    <div class="hb ${cls}" data-fk="${x.fk||""}" data-fv="${esc(x.k)}" data-tip="<b>${esc(x.k)}</b><br>AED ${aed(x.v,false)}<br>${x.c} opportunit${x.c===1?"y":"ies"}">
+      <div class="n" title="${esc(x.k)}">${esc(x.k)}</div><div class="tr"><div class="f" style="width:${x.v/max*100}%"></div></div><div class="val">${aed(x.v)}</div>
+    </div>`).join(""):`<div class="empty">No data</div>`;
+}
+function groupBy(rs,k,order){
+  const m={}; rs.forEach(r=>{const key=(r[k]||"Unassigned");(m[key]=m[key]||{k:key,c:0,v:0,fk:k});m[key].c++;m[key].v+=r._.life});
+  let out=Object.values(m);
+  return out.sort((a,b)=>b.v-a.v||b.c-a.c);
+}
+function renderDonut(rs){
+  const a=rs.filter(r=>r._.active), tot=a.length;
+  const parts=L.status.map(s=>({s,c:a.filter(r=>r.status===s).length}));
+  const R=62,r=40,cx=75,cy=75; let ang=-Math.PI/2; const gap=tot>1?0.025:0;
+  const arcs=parts.filter(p=>p.c).map(p=>{
+    const span=p.c/tot*Math.PI*2; const a0=ang+gap/2,a1=ang+span-gap/2; ang+=span;
+    if(p.c===tot) return `<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${STATUS_C[p.s]}" stroke-width="${R-r}" data-tip="${p.s}: ${p.c}"/>`;
+    const lg=a1-a0>Math.PI?1:0, P=(rad,t)=>[cx+rad*Math.cos(t),cy+rad*Math.sin(t)].map(v=>v.toFixed(2)).join(" ");
+    return `<path d="M${P(R,a0)} A${R} ${R} 0 ${lg} 1 ${P(R,a1)} L${P(r,a1)} A${r} ${r} 0 ${lg} 0 ${P(r,a0)}Z" fill="${STATUS_C[p.s]}" data-status="${p.s}" style="cursor:pointer" data-tip="<b>${p.s}</b><br>${p.c} of ${tot} (${Math.round(p.c/tot*100)}%)"/>`;
+  }).join("");
+  document.getElementById("donut").innerHTML=`
+   <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Status breakdown">${arcs||`<circle cx="75" cy="75" r="51" fill="none" stroke="var(--line)" stroke-width="22"/>`}
+   <text x="75" y="76" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">${tot}</text><text x="75" y="95" text-anchor="middle" font-size="12" fill="var(--muted)">Active</text></svg>
+   <div class="legend">${parts.map(p=>`<div data-status="${p.s}"><i style="background:${STATUS_C[p.s]}"></i>${p.s}<b>${p.c}</b></div>`).join("")}</div>`;
+}
+function timingBuckets(rs){
+  const a=rs.filter(r=>r._.active);
+  return {
+    overdue:a.filter(r=>r._.overdue>0),
+    soon:a.filter(r=>r.due&&r._.daysToDue>=0&&r._.daysToDue<=30),
+    later:a.filter(r=>r.due&&r._.daysToDue>30),
+    none:a.filter(r=>!r.due)
+  };
+}
+function renderNA(rs){
+  const b=timingBuckets(rs);
+  const it=(k,cls,lab)=>`<button class="${cls}" data-timing="${k}"><b>${b[k].length}</b><span>${lab}</span>${IC.chev}</button>`;
+  document.getElementById("na").innerHTML=it("overdue","od","Overdue")+it("soon","","Due in next 30 days")+it("later","","Due after 30 days")+it("none","nd","No due date set");
+}
+function renderRing(k){
+  const p=k.align, C=2*Math.PI*34;
+  document.getElementById("ring").innerHTML=`<svg width="92" height="92" viewBox="0 0 92 92"><circle cx="46" cy="46" r="34" fill="none" stroke="var(--line)" stroke-width="9"/>
+   <circle cx="46" cy="46" r="34" fill="none" stroke="var(--ok)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C}" transform="rotate(-90 46 46)"/>
+   <text x="46" y="52" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">${Math.round(p*100)}%</text></svg>
+   <p>of active opportunities support an approved RAKTA strategic objective.<br><span class="note">${k.active-Math.round(p*k.active)} not aligned / TBD</span></p>`;
+}
+function miniTable(list,cols){
+  if(!list.length) return `<div class="empty">Nothing to show</div>`;
+  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?"num":""}" style="cursor:default">${c.h}</th>`).join("")}</tr></thead><tbody>${
+    list.map(r=>`<tr data-id="${esc(r.id)}">${cols.map(c=>`<td class="${c.num?"num":""} ${c.wrap?"wrapc":""}">${c.f(r)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function attention(rs){
+  return rs.filter(r=>r._.active&&(r.status!=="On Track"||r._.overdue>0))
+    .sort((a,b)=>(a.due?0:1)-(b.due?0:1)||String(a.due).localeCompare(String(b.due))||(a.status==="Delayed"?-1:0)-(b.status==="Delayed"?-1:0)||a.id.localeCompare(b.id));
+}
+const C = {
+  opp:{h:"Opportunity",wrap:1,f:r=>`<div class="id">${esc(r.id)}</div>${esc(r.name)}`},
+  stage:{h:"Stage",f:r=>`<span class="pill">${esc(r.stage)}</span>`},
+  status:{h:"Status",f:r=>statusHtml(r.status)},
+  next:{h:"Next Action",wrap:1,f:r=>esc(r.nextAction||"—")},
+  aowner:{h:"Action Owner",f:r=>esc(r.actionOwner||r.owner||"—")},
+  due:{h:"Due",f:dueHtml},
+  od:{h:"Days Overdue",num:1,f:r=>r._.overdue?`<span class="late">${r._.overdue}</span>`:"—"},
+  issue:{h:"Key Issue / Dependency",wrap:1,f:r=>esc(r.issue||"—")},
+  life:{h:"Lifetime Value",num:1,f:r=>aed(r._.life,false)},
+  capex:{h:"Investment Req.",num:1,f:r=>aed(r.capex,false)},
+  owner:{h:"Opportunity Owner",f:r=>esc(r.owner||"—")},
+  dg:{h:"Decision / Escalation Needed",wrap:1,f:r=>esc(r.dgDetail||"—")}
+};
+
+/* ---------- render: opportunities table ---------- */
+const TCOLS=[
+  ["id","ID",r=>`<span class="id">${esc(r.id)}</span>`,"idc"],
+  ["name","Opportunity",r=>esc(r.name),"wrapc"],
+  ["sector","Sector",r=>esc(r.sector||"")],
+  ["customer","Customer / Partner",r=>esc(r.customer||"")],
+  ["stage","Stage",r=>`<span class="pill">${esc(r.stage)}</span>`],
+  ["status","Status",r=>statusHtml(r.status)],
+  ["_life","Lifetime Value (AED)",r=>aed(r._.life,false),"num"],
+  ["_weighted","Weighted (AED)",r=>aed(r._.weighted,false),"num"],
+  ["confidence","Confidence",r=>confHtml(r.confidence)],
+  ["nextAction","Next Action",r=>esc(r.nextAction||""),"wrapc"],
+  ["due","Due Date",dueHtml],
+  ["owner","Owner",r=>esc(r.owner||"")],
+  ["_flags","DQ",r=>r._.flags.length?`<span class="dq" data-tip="${esc(r._.flags.join("<br>"))}">${r._.flags.length}</span>`:`<span class="dq okk">✓</span>`]
+];
+function tableRows(rs){
+  let t=rs;
+  if(S.tab==="Closed") t=t.filter(r=>CLOSED.includes(r.stage));
+  else if(S.tab!=="All") t=t.filter(r=>r.stage===S.tab);
+  if(S.timing){const b=timingBuckets(rs);const ids=new Set(b[S.timing].map(r=>r.id));t=t.filter(r=>ids.has(r.id))}
+  const q=S.q.trim().toLowerCase();
+  if(q) t=t.filter(r=>[r.id,r.name,r.sector,r.customer,r.owner,r.nextAction,r.stage,r.status,r.objective,r.unit].join(" ").toLowerCase().includes(q));
+  const {k,d}=S.sort;
+  const val=r=>k==="_life"?r._.life:k==="_weighted"?r._.weighted:k==="_flags"?r._.flags.length:k==="stage"?L.stage.indexOf(r.stage):(r[k]??"");
+  return t.slice().sort((a,b)=>{const x=val(a),y=val(b);return (typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y),undefined,{numeric:true}))*d});
+}
+function renderTable(rs){
+  const tabs=["All",...ACTIVE,"Closed"];
+  document.getElementById("tabs").innerHTML=tabs.map(t=>{
+    const c=t==="All"?rs.length:t==="Closed"?rs.filter(r=>CLOSED.includes(r.stage)).length:rs.filter(r=>r.stage===t).length;
+    return `<button class="${S.tab===t?"on":""}" data-tab="${t}">${t} (${c})</button>`}).join("");
+  const labels={overdue:"Overdue",soon:"Due in next 30 days",later:"Due after 30 days",none:"No due date"};
+  document.getElementById("timingChip").innerHTML=S.timing?`<span class="pill">Next action: ${labels[S.timing]} <button class="link" id="clearTiming" style="margin-left:6px" aria-label="Clear">✕</button></span>`:"";
+  const t=tableRows(rs), pages=Math.max(1,Math.ceil(t.length/PER));
+  S.page=Math.min(S.page,pages);
+  const pg=t.slice((S.page-1)*PER,S.page*PER);
+  document.getElementById("tbl").innerHTML=`<thead><tr>${TCOLS.map(c=>`<th class="${c[3]==="num"?"num":""}" data-sort="${c[0]}">${c[1]}${S.sort.k===c[0]?(S.sort.d>0?" ▲":" ▼"):""}</th>`).join("")}</tr></thead>
+    <tbody>${pg.length?pg.map(r=>`<tr data-id="${esc(r.id)}">${TCOLS.map(c=>`<td class="${c[3]||""}">${c[2](r)}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${TCOLS.length}" class="empty">No opportunities match</td></tr>`}</tbody>`;
+  let pb=`<span>Showing ${pg.length} of ${t.length} opportunities</span><button data-pg="${S.page-1}" ${S.page<=1?"disabled":""} aria-label="Previous">‹</button>`;
+  for(let i=1;i<=pages;i++) pb+=`<button data-pg="${i}" class="${i===S.page?"on":""}">${i}</button>`;
+  pb+=`<button data-pg="${S.page+1}" ${S.page>=pages?"disabled":""} aria-label="Next">›</button>`;
+  document.getElementById("pager").innerHTML=pb;
+}
+
+/* ---------- render: decisions / quality / manage ---------- */
+function renderDecisions(rs){
+  const dg=rs.filter(r=>r._.active&&r.dgReq==="Y").sort((a,b)=>String(a.due||"9").localeCompare(String(b.due||"9")));
+  document.getElementById("dgTbl").innerHTML=miniTable(dg,[C.opp,C.stage,C.dg,C.owner,C.due,C.capex,C.life]);
+  const at=attention(rs);
+  document.getElementById("attnTbl").innerHTML=miniTable(at,[C.opp,C.stage,C.status,C.next,C.aowner,C.due,C.od,C.issue]);
+  const pre=rs.filter(r=>PRE.includes(r.stage));
+  const max=Math.max(1,...PRE.map(s=>sum(pre.filter(r=>r.stage===s),r=>r._.life)));
+  document.getElementById("weighted").innerHTML=`<div class="hbars">${PRE.map(s=>{const g=pre.filter(r=>r.stage===s),v=sum(g,r=>r._.life),w=sum(g,r=>r._.weighted);
+    return `<div class="hb" data-tip="<b>${s}</b> (${Math.round(L.prob[s]*100)}%)<br>Open AED ${aed(v,false)}<br>Weighted AED ${aed(w,false)}"><div class="n">${s}</div>
+      <div class="tr" style="background:var(--accent-soft);width:${v/max*100}%;border-radius:0 4px 4px 0"><div class="f" style="width:${v?w/v*100:0}%"></div></div><div class="val">${aed(w)}</div></div>`}).join("")}</div>
+      <div class="legend" style="flex-direction:row;gap:16px;margin-top:12px"><div><i style="background:var(--accent);border-radius:2px"></i>Weighted</div><div><i style="background:var(--accent-soft);border-radius:2px;outline:1px solid var(--line)"></i>Open (unweighted)</div></div>`;
+  const cl=rs.filter(r=>CLOSED.includes(r.stage));
+  document.getElementById("closed").innerHTML=`<div class="legend" style="margin-bottom:10px">${CLOSED.map(s=>`<div><i style="background:var(--hold)"></i>${s}<b>${cl.filter(r=>r.stage===s).length}</b></div>`).join("")}</div>`+
+    (cl.length?`<div class="tscroll">${miniTable(cl,[C.opp,C.stage,{h:"Closure Reason",f:r=>esc(r.closure||"—")}])}</div>`:"");
+}
+function renderAttnMini(rs){
+  const at=attention(rs);
+  document.getElementById("attnMini").innerHTML=miniTable(at.slice(0,6),[C.opp,C.status,C.next,C.due,C.od]);
+  const nb=document.getElementById("navAttn"); const od=rs.filter(r=>r._.overdue>0).length; nb.hidden=!od; nb.textContent=od;
+}
+function renderQuality(rs){
+  const f=rs.filter(r=>r._.flags.length).sort((a,b)=>b._.flags.length-a._.flags.length||a.id.localeCompare(b.id));
+  const total=sum(rs,r=>r._.flags.length);
+  document.getElementById("dqSum").textContent=`${f.length} of ${rs.length} records · ${total} flags`;
+  document.getElementById("dqTbl").innerHTML=miniTable(f,[C.opp,C.stage,C.status,{h:"Owner",f:r=>esc(r.owner||"—")},{h:"Flags",wrap:1,f:r=>`<ul style="margin:0;padding-left:16px">${r._.flags.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}]);
+}
+const SNAPK=[["active","Active"],["open","Open Pipeline"],["weighted","Weighted"],["contracted","Contracted"],["capex","Investment Req."],["overdue","Overdue"],["dg","DG Decisions"],["align","Alignment"]];
+function renderSnaps(){
+  const el=document.getElementById("snapTbl");
+  if(!SNAPS.length){el.innerHTML=`<div class="empty">No snapshots yet. Record one at each month-end review.</div>`;return}
+  el.innerHTML=`<table><thead><tr><th>Date</th>${SNAPK.map(s=>`<th class="num">${s[1]}</th>`).join("")}</tr></thead><tbody>${
+    SNAPS.slice().reverse().map(s=>`<tr style="cursor:default"><td>${fdate(s.date)}</td>${SNAPK.map(([k])=>`<td class="num">${k==="align"?Math.round(s[k]*100)+"%":["open","weighted","contracted","capex"].includes(k)?aed(s[k]):s[k]}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+function render(){
+  renderChrome(); renderFilters();
+  const rs=filtered(), k=kpis(rs);
+  renderKpis(k); renderFunnel(rs);
+  hbars("sectors",groupBy(rs.filter(r=>r._.active),"sector").filter(x=>x.v>0||x.c>0));
+  renderDonut(rs); renderNA(rs); renderRing(k); renderAttnMini(rs);
+  hbars("objectives",groupBy(rs.filter(r=>r._.active),"objective"),"gold");
+  hbars("models",groupBy(rs.filter(r=>r._.active),"model"));
+  renderTable(rs); renderDecisions(rs); renderQuality(rs); renderSnaps();
+}
+
+/* ---------- drawer: view / edit ---------- */
+const drawer=document.getElementById("drawer"), scrim=document.getElementById("scrim");
+function openDrawer(){drawer.classList.add("on");scrim.classList.add("on")}
+function closeDrawer(){drawer.classList.remove("on");scrim.classList.remove("on")}
+function showDetail(id){
+  const o=DATA.find(x=>x.id===id); if(!o) return; const d=derive(o);
+  document.getElementById("dId").textContent=o.id+" · "+(o.sector||"");
+  document.getElementById("dTitle").textContent=o.name;
+  const kv=(pairs)=>`<dl class="kv">${pairs.map(([k,v])=>`<dt>${k}</dt><dd>${v||"<span class='note'>—</span>"}</dd>`).join("")}</dl>`;
+  const g=k=>esc(o[k]??"");
+  document.getElementById("dBody").innerHTML=
+    (d.flags.length?`<div class="flags"><b>${d.flags.length} data quality flag${d.flags.length>1?"s":""}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:"")+
+    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Owning Unit",g("unit")],["Opportunity Owner",g("owner")],["Customer / Partner",g("customer")+(o.custType?` <span class="note">(${g("custType")})</span>`:"")]])+
+    `<div class="sec">Financials (AED)</div>`+kv([["Investment / CAPEX",o.capex!=null?aed(o.capex,false):""],["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?o.term+" years":""],["Lifetime Value",aed(d.life,false)],["Stage Probability",Math.round(d.prob*100)+"%"],["Weighted Value",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
+    `<div class="sec">Next Action</div>`+kv([["Next Action",g("nextAction")],["Action Owner",g("actionOwner")],["Due Date",o.due?dueHtml(Object.assign({},o,{_:d}))+(d.overdue?` <span class="late">(${d.overdue} days overdue)</span>`:""):""],["Key Issue / Dependency",g("issue")],["Progress Note",g("note")],["Last Updated",fdate(o.lastUpdated)]])+
+    `<div class="sec">Governance</div>`+kv([["DG Decision Required",g("dgReq")],["DG Decision / Escalation",g("dgDetail")],["Last Gate Decision",g("gateDecision")],["Gate Date",fdate(o.gateDate)],["Approval Body",g("approvalBody")],["Decision Reference",g("decisionRef")],["Closure Reason",g("closure")]]);
+  document.getElementById("dFoot").innerHTML=ROLE==="im"?`<button class="btn danger" data-del="${esc(o.id)}">Delete</button><span style="flex:1"></span><button class="btn pri" data-edit="${esc(o.id)}">Edit</button>`:`<span class="note">View only — the Investment Manager maintains this record.</span>`;
+  openDrawer();
+}
+function nextId(){const m=Math.max(0,...DATA.map(o=>+(String(o.id).match(/(\d+)$/)||[0,0])[1]));return "INV-"+String(m+1).padStart(3,"0")}
+function inputFor(f,v){
+  const [k,lab,type,list,req]=f; const val=esc(v??"");
+  const l=`<span>${lab}${req?" <em>*</em>":""}</span>`;
+  let inp;
+  if(type==="sel") inp=`<select name="${k}"><option value="">—</option>${L[list].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}${v&&!L[list].includes(v)?`<option selected>${val}</option>`:""}</select>`;
+  else if(type==="area") inp=`<textarea name="${k}">${val}</textarea>`;
+  else inp=`<input name="${k}" type="${type==="num"?"number":type==="date"?"date":"text"}" ${type==="num"?'min="0" step="any"':""} value="${val}" ${k==="id"?"readonly class='calc'":""}>`;
+  return `<label class="${type==="area"?"full":""}" data-k="${k}">${l}${inp}</label>`;
+}
+function showForm(id){
+  const isNew=!id; const o=isNew?{id:nextId(),stage:"Opportunity",status:"On Track",lastUpdated:TODAY,dgReq:"N"}:clone(DATA.find(x=>x.id===id));
+  document.getElementById("dId").textContent=isNew?"New opportunity":o.id;
+  document.getElementById("dTitle").textContent=isNew?"Add Investment Opportunity":"Edit: "+o.name;
+  const grp=(t,keys)=>`<h4>${t}</h4>`+keys.map(k=>inputFor(FK[k],o[k])).join("");
+  document.getElementById("dBody").innerHTML=`<form class="form" id="oppForm" autocomplete="off">
+    ${grp("Identity",["id","name","sector","model","objective","unit","owner","customer","custType"])}
+    ${grp("Stage & health",["stage","status","priority","confidence"])}
+    ${grp("Financials (AED)",["capex","annualRev","term","contracted"])}
+    <label>Lifetime Value (calc)<input class="calc" id="cLife" readonly></label><label>Weighted Value (calc)<input class="calc" id="cW" readonly></label>
+    ${grp("Next action",["nextAction","actionOwner","due","issue","note","lastUpdated"])}
+    ${grp("Governance",["dgReq","dgDetail","gateDecision","gateDate","approvalBody","decisionRef","closure"])}
+    <div class="full flags" id="formFlags" hidden></div>
+  </form>`;
+  document.getElementById("dFoot").innerHTML=`<button class="btn" id="cancelForm">Cancel</button><button class="btn pri" id="saveForm">${isNew?"Add opportunity":"Save changes"}</button>`;
+  const form=document.getElementById("oppForm");
+  const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=aed(d.weighted,false)+` (${Math.round(d.prob*100)}%)`;
+    const ff=document.getElementById("formFlags");ff.hidden=!d.flags.length;ff.innerHTML=`<b>Will be flagged:</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`};
+  form.addEventListener("input",upd); upd();
+  document.getElementById("cancelForm").onclick=()=>isNew?closeDrawer():showDetail(id);
+  document.getElementById("saveForm").onclick=()=>{
+    const x=readForm(form); const bad=["name","sector","stage","status"].filter(k=>!x[k]);
+    form.querySelectorAll("label").forEach(l=>l.querySelector("input,select,textarea")?.classList.toggle("bad",bad.includes(l.dataset.k)));
+    if(bad.length){toast("Please complete: "+bad.map(k=>FK[k][1]).join(", "));return}
+    if(isNew&&DATA.some(d=>d.id===x.id)) x.id=nextId();
+    x.lastUpdated=TODAY;
+    if(isNew) DATA.push(x); else DATA[DATA.findIndex(d=>d.id===id)]=x;
+    save(); toast(isNew?`${x.id} added`:`${x.id} updated`); showDetail(x.id);
+  };
+  openDrawer();
+}
+function readForm(form){
+  const o={}; new FormData(form).forEach((v,k)=>{v=String(v).trim(); if(v==="") return; o[k]=FK[k]&&FK[k][2]==="num"?Number(v):v}); return o;
+}
+
+/* ---------- import / export ---------- */
+const HDR={}; F.forEach(f=>{HDR[norm(f[1])]=f[0]}); HDR[norm("Investment Required (AED)")]="capex"; HDR[norm("ID")]="id"; HDR[norm("Progress Note")]="note"; HDR[norm("Notes")]="note";
+function norm(s){return String(s||"").replace(/\*/g,"").replace(/\s+/g," ").trim().toLowerCase()}
+function toIso(v){
+  if(v==null||v==="") return null;
+  if(v instanceof Date&&!isNaN(v)) return v.getFullYear()+"-"+String(v.getMonth()+1).padStart(2,"0")+"-"+String(v.getDate()).padStart(2,"0");
+  if(typeof v==="number"&&v>20000&&v<80000){const d=new Date(Math.round((v-25569)*864e5));return d.toISOString().slice(0,10)}
+  const s=String(v).trim(); let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m) return `${m[1]}-${m[2].padStart(2,"0")}-${m[3].padStart(2,"0")}`;
+  m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/); if(m) return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+  const t=Date.parse(s); return isNaN(t)?null:toIso(new Date(t));
+}
+function cleanRecord(raw){
+  const o={};
+  for(const [h,v] of Object.entries(raw)){
+    const k=HDR[norm(h)]; if(!k||v==null||v==="") continue;
+    const type=FK[k][2];
+    if(type==="num"){const x=Number(String(v).replace(/[, ]|AED/gi,""));if(isFinite(x)) o[k]=x}
+    else if(type==="date"){const d=toIso(v); if(d) o[k]=d; else if(k==="lastUpdated") o.note=[o.note,String(v).trim()].filter(Boolean).join(" ")}
+    else { let s=String(v).trim(); if(s.startsWith("#")) continue; if(type==="sel"){const l=L[FK[k][3]];const hit=l.find(x=>x.toLowerCase()===s.toLowerCase());if(hit)s=hit} o[k]=s }
+  }
+  return o.id&&o.name?o:null;
+}
+function parseCSV(text){
+  const out=[];let row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}
+    else if(c==='"')q=true; else if(c===","){row.push(cell);cell=""} else if(c==="\n"||c==="\r"){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);out.push(row);row=[];cell=""} else cell+=c}
+  if(cell||row.length){row.push(cell);out.push(row)}
+  const hdr=out.shift()||[]; return out.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(hdr.map((h,i)=>[h,r[i]])));
+}
+async function importFile(file){
+  const msg=document.getElementById("importMsg");
+  try{
+    let recs;
+    if(/\.csv$/i.test(file.name)) recs=parseCSV(await file.text());
+    else{
+      if(!window.XLSX) throw new Error("Spreadsheet reader didn't load (offline?). Save the sheet as CSV and upload that instead.");
+      const wb=XLSX.read(await file.arrayBuffer(),{type:"array",cellDates:true});
+      const name=wb.SheetNames.find(s=>/investment plan/i.test(s))||wb.SheetNames[0];
+      recs=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:null,raw:true});
+    }
+    const clean=recs.map(cleanRecord).filter(Boolean);
+    if(!clean.length) throw new Error("No rows with an Investment ID and Opportunity name were found. Check the header row matches the template.");
+    const mode=document.querySelector("input[name=mode]:checked").value;
+    let added=0,updated=0;
+    if(mode==="replace"){ if(!confirm(`Replace all ${DATA.length} records with ${clean.length} from ${file.name}?`)) return; DATA=clean; added=clean.length }
+    else clean.forEach(c=>{const i=DATA.findIndex(d=>d.id===c.id); if(i>=0){DATA[i]=Object.assign({},DATA[i],c);updated++} else {DATA.push(c);added++}});
+    save();
+    msg.innerHTML=`<b style="color:var(--ok)">Imported ${file.name}:</b> ${added} added, ${updated} updated. ${sum(rows(),r=>r._.flags.length)} data quality flags across the plan.`;
+    toast(`Import complete: ${added} added, ${updated} updated`);
+  }catch(e){msg.innerHTML=`<b style="color:var(--crit)">Import failed:</b> ${esc(e.message)}`}
+}
+function exportRows(list,fmt){
+  const hdr=[...F.map(f=>f[1]),"Lifetime Value (AED)","Stage Probability","Weighted Value (AED)","Days Overdue","Data Quality Flag"];
+  const data=list.map(r=>[...F.map(f=>r[f[0]]??""),r._.life,r._.prob,r._.weighted,r._.overdue||"",r._.flags.join("; ")]);
+  const stamp=TODAY;
+  if(fmt==="xlsx"&&window.XLSX){
+    const ws=XLSX.utils.aoa_to_sheet([hdr,...data]); ws["!cols"]=hdr.map(h=>({wch:Math.min(40,Math.max(10,h.length+2))}));
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Investment Plan"); XLSX.writeFile(wb,`RAKTA_Investment_Plan_${stamp}.xlsx`); return;
+  }
+  const csv=[hdr,...data].map(r=>r.map(v=>{v=String(v);return /[",\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v}).join(",")).join("\r\n");
+  download(new Blob(["﻿"+csv],{type:"text/csv"}),`RAKTA_Investment_Plan_${stamp}.csv`);
+}
+function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function template(){
+  const hdr=F.filter(f=>f[0]!=="note").map(f=>f[1]+(f[4]?" *":"")).concat(["Progress Note"]);
+  const ex=["INV-0XX","Example opportunity","Parking","PPP","FN1 – Financial Sustainability","Investment","Name of owner","Customer name","Government","Opportunity","On Track","P2","Low","","","","","Describe the next step","Investment Manager",TODAY,"","N","","","","","","",TODAY,"Latest progress"];
+  if(window.XLSX){
+    const ws=XLSX.utils.aoa_to_sheet([hdr,ex]); ws["!cols"]=hdr.map(()=>({wch:22}));
+    const lists=XLSX.utils.aoa_to_sheet([["Sector","Stage","Status","Confidence","Priority","Customer Type","Delivery Model","Strategic Objective","Owning Unit","Approval Body","Closure Reason"],
+      ...Array.from({length:16},(_,i)=>[L.sector,L.stage,L.status,L.confidence,L.priority,L.custType,L.model,L.objective,L.unit,L.approvalBody,L.closure].map(l=>l[i]||""))]);
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Investment Plan"); XLSX.utils.book_append_sheet(wb,lists,"Lists"); XLSX.writeFile(wb,"RAKTA_Investment_Plan_Upload_Template.xlsx");
+  } else download(new Blob(["﻿"+[hdr,ex].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n")],{type:"text/csv"}),"RAKTA_Investment_Plan_Upload_Template.csv");
+}
+
+/* ---------- misc UI ---------- */
+let tt;function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2600)}
+function go(v){S.view=v;render();window.scrollTo({top:0})}
+const tip=document.getElementById("tip");
+document.addEventListener("mousemove",e=>{
+  const el=e.target.closest("[data-tip]"); if(!el){tip.style.opacity=0;return}
+  tip.innerHTML=el.getAttribute("data-tip"); tip.style.opacity=1;
+  const w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+14,y=e.clientY+14;
+  if(x+w>innerWidth-8) x=e.clientX-w-14; if(y+h>innerHeight-8) y=e.clientY-h-14;
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+});
+
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const nav=t.closest("#nav button"); if(nav){go(nav.dataset.v);return}
+  const g=t.closest("[data-goto]"); if(g){go(g.dataset.goto);return}
+  if(t.closest("#clearF")){S.filters={};S.page=1;render();return}
+  if(t.closest("#clearTiming")){S.timing=null;render();return}
+  const tm=t.closest("[data-timing]"); if(tm){S.timing=tm.dataset.timing;S.tab="All";S.page=1;go("opps");return}
+  const st=t.closest("[data-stage]"); if(st){S.tab=st.dataset.stage;S.timing=null;S.page=1;go("opps");return}
+  const ss=t.closest("[data-status]"); if(ss){S.filters.status=ss.dataset.status;S.page=1;render();return}
+  const hb=t.closest(".hb[data-fk]"); if(hb&&hb.dataset.fk){S.filters[hb.dataset.fk]=hb.dataset.fv==="Unassigned"?"":hb.dataset.fv;S.page=1;render();return}
+  const tab=t.closest("[data-tab]"); if(tab){S.tab=tab.dataset.tab;S.page=1;render();return}
+  const so=t.closest("th[data-sort]"); if(so){const k=so.dataset.sort;S.sort={k,d:S.sort.k===k?-S.sort.d:1};render();return}
+  const pg=t.closest("[data-pg]"); if(pg&&!pg.disabled){S.page=+pg.dataset.pg;render();return}
+  const ed=t.closest("[data-edit]"); if(ed){showForm(ed.dataset.edit);return}
+  const del=t.closest("[data-del]"); if(del){const id=del.dataset.del;
+    if(confirm(`Delete ${id}? Prefer setting Stage to Rejected or Withdrawn with a Closure Reason so the decision stays auditable.`)){DATA=DATA.filter(d=>d.id!==id);save();closeDrawer();toast(id+" deleted")}return}
+  const nw=t.closest("[data-act=new]"); if(nw){showForm(null);return}
+  const tr=t.closest("tr[data-id]"); if(tr){showDetail(tr.dataset.id);return}
+});
+document.getElementById("filters").addEventListener("change",e=>{const k=e.target.dataset.f;if(k){S.filters[k]=e.target.value;S.page=1;render()}});
+document.getElementById("q").addEventListener("input",e=>{S.q=e.target.value;S.page=1;renderTable(filtered())});
+document.getElementById("role").addEventListener("change",e=>{ROLE=e.target.value;store.set("role",ROLE);closeDrawer();render()});
+document.getElementById("dClose").onclick=closeDrawer; scrim.onclick=closeDrawer;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
+document.getElementById("exportBtn").onclick=()=>exportRows(tableRows(filtered()),"xlsx");
+const drop=document.getElementById("drop"),file=document.getElementById("file");
+drop.onclick=()=>file.click(); drop.onkeydown=e=>{if(e.key==="Enter")file.click()};
+file.onchange=()=>{if(file.files[0])importFile(file.files[0]);file.value=""};
+["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("hover")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("hover")}));
+drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)importFile(f)});
+document.getElementById("tplBtn").onclick=template;
+document.getElementById("snapBtn").onclick=()=>{
+  const k=kpis(rows()); const s={date:TODAY,...Object.fromEntries(SNAPK.map(([x])=>[x,k[x]]))};
+  SNAPS=SNAPS.filter(x=>x.date!==TODAY).concat(s); store.set("snaps",SNAPS); render(); toast("Snapshot recorded for "+fdate(TODAY));
+};
+document.getElementById("backupBtn").onclick=()=>download(new Blob([JSON.stringify({version:1,asof:ASOF,data:DATA,snapshots:SNAPS},null,1)],{type:"application/json"}),`RAKTA_Investment_Backup_${TODAY}.json`);
+const rf=document.getElementById("restoreFile");
+document.getElementById("restoreBtn").onclick=()=>rf.click();
+rf.onchange=async()=>{try{const j=JSON.parse(await rf.files[0].text());if(!Array.isArray(j.data))throw 0;DATA=j.data;SNAPS=j.snapshots||[];store.set("snaps",SNAPS);save();toast("Backup restored")}catch(e){toast("That file isn't a dashboard backup")}rf.value=""};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Discard all changes and reload the 24 opportunities from the v4 workbook?")){DATA=clone(SEED);ASOF=SEED_ASOF;store.set("data",DATA);store.set("asof",ASOF);render();toast("Reset to workbook data")}};
+document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";store.set("theme",r.dataset.theme)};
+(()=>{const th=store.get("theme",null);if(th)document.documentElement.dataset.theme=th})();
+
+render();
+</script>
+</body>
+</html>
