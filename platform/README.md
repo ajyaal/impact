@@ -17,11 +17,13 @@ The role selector controls what the screen shows. It is **not** access control.
 
 ## Views
 
-- **Home**: eight KPI cards (Active, Open Pipeline, Weighted Pipeline, Contracted Value,
-  Investment Required, Overdue Actions, DG Decisions Pending, Strategic Alignment), each with
-  a change since the last snapshot. Below them: stage funnel, value by sector, status donut,
-  management attention list, next actions by timing, strategic alignment, and value by
-  objective and by delivery model. Click any chart element to filter or drill down.
+- **Home**: six outcome KPI cards (Active Opportunities, Pipeline Revenue, Contracted Value,
+  Operational Annual Revenue, External Capital Mobilised, CAPEX Avoided), each with a change
+  since the last snapshot. Below them: stage funnel, contract revenue by sector, status donut,
+  and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
+  attention list. Further down: next actions, Capital & CAPEX Avoidance, and breakdowns by
+  objective (with strategic alignment) and by delivery model. Click any chart element to filter
+  or drill down.
 - **Opportunities**: the full register, with stage tabs, search, sortable columns,
   pagination and Excel export. Click a row to see its full record and data quality flags.
 - **Pipeline & Actions**: decisions required from the DG, the management attention list
@@ -32,13 +34,33 @@ The role selector controls what the screen shows. It is **not** access control.
 
 ## Calculation rules (from the workbook's Definitions sheet)
 
-- Lifetime Value = Expected Annual Revenue × Term.
-- Weighted Value = Lifetime Value × stage probability (10 / 25 / 50 / 75 / 100 / 100 %).
+- Indicative Contract Revenue = Expected Annual Revenue × Term. This is revenue, not NPV or profit.
+- Weighted Pipeline Revenue = Indicative Contract Revenue × stage weight (10 / 25 / 50 / 75 / 100 / 100 %).
+  The weights are **planning assumptions**. Recalibrate them from actual gate conversions once history exists.
+- Estimate Confidence describes the quality of the evidence behind the numbers. It is **not** a closing probability.
 - Open and Weighted Pipeline count pre-contract stages only (Opportunity → Approved).
   Contracted Value counts the Contracted and Operational stages.
 - Rejected and Withdrawn opportunities are excluded from every active KPI.
 - Status is checked against its rule: a next action 1–14 days overdue should be
   **Attention**, and more than 14 days overdue should be **Delayed**.
+
+## Capital and CAPEX avoidance
+
+| Field | Input / calc | When |
+|---|---|---|
+| Total Project CAPEX | input | when known (v4 "Investment/CAPEX Required" maps here) |
+| RAKTA CAPEX Required | input | flagged if missing from Business Case onwards |
+| External Capital | Total − RAKTA | calculated |
+| Counterfactual RAKTA CAPEX | input, **optional** | only if RAKTA would otherwise have funded the asset itself |
+| CAPEX Avoidance Status | Potential / Validated / Realised | defaults to Potential |
+| CAPEX Baseline Source | text | required when a counterfactual is entered (e.g. "2027 Approved Capital Plan") |
+| CAPEX Avoided | Counterfactual − RAKTA CAPEX | calculated |
+
+Reporting rules:
+- **CAPEX Avoided** (headline) counts Validated + Realised only. Potential is shown separately and never reported as avoided.
+- **External Capital Mobilised** (headline) counts Contracted + Operational only. Pre-contract capital appears as "in pipeline".
+- External capital and CAPEX avoided are separate measures. A partner funding a project is not CAPEX avoidance unless RAKTA had a real, evidenced obligation to fund it.
+- Data Quality flags: avoidance claimed without a source, Potential still unvalidated at Approved+, Realised before Contracted, and RAKTA CAPEX greater than Total.
 
 ## Data storage
 

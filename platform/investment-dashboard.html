@@ -63,7 +63,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .card h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
 .card h3 .r{margin-left:auto;font-weight:400}
 .card h3 small{font-weight:400;color:var(--muted);font-size:12px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (min-width:1500px){.kpis{grid-template-columns:repeat(6,1fr)}}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.strip button{all:unset;cursor:pointer;background:var(--surface2);border-radius:8px;padding:10px 12px;border-left:3px solid var(--line)}
+.strip button:hover{background:var(--accent-soft)}
+.strip b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.strip span{font-size:12px;color:var(--ink2)}
+.strip .hot{border-left-color:var(--crit)}.strip .hot b{color:var(--crit)}.strip .wn{border-left-color:var(--warn)}
+.stack{display:flex;height:22px;border-radius:4px;overflow:hidden;gap:2px;margin:6px 0 8px}.stack div{min-width:2px}
+.caprow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}.caprow:last-child{border:0}
+.caprow b{font-variant-numeric:tabular-nums}.caprow i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.hint{grid-column:1/-1;font-size:12px;color:var(--muted);margin:-4px 0 0}
 .kpi{padding:14px 16px;cursor:default}
 .kpi .t{font-size:12.5px;color:var(--ink2);font-weight:600;display:flex;justify-content:space-between;gap:6px}
 .kpi .v{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-top:4px;font-variant-numeric:tabular-nums}
@@ -186,7 +196,7 @@ td .id{color:var(--muted);font-size:12px}
 .menu{position:relative}
 .im-only{}
 body.ro .im-only{display:none!important}
-@media (max-width:1250px){.kpis{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.gridside{grid-template-columns:1fr}}
+@media (max-width:1250px){.kpis{grid-template-columns:repeat(2,1fr)}.strip{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.gridside{grid-template-columns:1fr}}
 @media (max-width:820px){
   .app{grid-template-columns:1fr}
   .side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}
@@ -245,23 +255,24 @@ body.ro .im-only{display:none!important}
       <section class="view on" id="v-home">
         <div class="kpis" id="kpis"></div>
         <div class="grid3">
-          <div class="card"><h3>Pipeline by Stage <small>count · lifetime value</small></h3><div class="funnel" id="funnel"></div></div>
-          <div class="card"><h3>Lifetime Value by Sector <small>AED, active</small></h3><div class="hbars" id="sectors"></div></div>
+          <div class="card"><h3>Pipeline by Stage <small>count · contract revenue</small></h3><div class="funnel" id="funnel"></div></div>
+          <div class="card"><h3>Indicative Contract Revenue by Sector <small>AED, active</small></h3><div class="hbars" id="sectors"></div></div>
           <div class="card"><h3>Opportunities by Status</h3><div class="donutwrap" id="donut"></div></div>
         </div>
         <div class="gridside">
           <div class="card">
             <h3>Management Attention <small>not On Track, or overdue — earliest due first</small><span class="r"><button class="link" data-goto="decisions">View all →</button></span></h3>
+            <div class="strip" id="strip"></div>
             <div class="tscroll" id="attnMini"></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:12px">
             <div class="card"><h3>Next Actions<span class="r"><button class="link" data-goto="opps">View all →</button></span></h3><div class="na" id="na"></div></div>
-            <div class="card"><h3>Strategic Alignment</h3><div class="ring" id="ring"></div></div>
+            <div class="card"><h3>Capital &amp; CAPEX Avoidance <small>active</small></h3><div id="capital"></div></div>
           </div>
         </div>
         <div class="grid2">
-          <div class="card"><h3>Portfolio by Strategic Objective <small>lifetime value, AED</small></h3><div class="hbars" id="objectives"></div></div>
-          <div class="card"><h3>Portfolio by Delivery Model <small>lifetime value, AED</small></h3><div class="hbars" id="models"></div></div>
+          <div class="card"><h3>Portfolio by Strategic Objective <small>contract revenue, AED</small></h3><div class="ring" id="ring" style="margin-bottom:12px"></div><div class="hbars" id="objectives"></div></div>
+          <div class="card"><h3>Portfolio by Delivery Model <small>contract revenue, AED</small></h3><div class="hbars" id="models"></div></div>
         </div>
       </section>
 
@@ -286,7 +297,7 @@ body.ro .im-only{display:none!important}
         <div class="card"><h3>Decisions Required from the DG <small>DG Decision Required = Y</small></h3><div class="tscroll" id="dgTbl"></div></div>
         <div class="card"><h3>Management Attention <small>not On Track, or next action overdue — earliest due first</small></h3><div class="tscroll" id="attnTbl"></div></div>
         <div class="grid2">
-          <div class="card"><h3>Weighted vs Open Pipeline by Stage <small>AED, pre-contract</small></h3><div id="weighted"></div></div>
+          <div class="card"><h3>Weighted vs Indicative Pipeline Revenue <small>AED, pre-contract</small></h3><div id="weighted"></div><p class="note" style="margin-top:10px">Stage weights (10 / 25 / 50 / 75%) are planning assumptions, not measured conversion rates. Recalibrate them once a year of gate history exists.</p></div>
           <div class="card"><h3>Closed Opportunities</h3><div id="closed"></div><p class="note" style="margin-top:10px">Closed records stay in the plan with a Closure Reason so decisions remain auditable. They are excluded from all active KPIs.</p></div>
         </div>
       </section>
@@ -371,7 +382,8 @@ const L = {
   gateDecision:["Proceed","Proceed with conditions","Hold","Reject"],
   approvalBody:["Unit Director","Investment Committee","Director General","Board"],
   closure:["Not commercially viable","Customer declined","Not strategically aligned","Regulatory / legal barrier","Superseded by another opportunity","Other"],
-  yn:["Y","N"]
+  yn:["Y","N"],
+  avoid:["Potential","Validated","Realised"]
 };
 const ACTIVE = L.stage.slice(0,6), PRE = L.stage.slice(0,4), CLOSED = ["Rejected","Withdrawn"];
 const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"var(--bad)","On Hold":"var(--hold)"};
@@ -380,15 +392,16 @@ const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"va
 const F = [
  ["id","Investment ID","text",null,1],["name","Opportunity","text",null,1],["sector","Sector","sel","sector",1],["model","Delivery Model","sel","model"],
  ["objective","Strategic Objective","sel","objective",1],["unit","Owning Unit","sel","unit"],["owner","Opportunity Owner","text",null,1],["customer","Customer / Partner","text",null,1],
- ["custType","Customer Type","sel","custType"],["stage","Stage","sel","stage",1],["status","Status","sel","status",1],["priority","Priority","sel","priority"],["confidence","Confidence","sel","confidence",1],
- ["capex","Investment/CAPEX Required (AED)","num"],["annualRev","Expected Annual Revenue (AED)","num"],["term","Term (Years)","num"],["contracted","Contracted Value (AED)","num"],
+ ["custType","Customer Type","sel","custType"],["stage","Stage","sel","stage",1],["status","Status","sel","status",1],["priority","Priority","sel","priority"],["confidence","Estimate Confidence","sel","confidence",1],
+ ["totalCapex","Total Project CAPEX (AED)","num"],["raktaCapex","RAKTA CAPEX Required (AED)","num"],["baselineCapex","Counterfactual RAKTA CAPEX (AED)","num"],["avoidStatus","CAPEX Avoidance Status","sel","avoid"],["baselineSource","CAPEX Baseline Source","text"],
+ ["annualRev","Expected Annual Revenue (AED)","num"],["term","Term (Years)","num"],["contracted","Contracted Value (AED)","num"],
  ["nextAction","Next Action","area",null,1],["actionOwner","Action Owner","text"],["due","Due Date","date",null,1],["issue","Key Issue / Dependency","area"],
  ["dgReq","DG Decision Required","sel","yn"],["dgDetail","DG Decision / Escalation Detail","area"],["gateDecision","Last Gate Decision","sel","gateDecision"],["gateDate","Gate Date","date"],
  ["approvalBody","Approval Body","sel","approvalBody"],["decisionRef","Decision Reference","text"],["closure","Closure Reason","sel","closure"],["lastUpdated","Last Updated","date",null,1],["note","Progress Note","area"]
 ];
 const FK = Object.fromEntries(F.map(f=>[f[0],f]));
 
-const SEED = [{"id":"INV-001","name":"RAK Academy Transportation Contract - Services","sector":"Technology","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Digital","owner":"Operations","customer":"RAK Academy","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"Medium","capex":0,"annualRev":120000,"term":5,"nextAction":"Review contract performance, margin and renewal/expansion opportunities","actionOwner":"Operations","issue":"Confirm current contract value, expiry and margin before commercial review","note":"Collaborating with RAK Knowledge regarding the opportunity; ongoing dialogue to evaluate alignment and next steps"},{"id":"INV-002","name":"Delivery and Order Services","sector":"Last-mile Delivery","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Investment","owner":"LICENSING & MONITORING","customer":"Market / Private Partner","custType":"Private","stage":"Operational","status":"On Track","priority":"P1","confidence":"Medium","capex":0,"annualRev":350000,"term":5,"nextAction":"Complete market model and PPP/B2B structure","actionOwner":"Investment Manager","issue":"Market volumes and partner commercial terms require validation","note":"Currently under active implementation; execution underway per schedule"},{"id":"INV-003","name":"RAKEZ Land Maintenance Workshop","sector":"Maintenance","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P2","confidence":"Low","capex":30000000,"annualRev":2700000,"term":15,"nextAction":"Confirm plot, develop cost estimate and preliminary workshop business case","issue":"Plot requirements, CAPEX and operating economics still require validation","note":"Pending final requirements from RAKTA and plot confirmation from RAKEZ for the project."},{"id":"INV-004","name":"Al Ghail Industrial Area / Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ / SPI","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":3000000,"annualRev":45000,"term":15,"nextAction":"Complete plot transfer/leveling pathway and develop commercial concept","issue":"Awaiting plot readiness and confirmation of development/commercial model","note":"Pending  plot confirmation from RAKEZ for the project."},{"id":"INV-005","name":"Sky Train – RAK Lagoon","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"Medium","capex":200000000,"annualRev":360000,"term":15,"nextAction":"Confirm project sponsor, feasibility scope and private-sector investment pathway","issue":"Large indicative CAPEX; feasibility, demand and funding model not yet validated"},{"id":"INV-006","name":"Al Dhait Station Commercial Opportunities","sector":"Transportation","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":7000000,"annualRev":1000000,"term":5,"nextAction":"Validate commercial uses, demand, CAPEX and delivery model for Al Dhait Station","issue":"Revenue estimate requires validation against final scope and customer demand","note":"Pending project completion."},{"id":"INV-007","name":"Staff & Employee Transportation Services","sector":"Staff Transport","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Government / Corporate Clients","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":65000,"annualRev":9750,"term":5,"nextAction":"Develop service proposition, pricing and target clients","actionOwner":"Investment Manager","issue":"Revenue depends on client pipeline, fleet capacity and service pricing","note":"Finalizing the comprehensive report for DG review."},{"id":"INV-008","name":"Driving Training Center / Driving School","sector":"Other","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Operations / SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Low","capex":14000000,"annualRev":4300000,"term":15,"nextAction":"Validate revenue, fees, CAPEX and operating model","actionOwner":"Investment Manager","issue":"Business model and financial assumptions remain under validation","note":"Report completed and submitted for DG review."},{"id":"INV-009","name":"AV Sandbox","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"RAKEZ / Industry","custType":"Private","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":5000000,"annualRev":500000,"term":15,"nextAction":"Secure land pathway and investor market sounding","actionOwner":"Investment Manager","issue":"Site selection, investor terms and commercial model remain open","note":"Pending investor proposal to evaluation."},{"id":"INV-010","name":"Payment Annexure Revenue Recovery","sector":"Other","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"AV","customer":"Contract Counterparty","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"High","capex":0,"annualRev":99330,"term":1,"nextAction":"Close recovery action and confirm receipt/accounting treatment","issue":"Track collection and closure evidence","note":"Done - one time payement"},{"id":"INV-011","name":"Al Marjan Strategic Land Development – ADNOC","sector":"Transportation","model":"Concession","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"ADNOC Distribution","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","capex":10000000,"annualRev":698000,"term":25,"nextAction":"Finalize commercial terms and contract annexures","actionOwner":"Investment Manager","issue":"NBO/commercial terms must convert into definitive agreement before implementation","note":"Contracting Phase"},{"id":"INV-012","name":"Al Nakheel Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","capex":18500000,"annualRev":120000,"term":25,"nextAction":"Complete PPP / VfM assessment and commercial case","actionOwner":"Investment Manager","issue":"Final structure depends on feasibility, partner appetite and approvals","note":"Pending design confirmation."},{"id":"INV-013","name":"Centre of Excellence for Autonomous Solutions","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":5000000,"annualRev":500000,"term":15,"nextAction":"Confirm strategic need, scope, funding model and partner interest","issue":"Concept requires clearer business case and private-sector funding rationale","note":"Pending investor proposal to evaluation."},{"id":"INV-014","name":"Digital Twin Simulation for AV Testing","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":3000000,"annualRev":300000,"term":15,"nextAction":"Confirm use case, scope, technical owner and private-sector delivery model","issue":"Use case, benefits and funding model not yet validated","note":"Pending investor proposal to evaluation."},{"id":"INV-015","name":"AV Fleet Management System","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","capex":3000000,"annualRev":300000,"term":15,"nextAction":"Define operating need, system scope, integration requirements and funding model","issue":"Requirements and commercial model not yet validated","note":"Pending investor proposal to evaluation."},{"id":"INV-016","name":"PoC for AV Delivery Solution","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":15,"nextAction":"Define PoC scope, delivery partner, KPIs and funding responsibilities","issue":"PoC scope, partner and commercial terms require validation","note":"Pending investor proposal to evaluation."},{"id":"INV-017","name":"Micromobility Hubs & Air-Conditioned Bus Shelters","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P2","confidence":"Low","capex":1400000,"annualRev":120000,"term":5,"nextAction":"Define hub/shelter scope, locations, revenue rights and PPP structure","issue":"Site scope, commercial rights and funding model require validation","note":"Pending NOC"},{"id":"INV-018","name":"New Hotel Transportation Contracts","sector":"Staff Transport","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Operations / SPI","custType":"Private","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"High","capex":2000000,"annualRev":200000,"term":3,"nextAction":"Build hotel pipeline, validate contract values and fleet capacity","issue":"Revenue depends on signed hotel demand, pricing and available fleet capacity","note":"Pipeline"},{"id":"INV-019","name":"IMG","sector":"Advertising","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"High","capex":0,"annualRev":1000000,"term":5,"note":"Business Opportunity currently under active review and discussion."},{"id":"INV-020","name":"Jet capsule","sector":"Marine Transport","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","custType":"Private","stage":"Assessment","status":"On Track","priority":"P2","confidence":"Medium","capex":2600000,"annualRev":99000,"term":5,"note":"Business model under review."},{"id":"INV-021","name":"Sponsorship Agreement – Commercial Evaluation and Revenue Positioning","sector":"Advertising","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Autonomous Solutions","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","capex":0,"annualRev":1000000,"term":5,"nextAction":"Review sponsorship scope, rights, deliverables and commercial obligations","actionOwner":"Investment Manager","due":"2026-07-31","note":"Business Opportunity currently under active review and discussion."},{"id":"INV-022","name":"35 -  Screens (7 Al marjan + 15 E11 + 13 in RAK overall)","sector":"Advertising","model":"Service Contract","objective":"OP1 – Innovation","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Medium","capex":0,"annualRev":1100000,"term":5,"note":"Business Opportunity currently under active review and discussion."},{"id":"INV-023","name":"Al Hamra Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion."},{"id":"INV-024","name":"Khuzam Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","capex":10000000,"annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion."}];
+const SEED = [{"id":"INV-001","name":"RAK Academy Transportation Contract - Services","sector":"Technology","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Digital","owner":"Operations","customer":"RAK Academy","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"Medium","annualRev":120000,"term":5,"nextAction":"Review contract performance, margin and renewal/expansion opportunities","actionOwner":"Operations","issue":"Confirm current contract value, expiry and margin before commercial review","note":"Collaborating with RAK Knowledge regarding the opportunity; ongoing dialogue to evaluate alignment and next steps","totalCapex":0},{"id":"INV-002","name":"Delivery and Order Services","sector":"Last-mile Delivery","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Investment","owner":"LICENSING & MONITORING","customer":"Market / Private Partner","custType":"Private","stage":"Operational","status":"On Track","priority":"P1","confidence":"Medium","annualRev":350000,"term":5,"nextAction":"Complete market model and PPP/B2B structure","actionOwner":"Investment Manager","issue":"Market volumes and partner commercial terms require validation","note":"Currently under active implementation; execution underway per schedule","totalCapex":0},{"id":"INV-003","name":"RAKEZ Land Maintenance Workshop","sector":"Maintenance","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P2","confidence":"Low","annualRev":2700000,"term":15,"nextAction":"Confirm plot, develop cost estimate and preliminary workshop business case","issue":"Plot requirements, CAPEX and operating economics still require validation","note":"Pending final requirements from RAKTA and plot confirmation from RAKEZ for the project.","totalCapex":30000000},{"id":"INV-004","name":"Al Ghail Industrial Area / Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"RAKEZ / SPI","custType":"Semi-Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","annualRev":45000,"term":15,"nextAction":"Complete plot transfer/leveling pathway and develop commercial concept","issue":"Awaiting plot readiness and confirmation of development/commercial model","note":"Pending  plot confirmation from RAKEZ for the project.","totalCapex":3000000},{"id":"INV-005","name":"Sky Train – RAK Lagoon","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"Medium","annualRev":360000,"term":15,"nextAction":"Confirm project sponsor, feasibility scope and private-sector investment pathway","issue":"Large indicative CAPEX; feasibility, demand and funding model not yet validated","totalCapex":200000000},{"id":"INV-006","name":"Al Dhait Station Commercial Opportunities","sector":"Transportation","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","annualRev":1000000,"term":5,"nextAction":"Validate commercial uses, demand, CAPEX and delivery model for Al Dhait Station","issue":"Revenue estimate requires validation against final scope and customer demand","note":"Pending project completion.","totalCapex":7000000},{"id":"INV-007","name":"Staff & Employee Transportation Services","sector":"Staff Transport","model":"Direct Service","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Government / Corporate Clients","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","annualRev":9750,"term":5,"nextAction":"Develop service proposition, pricing and target clients","actionOwner":"Investment Manager","issue":"Revenue depends on client pipeline, fleet capacity and service pricing","note":"Finalizing the comprehensive report for DG review.","totalCapex":65000},{"id":"INV-008","name":"Driving Training Center / Driving School","sector":"Other","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Operations / SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Low","annualRev":4300000,"term":15,"nextAction":"Validate revenue, fees, CAPEX and operating model","actionOwner":"Investment Manager","issue":"Business model and financial assumptions remain under validation","note":"Report completed and submitted for DG review.","totalCapex":14000000},{"id":"INV-009","name":"AV Sandbox","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"RAKEZ / Industry","custType":"Private","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","annualRev":500000,"term":15,"nextAction":"Secure land pathway and investor market sounding","actionOwner":"Investment Manager","issue":"Site selection, investor terms and commercial model remain open","note":"Pending investor proposal to evaluation.","totalCapex":5000000},{"id":"INV-010","name":"Payment Annexure Revenue Recovery","sector":"Other","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"AV","customer":"Contract Counterparty","custType":"Private","stage":"Operational","status":"On Track","priority":"P2","confidence":"High","annualRev":99330,"term":1,"nextAction":"Close recovery action and confirm receipt/accounting treatment","issue":"Track collection and closure evidence","note":"Done - one time payement","totalCapex":0},{"id":"INV-011","name":"Al Marjan Strategic Land Development – ADNOC","sector":"Transportation","model":"Concession","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"ADNOC Distribution","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","annualRev":698000,"term":25,"nextAction":"Finalize commercial terms and contract annexures","actionOwner":"Investment Manager","issue":"NBO/commercial terms must convert into definitive agreement before implementation","note":"Contracting Phase","totalCapex":10000000},{"id":"INV-012","name":"Al Nakheel Transit Hub","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Planning","customer":"SPI","custType":"Government","stage":"Business Case","status":"Attention","priority":"P1","confidence":"Medium","annualRev":120000,"term":25,"nextAction":"Complete PPP / VfM assessment and commercial case","actionOwner":"Investment Manager","issue":"Final structure depends on feasibility, partner appetite and approvals","note":"Pending design confirmation.","totalCapex":18500000},{"id":"INV-013","name":"Centre of Excellence for Autonomous Solutions","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","annualRev":500000,"term":15,"nextAction":"Confirm strategic need, scope, funding model and partner interest","issue":"Concept requires clearer business case and private-sector funding rationale","note":"Pending investor proposal to evaluation.","totalCapex":5000000},{"id":"INV-014","name":"Digital Twin Simulation for AV Testing","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","annualRev":300000,"term":15,"nextAction":"Confirm use case, scope, technical owner and private-sector delivery model","issue":"Use case, benefits and funding model not yet validated","note":"Pending investor proposal to evaluation.","totalCapex":3000000},{"id":"INV-015","name":"AV Fleet Management System","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P2","confidence":"Low","annualRev":300000,"term":15,"nextAction":"Define operating need, system scope, integration requirements and funding model","issue":"Requirements and commercial model not yet validated","note":"Pending investor proposal to evaluation.","totalCapex":3000000},{"id":"INV-016","name":"PoC for AV Delivery Solution","sector":"Technology","model":"PPP","objective":"OP1 – Innovation","unit":"AV","customer":"Autonomous Solutions","custType":"Private","stage":"Business Case","status":"Delayed","priority":"P1","confidence":"Low","annualRev":1000000,"term":15,"nextAction":"Define PoC scope, delivery partner, KPIs and funding responsibilities","issue":"PoC scope, partner and commercial terms require validation","note":"Pending investor proposal to evaluation.","totalCapex":10000000},{"id":"INV-017","name":"Micromobility Hubs & Air-Conditioned Bus Shelters","sector":"Transportation","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","customer":"Planning & Infrastructure","custType":"TBD","stage":"Opportunity","status":"Delayed","priority":"P2","confidence":"Low","annualRev":120000,"term":5,"nextAction":"Define hub/shelter scope, locations, revenue rights and PPP structure","issue":"Site scope, commercial rights and funding model require validation","note":"Pending NOC","totalCapex":1400000},{"id":"INV-018","name":"New Hotel Transportation Contracts","sector":"Staff Transport","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Operations","customer":"Operations / SPI","custType":"Private","stage":"Opportunity","status":"Delayed","priority":"P1","confidence":"High","annualRev":200000,"term":3,"nextAction":"Build hotel pipeline, validate contract values and fleet capacity","issue":"Revenue depends on signed hotel demand, pricing and available fleet capacity","note":"Pipeline","totalCapex":2000000},{"id":"INV-019","name":"IMG","sector":"Advertising","model":"Service Contract","objective":"FN1 – Financial Sustainability","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"High","annualRev":1000000,"term":5,"note":"Business Opportunity currently under active review and discussion.","totalCapex":0},{"id":"INV-020","name":"Jet capsule","sector":"Marine Transport","model":"PPP","objective":"DG4 – Modern Transport","unit":"Planning","custType":"Private","stage":"Assessment","status":"On Track","priority":"P2","confidence":"Medium","annualRev":99000,"term":5,"note":"Business model under review.","totalCapex":2600000},{"id":"INV-021","name":"Sponsorship Agreement – Commercial Evaluation and Revenue Positioning","sector":"Advertising","model":"Lease / Rights","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Autonomous Solutions","custType":"Private","stage":"Approved","status":"On Track","priority":"P1","confidence":"High","annualRev":1000000,"term":5,"nextAction":"Review sponsorship scope, rights, deliverables and commercial obligations","actionOwner":"Investment Manager","due":"2026-07-31","note":"Business Opportunity currently under active review and discussion.","totalCapex":0},{"id":"INV-022","name":"35 -  Screens (7 Al marjan + 15 E11 + 13 in RAK overall)","sector":"Advertising","model":"Service Contract","objective":"OP1 – Innovation","unit":"Investment","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Medium","annualRev":1100000,"term":5,"note":"Business Opportunity currently under active review and discussion.","totalCapex":0},{"id":"INV-023","name":"Al Hamra Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion.","totalCapex":10000000},{"id":"INV-024","name":"Khuzam Depot","sector":"Transportation","model":"PPP","objective":"FN1 – Financial Sustainability","unit":"Investment","customer":"Planning & Infrastructure","custType":"Private","stage":"Opportunity","status":"On Track","priority":"P1","confidence":"Low","annualRev":1000000,"term":25,"nextAction":"Engaged with Al Arabia regarding the opportunity; awaiting feedback and input to determine next steps.","note":"Business Opportunity currently under active review and discussion.","totalCapex":10000000}];
 const SEED_ASOF = "2026-10-06";
 
 /* ---------- state ---------- */
@@ -396,7 +409,7 @@ const store = {
   get(k,d){try{const v=localStorage.getItem("rakta-inv-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
   set(k,v){try{localStorage.setItem("rakta-inv-"+k,JSON.stringify(v))}catch(e){}}
 };
-let DATA = store.get("data",null) || clone(SEED);
+let DATA = migrate(store.get("data",null) || clone(SEED));
 let SNAPS = store.get("snaps",[]);
 let ASOF = store.get("asof",SEED_ASOF);
 const urlRole = new URLSearchParams(location.search).get("role");
@@ -405,6 +418,8 @@ const S = {view:"home",filters:{},tab:"All",q:"",timing:null,sort:{k:"id",d:1},p
 const PER = 10;
 
 function clone(x){return JSON.parse(JSON.stringify(x))}
+/* v1 stored a single "capex" field = total project CAPEX */
+function migrate(d){d.forEach(o=>{if("capex" in o){if(o.totalCapex==null)o.totalCapex=o.capex;delete o.capex}});return d}
 function save(){ASOF=isoToday();store.set("data",DATA);store.set("asof",ASOF);render()}
 function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 const TODAY = isoToday();
@@ -417,7 +432,11 @@ function derive(o){
   const p = L.prob[o.stage] ?? 0;
   const od = o.due ? daysBetween(o.due,TODAY) : null;
   const active = ACTIVE.includes(o.stage);
-  return {life, prob:p, weighted:life*p, overdue: od!=null&&od>0&&active ? od : 0, daysToDue: od==null?null:-od, active, flags:flags(o,od,active)};
+  const hasR = o.raktaCapex!=null&&o.raktaCapex!=="";
+  const external = hasR&&n(o.totalCapex)>0 ? Math.max(0,n(o.totalCapex)-n(o.raktaCapex)) : 0;
+  const avoided = n(o.baselineCapex)>0&&hasR ? Math.max(0,n(o.baselineCapex)-n(o.raktaCapex)) : 0;
+  const avoidStatus = n(o.baselineCapex)>0 ? (o.avoidStatus||"Potential") : null;
+  return {life, prob:p, weighted:life*p, external, avoided, avoidStatus, overdue: od!=null&&od>0&&active ? od : 0, daysToDue: od==null?null:-od, active, flags:flags(o,od,active)};
 }
 function flags(o,od,active){
   const f=[]; const miss=k=>o[k]==null||String(o[k]).trim()===""||String(o[k]).trim()==="TBD";
@@ -427,6 +446,15 @@ function flags(o,od,active){
   if(si>=2&&si<=5){ if(miss("annualRev")) f.push("Expected Annual Revenue required (Business Case+)"); if(miss("term")) f.push("Term required (Business Case+)") }
   if(si>=3&&si<=5){ if(miss("gateDate")) f.push("Gate Date required (Approved+)"); if(miss("approvalBody")) f.push("Approval Body required (Approved+)") }
   if(si===4||si===5){ if(miss("contracted")) f.push("Contracted Value required (Contracted / Operational)") }
+  if(si>=2&&si<=5&&n(o.totalCapex)>0&&miss("raktaCapex")) f.push("RAKTA CAPEX share required (Business Case+)");
+  if(n(o.raktaCapex)>n(o.totalCapex)&&n(o.totalCapex)>0) f.push("RAKTA CAPEX exceeds Total Project CAPEX");
+  if(n(o.baselineCapex)>0){
+    if(miss("baselineSource")) f.push("CAPEX avoidance claimed without a baseline source");
+    if(miss("raktaCapex")) f.push("CAPEX avoidance needs RAKTA CAPEX under the proposed model");
+    const as=o.avoidStatus||"Potential";
+    if(si>=3&&si<=5&&as==="Potential") f.push("CAPEX avoidance should be validated by Finance (Approved+)");
+    if(as==="Realised"&&!(si===4||si===5)) f.push("CAPEX avoidance can only be Realised once Contracted / Operational");
+  } else if(o.avoidStatus) f.push("CAPEX Avoidance Status set without a counterfactual CAPEX");
   if(CLOSED.includes(o.stage)&&miss("closure")) f.push("Closure Reason required (Rejected / Withdrawn)");
   if(o.dgReq==="Y"&&miss("dgDetail")) f.push("DG decision detail required");
   if(active&&od!=null&&o.status!=="On Hold"){
@@ -450,7 +478,18 @@ function kpis(rs){
     weighted:sum(pre,r=>r._.weighted),
     contracted:sum(con,r=>n(r.contracted)),
     contractedN:con.length,
-    capex:sum(a,r=>n(r.capex)),
+    totalCapex:sum(a,r=>n(r.totalCapex)),
+    raktaCapex:sum(a,r=>n(r.raktaCapex)),
+    unsplit:sum(a.filter(r=>r.raktaCapex==null||r.raktaCapex===""),r=>n(r.totalCapex)),
+    external:sum(con,r=>r._.external),
+    externalPipe:sum(pre,r=>r._.external),
+    avoided:sum(a.filter(r=>["Validated","Realised"].includes(r._.avoidStatus)),r=>r._.avoided),
+    avoidedBy:Object.fromEntries(L.avoid.map(x=>[x,sum(a.filter(r=>r._.avoidStatus===x),r=>r._.avoided)])),
+    avoidedPot:sum(a.filter(r=>r._.avoidStatus==="Potential"),r=>r._.avoided),
+    opRev:sum(a.filter(r=>r.stage==="Operational"),r=>n(r.annualRev)),
+    opN:a.filter(r=>r.stage==="Operational").length,
+    delayed:a.filter(r=>r.status==="Delayed").length,
+    attn:a.filter(r=>r.status==="Attention").length,
     overdue:a.filter(r=>r._.overdue>0).length,
     dg:a.filter(r=>r.dgReq==="Y").length,
     align:a.length?aligned/a.length:0,
@@ -521,16 +560,14 @@ function delta(cur,key,fmt,goodUp=true){
 }
 function renderKpis(k){
   const c=(t,ic,v,d,cls="",tip="")=>`<div class="card kpi ${cls}" ${tip?`data-tip="${esc(tip)}"`:""}><div class="t">${t}<span class="ic">${ic}</span></div><div class="v">${v}</div>${d}</div>`;
-  const cnt=x=>String(Math.round(x)), pc=x=>Math.round(x*100)+" pts";
+  const cnt=x=>String(Math.round(x));
   document.getElementById("kpis").innerHTML=[
     c("Active Opportunities",IC.layers,k.active,delta(k.active,"active",cnt),"","All stages except Rejected / Withdrawn"),
-    c("Open Pipeline",IC.coins,`<small>AED</small>${aed(k.open)}`,delta(k.open,"open",aed),"","Lifetime value (annual revenue × term) of pre-contract stages: Opportunity → Approved"),
-    c("Weighted Pipeline",IC.target,`<small>AED</small>${aed(k.weighted)}`,`<div class="d">${k.open?Math.round(k.weighted/k.open*100):0}% of open pipeline</div>`,"","Open pipeline × stage probability"),
-    c("Contracted Value",IC.doc,`<small>AED</small>${aed(k.contracted)}`,`<div class="d">${k.contractedN} contracted / operational · AED ${aed(k.annual)} annual revenue</div>`,"","Contracted Value field for Contracted + Operational stages"),
-    c("Investment Required",IC.build,`<small>AED</small>${aed(k.capex)}`,delta(k.capex,"capex",aed,false),"","RAKTA's own CAPEX + one-off set-up across active opportunities"),
-    c("Overdue Actions",IC.clock,k.overdue,delta(k.overdue,"overdue",cnt,false),k.overdue?"alert":"","Active opportunities whose next action is past its due date"),
-    c("DG Decisions Pending",IC.gavel,k.dg,delta(k.dg,"dg",cnt,false),"","Active opportunities flagged DG Decision Required = Y"),
-    c("Strategic Alignment",IC.leaf,Math.round(k.align*100)+"%",delta(k.align,"align",pc),"","Share of active opportunities linked to one of the 14 RAKTA strategic objectives")
+    c("Pipeline Revenue",IC.coins,`<small>AED</small>${aed(k.open)}`,`<div class="d">AED ${aed(k.weighted)} probability-weighted</div>`+delta(k.open,"open",aed),"","Indicative contract revenue (annual revenue × term) for pre-contract stages, Opportunity → Approved. The weighted figure applies planning stage weights (10/25/50/75%), which are assumptions, not measured conversion rates."),
+    c("Contracted Value",IC.doc,`<small>AED</small>${aed(k.contracted)}`,`<div class="d">${k.contractedN} contracted / operational</div>`+delta(k.contracted,"contracted",aed),"","Contracted Value entered for Contracted + Operational opportunities"),
+    c("Operational Annual Revenue",IC.target,`<small>AED</small>${aed(k.opRev)}`,`<div class="d">${k.opN} live service${k.opN===1?"":"s"}</div>`+delta(k.opRev,"opRev",aed),"","Expected annual revenue of opportunities in the Operational stage"),
+    c("External Capital Mobilised",IC.build,`<small>AED</small>${aed(k.external)}`,`<div class="d">+ AED ${aed(k.externalPipe)} in pipeline</div>`+delta(k.external,"external",aed),"","Partner / investor share of project CAPEX (Total Project CAPEX − RAKTA CAPEX). The headline counts Contracted + Operational only; the pipeline figure is pre-contract."),
+    c("CAPEX Avoided",IC.leaf,`<small>AED</small>${aed(k.avoided)}`,`<div class="d">+ AED ${aed(k.avoidedPot)} potential, not yet validated</div>`+delta(k.avoided,"avoided",aed),"","Counterfactual RAKTA CAPEX − RAKTA CAPEX under the chosen model. Only entered where RAKTA would otherwise have funded the asset. The headline counts Validated + Realised only.")
   ].join("");
 }
 function renderFunnel(rs){
@@ -538,7 +575,7 @@ function renderFunnel(rs){
   const st=ACTIVE.map(s=>{const g=a.filter(r=>r.stage===s);return {s,c:g.length,v:sum(g,r=>r._.life),w:sum(g,r=>r._.weighted)}});
   const max=Math.max(1,...st.map(x=>x.c));
   document.getElementById("funnel").innerHTML=st.map(x=>`
-    <div class="frow" data-stage="${x.s}" data-tip="<b>${x.s}</b><br>${x.c} opportunities<br>Lifetime AED ${aed(x.v)}<br>Weighted AED ${aed(x.w)} (${Math.round(L.prob[x.s]*100)}%)">
+    <div class="frow" data-stage="${x.s}" data-tip="<b>${x.s}</b><br>${x.c} opportunities<br>Contract revenue AED ${aed(x.v)}<br>Weighted AED ${aed(x.w)} (${Math.round(L.prob[x.s]*100)}% planning weight)">
       <div class="st">${x.s}</div>
       <div><div class="track"><div class="bar ${x.c?"":"z"}" style="width:${Math.max(12,x.c/max*100)}%">${x.c}</div></div><div class="fval">AED ${aed(x.v)}</div></div>
     </div>`).join("");
@@ -584,6 +621,25 @@ function renderNA(rs){
   const it=(k,cls,lab)=>`<button class="${cls}" data-timing="${k}"><b>${b[k].length}</b><span>${lab}</span>${IC.chev}</button>`;
   document.getElementById("na").innerHTML=it("overdue","od","Overdue")+it("soon","","Due in next 30 days")+it("later","","Due after 30 days")+it("none","nd","No due date set");
 }
+function renderStrip(k){
+  const t=(n,lab,cls,act)=>`<button class="${n?cls:""}" ${act}><b>${n}</b><span>${lab}</span></button>`;
+  document.getElementById("strip").innerHTML=
+    t(k.dg,"DG decisions pending","hot",'data-goto="decisions"')+t(k.overdue,"Overdue actions","hot",'data-timing="overdue"')+
+    t(k.delayed,"Delayed","hot",'data-status="Delayed"')+t(k.attn,"Needs attention","wn",'data-status="Attention"');
+}
+function renderCapital(k){
+  const T=k.totalCapex||1, split=k.raktaCapex+k.external+k.externalPipe;
+  const seg=(v,c,lab)=>v>0?`<div style="flex:${v/T};background:${c}" data-tip="${lab}: AED ${aed(v,false)}"></div>`:"";
+  const ext=k.external+k.externalPipe;
+  document.getElementById("capital").innerHTML=`
+    <div class="caprow"><span>Total project CAPEX</span><b>AED ${aed(k.totalCapex)}</b></div>
+    <div class="stack" role="img" aria-label="Capital split">${seg(k.raktaCapex,"var(--navy)","RAKTA")}${seg(ext,"var(--accent)","External")}${seg(k.unsplit,"var(--line)","Not yet split")}</div>
+    <div class="caprow"><span><i style="background:var(--navy)"></i>RAKTA CAPEX required</span><b>${aed(k.raktaCapex)}</b></div>
+    <div class="caprow"><span><i style="background:var(--accent)"></i>External capital</span><b>${aed(ext)}</b></div>
+    <div class="caprow"><span><i style="background:var(--line)"></i>Not yet split (RAKTA share unknown)</span><b>${aed(k.unsplit)}</b></div>
+    <div class="sec" style="margin-top:12px">CAPEX avoided by status</div>
+    ${L.avoid.map(x=>`<div class="caprow"><span>${x}${x==="Potential"?' <span class="note">(not reported as avoided)</span>':""}</span><b>${aed(k.avoidedBy[x])}</b></div>`).join("")}`;
+}
 function renderRing(k){
   const p=k.align, C=2*Math.PI*34;
   document.getElementById("ring").innerHTML=`<svg width="92" height="92" viewBox="0 0 92 92"><circle cx="46" cy="46" r="34" fill="none" stroke="var(--line)" stroke-width="9"/>
@@ -609,8 +665,8 @@ const C = {
   due:{h:"Due",f:dueHtml},
   od:{h:"Days Overdue",num:1,f:r=>r._.overdue?`<span class="late">${r._.overdue}</span>`:"—"},
   issue:{h:"Key Issue / Dependency",wrap:1,f:r=>esc(r.issue||"—")},
-  life:{h:"Lifetime Value",num:1,f:r=>aed(r._.life,false)},
-  capex:{h:"Investment Req.",num:1,f:r=>aed(r.capex,false)},
+  life:{h:"Contract Revenue",num:1,f:r=>aed(r._.life,false)},
+  capex:{h:"RAKTA CAPEX",num:1,f:r=>r.raktaCapex!=null?aed(r.raktaCapex,false):"—"},
   owner:{h:"Opportunity Owner",f:r=>esc(r.owner||"—")},
   dg:{h:"Decision / Escalation Needed",wrap:1,f:r=>esc(r.dgDetail||"—")}
 };
@@ -623,7 +679,7 @@ const TCOLS=[
   ["customer","Customer / Partner",r=>esc(r.customer||"")],
   ["stage","Stage",r=>`<span class="pill">${esc(r.stage)}</span>`],
   ["status","Status",r=>statusHtml(r.status)],
-  ["_life","Lifetime Value (AED)",r=>aed(r._.life,false),"num"],
+  ["_life","Contract Revenue (AED)",r=>aed(r._.life,false),"num"],
   ["_weighted","Weighted (AED)",r=>aed(r._.weighted,false),"num"],
   ["confidence","Confidence",r=>confHtml(r.confidence)],
   ["nextAction","Next Action",r=>esc(r.nextAction||""),"wrapc"],
@@ -671,7 +727,7 @@ function renderDecisions(rs){
   document.getElementById("weighted").innerHTML=`<div class="hbars">${PRE.map(s=>{const g=pre.filter(r=>r.stage===s),v=sum(g,r=>r._.life),w=sum(g,r=>r._.weighted);
     return `<div class="hb" data-tip="<b>${s}</b> (${Math.round(L.prob[s]*100)}%)<br>Open AED ${aed(v,false)}<br>Weighted AED ${aed(w,false)}"><div class="n">${s}</div>
       <div class="tr" style="background:var(--accent-soft);width:${v/max*100}%;border-radius:0 4px 4px 0"><div class="f" style="width:${v?w/v*100:0}%"></div></div><div class="val">${aed(w)}</div></div>`}).join("")}</div>
-      <div class="legend" style="flex-direction:row;gap:16px;margin-top:12px"><div><i style="background:var(--accent);border-radius:2px"></i>Weighted</div><div><i style="background:var(--accent-soft);border-radius:2px;outline:1px solid var(--line)"></i>Open (unweighted)</div></div>`;
+      <div class="legend" style="flex-direction:row;gap:16px;margin-top:12px"><div><i style="background:var(--accent);border-radius:2px"></i>Weighted</div><div><i style="background:var(--accent-soft);border-radius:2px;outline:1px solid var(--line)"></i>Indicative (unweighted)</div></div>`;
   const cl=rs.filter(r=>CLOSED.includes(r.stage));
   document.getElementById("closed").innerHTML=`<div class="legend" style="margin-bottom:10px">${CLOSED.map(s=>`<div><i style="background:var(--hold)"></i>${s}<b>${cl.filter(r=>r.stage===s).length}</b></div>`).join("")}</div>`+
     (cl.length?`<div class="tscroll">${miniTable(cl,[C.opp,C.stage,{h:"Closure Reason",f:r=>esc(r.closure||"—")}])}</div>`:"");
@@ -687,12 +743,12 @@ function renderQuality(rs){
   document.getElementById("dqSum").textContent=`${f.length} of ${rs.length} records · ${total} flags`;
   document.getElementById("dqTbl").innerHTML=miniTable(f,[C.opp,C.stage,C.status,{h:"Owner",f:r=>esc(r.owner||"—")},{h:"Flags",wrap:1,f:r=>`<ul style="margin:0;padding-left:16px">${r._.flags.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}]);
 }
-const SNAPK=[["active","Active"],["open","Open Pipeline"],["weighted","Weighted"],["contracted","Contracted"],["capex","Investment Req."],["overdue","Overdue"],["dg","DG Decisions"],["align","Alignment"]];
+const SNAPK=[["active","Active"],["open","Pipeline Revenue"],["contracted","Contracted"],["opRev","Op. Revenue"],["external","External Capital"],["avoided","CAPEX Avoided"],["overdue","Overdue"],["dg","DG Decisions"]];
 function renderSnaps(){
   const el=document.getElementById("snapTbl");
   if(!SNAPS.length){el.innerHTML=`<div class="empty">No snapshots yet. Record one at each month-end review.</div>`;return}
   el.innerHTML=`<table><thead><tr><th>Date</th>${SNAPK.map(s=>`<th class="num">${s[1]}</th>`).join("")}</tr></thead><tbody>${
-    SNAPS.slice().reverse().map(s=>`<tr style="cursor:default"><td>${fdate(s.date)}</td>${SNAPK.map(([k])=>`<td class="num">${k==="align"?Math.round(s[k]*100)+"%":["open","weighted","contracted","capex"].includes(k)?aed(s[k]):s[k]}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+    SNAPS.slice().reverse().map(s=>`<tr style="cursor:default"><td>${fdate(s.date)}</td>${SNAPK.map(([k])=>`<td class="num">${["open","contracted","opRev","external","avoided"].includes(k)?(s[k]==null?"—":aed(s[k])):s[k]??"—"}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function render(){
@@ -700,7 +756,7 @@ function render(){
   const rs=filtered(), k=kpis(rs);
   renderKpis(k); renderFunnel(rs);
   hbars("sectors",groupBy(rs.filter(r=>r._.active),"sector").filter(x=>x.v>0||x.c>0));
-  renderDonut(rs); renderNA(rs); renderRing(k); renderAttnMini(rs);
+  renderDonut(rs); renderNA(rs); renderRing(k); renderStrip(k); renderCapital(k); renderAttnMini(rs);
   hbars("objectives",groupBy(rs.filter(r=>r._.active),"objective"),"gold");
   hbars("models",groupBy(rs.filter(r=>r._.active),"model"));
   renderTable(rs); renderDecisions(rs); renderQuality(rs); renderSnaps();
@@ -718,8 +774,9 @@ function showDetail(id){
   const g=k=>esc(o[k]??"");
   document.getElementById("dBody").innerHTML=
     (d.flags.length?`<div class="flags"><b>${d.flags.length} data quality flag${d.flags.length>1?"s":""}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:"")+
-    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Owning Unit",g("unit")],["Opportunity Owner",g("owner")],["Customer / Partner",g("customer")+(o.custType?` <span class="note">(${g("custType")})</span>`:"")]])+
-    `<div class="sec">Financials (AED)</div>`+kv([["Investment / CAPEX",o.capex!=null?aed(o.capex,false):""],["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?o.term+" years":""],["Lifetime Value",aed(d.life,false)],["Stage Probability",Math.round(d.prob*100)+"%"],["Weighted Value",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
+    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Estimate Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Owning Unit",g("unit")],["Opportunity Owner",g("owner")],["Customer / Partner",g("customer")+(o.custType?` <span class="note">(${g("custType")})</span>`:"")]])+
+    `<div class="sec">Financials (AED)</div>`+kv([["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?o.term+" years":""],["Indicative Contract Revenue",aed(d.life,false)],["Stage Weight (planning)",Math.round(d.prob*100)+"%"],["Weighted Pipeline Revenue",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
+    `<div class="sec">Capital &amp; CAPEX avoidance (AED)</div>`+kv([["Total Project CAPEX",o.totalCapex!=null?aed(o.totalCapex,false):""],["RAKTA CAPEX Required",o.raktaCapex!=null?aed(o.raktaCapex,false):""],["External Capital",d.external?aed(d.external,false):""],["Counterfactual RAKTA CAPEX",o.baselineCapex!=null?aed(o.baselineCapex,false):"N/A — no avoidance claimed"],["CAPEX Avoided",d.avoidStatus?aed(d.avoided,false)+` <span class="pill">${esc(d.avoidStatus)}</span>`:""],["Baseline Source",g("baselineSource")]])+
     `<div class="sec">Next Action</div>`+kv([["Next Action",g("nextAction")],["Action Owner",g("actionOwner")],["Due Date",o.due?dueHtml(Object.assign({},o,{_:d}))+(d.overdue?` <span class="late">(${d.overdue} days overdue)</span>`:""):""],["Key Issue / Dependency",g("issue")],["Progress Note",g("note")],["Last Updated",fdate(o.lastUpdated)]])+
     `<div class="sec">Governance</div>`+kv([["DG Decision Required",g("dgReq")],["DG Decision / Escalation",g("dgDetail")],["Last Gate Decision",g("gateDecision")],["Gate Date",fdate(o.gateDate)],["Approval Body",g("approvalBody")],["Decision Reference",g("decisionRef")],["Closure Reason",g("closure")]]);
   document.getElementById("dFoot").innerHTML=ROLE==="im"?`<button class="btn danger" data-del="${esc(o.id)}">Delete</button><span style="flex:1"></span><button class="btn pri" data-edit="${esc(o.id)}">Edit</button>`:`<span class="note">View only — the Investment Manager maintains this record.</span>`;
@@ -743,15 +800,23 @@ function showForm(id){
   document.getElementById("dBody").innerHTML=`<form class="form" id="oppForm" autocomplete="off">
     ${grp("Identity",["id","name","sector","model","objective","unit","owner","customer","custType"])}
     ${grp("Stage & health",["stage","status","priority","confidence"])}
-    ${grp("Financials (AED)",["capex","annualRev","term","contracted"])}
-    <label>Lifetime Value (calc)<input class="calc" id="cLife" readonly></label><label>Weighted Value (calc)<input class="calc" id="cW" readonly></label>
+    <p class="hint">Estimate Confidence = quality of the commercial / financial evidence behind the numbers (High: customer or contract evidence · Medium: reasonable assumptions · Low: preliminary estimate). It is not the probability of closing.</p>
+    ${grp("Revenue (AED)",["annualRev","term","contracted"])}
+    <label>Indicative Contract Revenue (calc)<input class="calc" id="cLife" readonly></label><label>Weighted Pipeline Revenue (calc)<input class="calc" id="cW" readonly></label>
+    ${grp("Capital (AED)",["totalCapex","raktaCapex"])}
+    <label>External Capital (calc)<input class="calc" id="cExt" readonly></label><span></span>
+    <h4>CAPEX avoidance — optional</h4>
+    <p class="hint">Fill this in only if RAKTA would otherwise have had to fund the asset itself, for example because it is in the approved capital plan. Leave it blank for normal service contracts.</p>
+    ${["baselineCapex","avoidStatus","baselineSource"].map(k=>inputFor(FK[k],o[k])).join("")}
+    <label>CAPEX Avoided (calc)<input class="calc" id="cAv" readonly></label>
     ${grp("Next action",["nextAction","actionOwner","due","issue","note","lastUpdated"])}
     ${grp("Governance",["dgReq","dgDetail","gateDecision","gateDate","approvalBody","decisionRef","closure"])}
     <div class="full flags" id="formFlags" hidden></div>
   </form>`;
   document.getElementById("dFoot").innerHTML=`<button class="btn" id="cancelForm">Cancel</button><button class="btn pri" id="saveForm">${isNew?"Add opportunity":"Save changes"}</button>`;
   const form=document.getElementById("oppForm");
-  const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=aed(d.weighted,false)+` (${Math.round(d.prob*100)}%)`;
+  const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=aed(d.weighted,false)+` (${Math.round(d.prob*100)}% planning weight)`;
+    document.getElementById("cExt").value=x.raktaCapex!=null?aed(d.external,false):"Enter RAKTA CAPEX";document.getElementById("cAv").value=d.avoidStatus?aed(d.avoided,false):"N/A";
     const ff=document.getElementById("formFlags");ff.hidden=!d.flags.length;ff.innerHTML=`<b>Will be flagged:</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`};
   form.addEventListener("input",upd); upd();
   document.getElementById("cancelForm").onclick=()=>isNew?closeDrawer():showDetail(id);
@@ -771,7 +836,7 @@ function readForm(form){
 }
 
 /* ---------- import / export ---------- */
-const HDR={}; F.forEach(f=>{HDR[norm(f[1])]=f[0]}); HDR[norm("Investment Required (AED)")]="capex"; HDR[norm("ID")]="id"; HDR[norm("Progress Note")]="note"; HDR[norm("Notes")]="note";
+const HDR={}; F.forEach(f=>{HDR[norm(f[1])]=f[0]}); HDR[norm("Investment Required (AED)")]="totalCapex"; HDR[norm("Investment/CAPEX Required (AED)")]="totalCapex"; HDR[norm("Confidence")]="confidence"; HDR[norm("ID")]="id"; HDR[norm("Progress Note")]="note"; HDR[norm("Notes")]="note";
 function norm(s){return String(s||"").replace(/\*/g,"").replace(/\s+/g," ").trim().toLowerCase()}
 function toIso(v){
   if(v==null||v==="") return null;
@@ -823,8 +888,8 @@ async function importFile(file){
   }catch(e){msg.innerHTML=`<b style="color:var(--crit)">Import failed:</b> ${esc(e.message)}`}
 }
 function exportRows(list,fmt){
-  const hdr=[...F.map(f=>f[1]),"Lifetime Value (AED)","Stage Probability","Weighted Value (AED)","Days Overdue","Data Quality Flag"];
-  const data=list.map(r=>[...F.map(f=>r[f[0]]??""),r._.life,r._.prob,r._.weighted,r._.overdue||"",r._.flags.join("; ")]);
+  const hdr=[...F.map(f=>f[1]),"Indicative Contract Revenue (AED)","Stage Weight (planning)","Weighted Pipeline Revenue (AED)","External Capital (AED)","CAPEX Avoided (AED)","Days Overdue","Data Quality Flag"];
+  const data=list.map(r=>[...F.map(f=>r[f[0]]??""),r._.life,r._.prob,r._.weighted,r._.external||"",r._.avoidStatus?r._.avoided:"",r._.overdue||"",r._.flags.join("; ")]);
   const stamp=TODAY;
   if(fmt==="xlsx"&&window.XLSX){
     const ws=XLSX.utils.aoa_to_sheet([hdr,...data]); ws["!cols"]=hdr.map(h=>({wch:Math.min(40,Math.max(10,h.length+2))}));
@@ -836,11 +901,11 @@ function exportRows(list,fmt){
 function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
 function template(){
   const hdr=F.filter(f=>f[0]!=="note").map(f=>f[1]+(f[4]?" *":"")).concat(["Progress Note"]);
-  const ex=["INV-0XX","Example opportunity","Parking","PPP","FN1 – Financial Sustainability","Investment","Name of owner","Customer name","Government","Opportunity","On Track","P2","Low","","","","","Describe the next step","Investment Manager",TODAY,"","N","","","","","","",TODAY,"Latest progress"];
+  const ex=["INV-0XX","Example opportunity","Parking","PPP","FN1 – Financial Sustainability","Investment","Name of owner","Customer name","Government","Opportunity","On Track","P2","Low","","","","","","","","","Describe the next step","Investment Manager",TODAY,"","N","","","","","","",TODAY,"Latest progress"];
   if(window.XLSX){
     const ws=XLSX.utils.aoa_to_sheet([hdr,ex]); ws["!cols"]=hdr.map(()=>({wch:22}));
-    const lists=XLSX.utils.aoa_to_sheet([["Sector","Stage","Status","Confidence","Priority","Customer Type","Delivery Model","Strategic Objective","Owning Unit","Approval Body","Closure Reason"],
-      ...Array.from({length:16},(_,i)=>[L.sector,L.stage,L.status,L.confidence,L.priority,L.custType,L.model,L.objective,L.unit,L.approvalBody,L.closure].map(l=>l[i]||""))]);
+    const lists=XLSX.utils.aoa_to_sheet([["Sector","Stage","Status","Confidence","Priority","Customer Type","Delivery Model","Strategic Objective","Owning Unit","Approval Body","Closure Reason","CAPEX Avoidance Status"],
+      ...Array.from({length:16},(_,i)=>[L.sector,L.stage,L.status,L.confidence,L.priority,L.custType,L.model,L.objective,L.unit,L.approvalBody,L.closure,L.avoid].map(l=>l[i]||""))]);
     const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Investment Plan"); XLSX.utils.book_append_sheet(wb,lists,"Lists"); XLSX.writeFile(wb,"RAKTA_Investment_Plan_Upload_Template.xlsx");
   } else download(new Blob(["﻿"+[hdr,ex].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n")],{type:"text/csv"}),"RAKTA_Investment_Plan_Upload_Template.csv");
 }
