@@ -26,6 +26,9 @@ The role selector controls what the screen shows. It is **not** access control.
   or drill down.
 - **Opportunities**: the full register, with stage tabs, search, sortable columns,
   pagination and Excel export. Click a row to see its full record and data quality flags.
+  The Investment Manager can **Duplicate** a record from its panel. This opens the form pre-filled with a new ID and the
+  name marked "(copy)". Stage Entry Date and Last Updated are reset to today, and gate decisions, decision reference,
+  DG decision detail and closure reason are cleared. Nothing is saved until *Add opportunity* is pressed.
 - **Financial Outlook**: when the money is expected to arrive (see below).
 - **Pipeline & Actions**: Time in Stage ageing table, decisions required from the DG, the management attention list
   (sorted earliest due first), weighted vs open pipeline, and closed opportunities.
