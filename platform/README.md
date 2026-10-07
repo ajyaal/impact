@@ -47,10 +47,14 @@ This page answers *when* value is expected, not just how much. It relies on thre
 | **Expected CAPEX Date** | the year RAKTA's CAPEX is spent (needed when RAKTA CAPEX is entered) |
 
 - **Horizon cards** are worked out from the revenue start date, so nobody picks a horizon by hand: *Earning now* (already started),
-  *Short* (0–12 months), *Medium* (1–3 years), *Long* (3+ years). Each card shows the annual run-rate, the secured part,
+  *Short* (0–12 months), *Medium* (1–2 years), *Long* (2+ years). Each card shows the annual run-rate, the secured part,
   the probability-weighted figure and the RAKTA CAPEX. Click a card to filter the Opportunity Timeline to that horizon's
   opportunities (with their partner logos); click it again, or the ✕ on the chip, to clear. The rows of the Home
   *Revenue Realisation* panel open the same filtered view.
+- **Everything on the page is clickable to drill down.** Click a horizon card, a bar or one of its slices, a year label,
+  a legend item, the *later* or *Not scheduled* box, the visibility bar, or any figure in the two tables. The
+  **Opportunity Timeline** then lists exactly the opportunities behind it, with a chip naming the selection (for example
+  "Revenue in 2028 · Approved"). The selected figure is outlined. Click it again, or the ✕ on the chip, to clear.
 - **Expected Revenue Realisation** is a stacked chart per calendar year (this year plus the next four). The stacks run from
   Secured (contracted / operational) through Approved and Business Case to the early pipeline. The less certain layers are
   lighter and hatched. A toggle switches between unweighted and probability-weighted figures. Revenue after the fifth year
