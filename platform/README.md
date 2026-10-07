@@ -72,6 +72,8 @@ and operating contribution, can come later.
 
 ## Development pipeline health
 
+The funnel is drawn as a true funnel: one tapering shape where each layer's **thickness is proportional to the number of opportunities** in that stage, and each stage has its own colour (Opportunity blue, Assessment teal, Business Case purple, Approved magenta, Contracted green). Empty stages keep a thin, faded layer so they stay visible. Each layer shows its count and contract revenue, and the stage-mix and time-in-stage indicators sit beside it. Clicking a layer opens that stage in the register.
+
 The funnel shows only the **development pipeline** (Opportunity → Contracted). **Operational** sits in a separate
 *Operating portfolio* strip. Contracted is a short, passing stage, and Operational keeps accumulating, so putting
 them in one funnel made "0 Contracted → 3 Operational" look like an impossible jump.
