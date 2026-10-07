@@ -26,11 +26,37 @@ The role selector controls what the screen shows. It is **not** access control.
   or drill down.
 - **Opportunities**: the full register, with stage tabs, search, sortable columns,
   pagination and Excel export. Click a row to see its full record and data quality flags.
+- **Financial Outlook**: when the money is expected to arrive (see below).
 - **Pipeline & Actions**: Time in Stage ageing table, decisions required from the DG, the management attention list
   (sorted earliest due first), weighted vs open pipeline, and closed opportunities.
 - **Data Quality**: every rule from the workbook's *Definitions* sheet, checked for each record.
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
+
+## Financial Outlook
+
+This page answers *when* value is expected, not just how much. It relies on three optional dates on each opportunity:
+
+| Field | Used for |
+|---|---|
+| **Expected Contract Date** | when the opportunity should become committed (needed from Approved) |
+| **Expected Revenue Start Date** | when money starts to be earned. It sets the horizon and the year-by-year revenue (needed from Business Case onwards) |
+| **Expected CAPEX Date** | the year RAKTA's CAPEX is spent (needed when RAKTA CAPEX is entered) |
+
+- **Horizon cards** are worked out from the revenue start date, so nobody picks a horizon by hand: *Earning now* (already started),
+  *Short* (0–12 months), *Medium* (1–3 years), *Long* (3+ years). Each card shows the annual run-rate, the secured part,
+  the probability-weighted figure and the RAKTA CAPEX.
+- **Expected Revenue Realisation** is a stacked chart per calendar year (this year plus the next four). The stacks run from
+  Secured (contracted / operational) through Approved and Business Case to the early pipeline. The less certain layers are
+  lighter and hatched. A toggle switches between unweighted and probability-weighted figures. Revenue after the fifth year
+  and opportunities with no start date are shown as separate totals beside the chart, so they don't squash the yearly bars.
+- **Revenue Visibility** shows how much of the next 12 months' expected revenue is secured, approved or pipeline-dependent.
+- **When We Spend vs When We Earn** puts RAKTA CAPEX by year next to revenue by year. This is revenue *before*
+  operating costs. Net cash contribution needs operating-cost data and is planned for phase 2.
+- An **Opportunity Timeline** table and a **Revenue Realisation** panel on Home (with a link to this page) complete it.
+
+Version 1 assumes **flat** annual revenue from the start date over the term. Ramp-up, one-off and custom revenue
+profiles, and operating contribution, can be added later without changing the page.
 
 ## Development pipeline health
 
