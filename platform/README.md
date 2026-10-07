@@ -32,6 +32,23 @@ The role selector controls what the screen shows. It is **not** access control.
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
 
+## Language (English / العربية)
+
+The **ع / EN** button in the header switches the whole interface between English and Arabic, and the
+choice is remembered. In Arabic the layout flips right-to-left: the sidebar moves to the right, the
+drawer slides in from the left, and bars, borders and arrows mirror. A link can open straight in Arabic
+with `?lang=ar`, and it combines with the role parameter, for example `?role=dg&lang=ar`.
+
+- Interface text and list values (stages, statuses, sectors, delivery models, strategic objectives,
+  units, gate decisions and so on) are translated. Data typed by users (opportunity names, next
+  actions, partner names, owners) stays as entered.
+- Amounts read as `243 مليون درهم`. Digits stay Western (0–9), as is usual in UAE government documents.
+- Excel and CSV export and the upload template keep English column headers, so files still re-import
+  whatever language they were downloaded in.
+- The Arabic text sits in one dictionary (`AR.ui` for interface text, `AR.val` for list values) near the
+  top of the script, so wording can be changed in one place. The authority's Arabic name and the
+  strategic objective titles should be checked against RAKTA's approved Arabic terminology.
+
 ## Partners and owners
 
 - **Partner**: the company, client or investor RAKTA would work with. This is the workbook's

@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAKTA Investment Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -44,7 +46,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .top{display:flex;gap:20px;align-items:center;padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .top h1{margin:0;font-size:22px;letter-spacing:-.2px}
 .top .sub{color:var(--ink2);font-size:13.5px}
-.top .meta{margin-left:auto;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.top .meta{margin-inline-start:auto;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 .meta .dt{font-size:11.5px;color:var(--muted);line-height:1.25}
 .meta .dt b{display:block;color:var(--ink);font-size:13px}
 .role{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
@@ -66,10 +68,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media (min-width:1500px){.kpis{grid-template-columns:repeat(6,1fr)}}
 .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.strip button{all:unset;cursor:pointer;background:var(--surface2);border-radius:8px;padding:10px 12px;border-left:3px solid var(--line)}
+.strip button{all:unset;cursor:pointer;background:var(--surface2);border-radius:8px;padding:10px 12px;border-inline-start:3px solid var(--line)}
 .strip button:hover{background:var(--accent-soft)}
 .strip b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.strip span{font-size:12px;color:var(--ink2)}
-.strip .hot{border-left-color:var(--crit)}.strip .hot b{color:var(--crit)}.strip .wn{border-left-color:var(--warn)}
+.strip .hot{border-inline-start-color:var(--crit)}.strip .hot b{color:var(--crit)}.strip .wn{border-inline-start-color:var(--warn)}
 .stack{display:flex;height:22px;border-radius:4px;overflow:hidden;gap:2px;margin:6px 0 8px}.stack div{min-width:2px}
 .caprow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}.caprow:last-child{border:0}
 .caprow b{font-variant-numeric:tabular-nums}.caprow i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
@@ -100,7 +102,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* funnel */
 .funnel{display:flex;flex-direction:column;gap:6px}
 .frow{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:10px;cursor:pointer}
-.frow .st{font-size:12.5px;color:var(--ink2);text-align:right}
+.frow .st{font-size:12.5px;color:var(--ink2);text-align:end}
 .frow .track{display:flex;justify-content:center}
 .frow .bar{height:34px;border-radius:4px;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-weight:700;min-width:30px;transition:opacity .15s}
 .frow:hover .bar{opacity:.85}
@@ -109,9 +111,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* hbar */
 .hbars{display:flex;flex-direction:column;gap:7px}
 .hb{display:grid;grid-template-columns:120px 1fr 64px;gap:10px;align-items:center;font-size:12.5px;cursor:pointer}
-.hb .n{color:var(--ink2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb .n{color:var(--ink2);text-align:end;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb .tr{height:18px;position:relative}
-.hb .f{height:100%;background:var(--accent);border-radius:0 4px 4px 0;min-width:2px}
+.hb .f{height:100%;background:var(--accent);border-start-end-radius:4px;border-end-end-radius:4px;min-width:2px}
+.hb .tr.bg{background:var(--accent-soft);border-start-end-radius:4px;border-end-end-radius:4px}
 .hb .val{font-weight:600;font-variant-numeric:tabular-nums}
 .hb:hover .f{opacity:.85}
 .hb.gold .f{background:var(--gold)}
@@ -120,16 +123,16 @@ button,input,select,textarea{font:inherit;color:inherit}
 .legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px}
 .legend div{display:flex;align-items:center;gap:8px;cursor:pointer}
 .legend i{width:10px;height:10px;border-radius:50%;flex:none}
-.legend b{margin-left:auto;padding-left:14px;font-variant-numeric:tabular-nums}
+.legend b{margin-inline-start:auto;padding-inline-start:14px;font-variant-numeric:tabular-nums}
 /* next actions */
 .na{display:flex;flex-direction:column;gap:8px}
-.na button{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:8px;background:var(--surface2);border-left:3px solid var(--accent)}
+.na button{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:8px;background:var(--surface2);border-inline-start:3px solid var(--accent)}
 .na button:hover{background:var(--accent-soft)}
 .na b{font-size:22px;min-width:28px;font-variant-numeric:tabular-nums}
-.na .od{border-left-color:var(--crit)}.na .od b,.na .od span{color:var(--crit)}
-.na .nd{border-left-color:var(--hold)}
+.na .od{border-inline-start-color:var(--crit)}.na .od b,.na .od span{color:var(--crit)}
+.na .nd{border-inline-start-color:var(--hold)}
 .na span{font-size:13px}
-.na svg{margin-left:auto;width:14px;height:14px;color:var(--muted)}
+.na svg{margin-inline-start:auto;width:14px;height:14px;color:var(--muted)}
 .ring{display:flex;align-items:center;gap:16px}
 .ring p{margin:0;font-size:12.5px;color:var(--ink2)}
 /* pills */
@@ -158,8 +161,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn svg{width:15px;height:15px}
 .tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th{background:var(--surface2);text-align:left;font-size:12px;color:var(--ink2);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0}
-th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+th{background:var(--surface2);text-align:start;font-size:12px;color:var(--ink2);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0}
+th.num,td.num{text-align:end;font-variant-numeric:tabular-nums}
 td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 tbody tr{cursor:pointer}
 tbody tr:hover td{background:var(--surface2)}
@@ -181,7 +184,7 @@ td .id{color:var(--muted);font-size:12px}
 .drawer.on{transform:none}
 .dh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
 .dh h2{margin:0;font-size:17px}
-.dh .x{margin-left:auto}
+.dh .x{margin-inline-start:auto}
 .db{padding:16px 20px;overflow:auto;flex:1}
 .df{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .kv{display:grid;grid-template-columns:170px 1fr;gap:6px 12px;font-size:13px;margin-bottom:14px}
@@ -189,7 +192,7 @@ td .id{color:var(--muted);font-size:12px}
 .sec{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin:16px 0 8px;border-top:1px solid var(--line);padding-top:12px}
 .sec:first-child{border:0;padding:0;margin-top:0}
 .flags{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:12.5px;margin-bottom:12px}
-.flags ul{margin:4px 0 0;padding-left:18px}
+.flags ul{margin:4px 0 0;padding-inline-start:18px}
 .form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 14px}
 .form input,.form select,.form textarea{min-width:0;max-width:100%}
 .form input[type=file]{font-size:12px;padding:5px}
@@ -222,6 +225,17 @@ body.ro .im-only{display:none!important}
   .kv{grid-template-columns:1fr}.kv dt{margin-top:6px}
   .hb{grid-template-columns:96px 1fr 56px}
 }
+/* ---- Arabic / RTL ---- */
+html[dir=rtl] body{font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.55}
+html[dir=rtl] .sec,html[dir=rtl] .form h4,html[dir=rtl] .brand small{letter-spacing:0;text-transform:none}
+html[dir=rtl] .brand small{font-size:11px}
+html[dir=rtl] .drawer{right:auto;left:0;transform:translateX(-100%);box-shadow:8px 0 30px rgba(0,0,0,.15)}
+html[dir=rtl] .drawer.on{transform:none}
+html[dir=rtl] .na svg{transform:scaleX(-1)}
+html[dir=rtl] .kpi .v,html[dir=rtl] .id,html[dir=rtl] .num{font-family:"Segoe UI",system-ui,sans-serif}
+.lang{font-weight:700;min-width:44px;justify-content:center}
+html[dir=rtl] .lang{font-family:"Segoe UI",system-ui,sans-serif}
+.ltr{direction:ltr;unicode-bidi:isolate}
 @media print{.side,.filters,.tbar .btn,.im-only,.role{display:none!important}.app{display:block}}
 </style>
 </head>
@@ -257,6 +271,7 @@ body.ro .im-only{display:none!important}
           </select>
           <span class="viewonly" id="roTag" hidden>View only</span>
         </div>
+        <button class="btn lang" id="langBtn" aria-label="Switch language" title="Switch language"></button>
         <button class="btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18zm0-1a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/></svg></button>
       </div>
     </header>
@@ -403,6 +418,25 @@ const L = {
   avoid:["Potential","Validated","Realised"],
   partnerRole:["Client","Investor","JV / Co-investor","Operator / Concessionaire","Landowner / Enabler"]
 };
+/* ---------- i18n: English is the source; AR.ui = interface text, AR.val = list values ---------- */
+const AR = {"ui":{"Ras Al Khaimah Transport Authority":"هيئة رأس الخيمة للمواصلات","Home":"الرئيسية","Opportunities":"الفرص","Pipeline & Actions":"المسار والإجراءات","Data Quality":"جودة البيانات","Add / Upload":"إضافة / رفع","Mobility Today.":"تنقّل اليوم.","Opportunities Tomorrow.":"فرص الغد.","Investment Portfolio Dashboard":"لوحة محفظة الاستثمار","Building a Sustainable Transport Future":"نحو مستقبل مستدام للنقل","Today":"اليوم","Data as of":"البيانات حتى","Viewing as":"العرض بصفة","Investment Manager":"مدير الاستثمار","Strategy Director":"مدير الاستراتيجية","Director General":"المدير العام","View only":"عرض فقط","Toggle light / dark":"تبديل الوضع الفاتح / الداكن","Toggle theme":"تبديل المظهر","Pipeline by Stage":"المسار حسب المرحلة","count · contract revenue":"العدد • إيرادات العقد","Indicative Contract Revenue by Sector":"إيرادات العقود التقديرية حسب القطاع","AED, active":"درهم، الفرص النشطة","Opportunities by Status":"الفرص حسب الحالة","Management Attention":"تنبيهات الإدارة","not On Track, or overdue — earliest due first":"ليست ضمن المسار أو متأخرة – الأقرب استحقاقاً أولاً","View all →":"عرض الكل ←","Next Actions":"الإجراءات القادمة","Capital & CAPEX Avoidance":"رأس المال وتجنّب النفقات الرأسمالية","active":"الفرص النشطة","Portfolio by Strategic Objective":"المحفظة حسب الهدف الاستراتيجي","contract revenue, AED":"إيرادات العقد، درهم","Portfolio by Delivery Model":"المحفظة حسب نموذج التنفيذ","Investment Opportunities":"الفرص الاستثمارية","Search opportunities…":"البحث في الفرص…","Search":"بحث","New":"جديد","Export":"تصدير","Decisions Required from the DG":"قرارات مطلوبة من المدير العام","DG Decision Required = Y":"قرار المدير العام مطلوب = نعم","not On Track, or next action overdue — earliest due first":"ليست ضمن المسار أو الإجراء التالي متأخر – الأقرب استحقاقاً أولاً","Weighted vs Indicative Pipeline Revenue":"إيرادات المسار المرجّحة مقابل التقديرية","AED, pre-contract":"درهم، قبل التعاقد","Stage weights (10 / 25 / 50 / 75%) are planning assumptions, not measured conversion rates. Recalibrate them once a year of gate history exists.":"أوزان المراحل (10 / 25 / 50 / 75%) افتراضات تخطيطية وليست معدلات تحويل مقاسة، ويُعاد ضبطها بعد توفر سجل بوابات لمدة عام.","Closed Opportunities":"الفرص المغلقة","Closed records stay in the plan with a Closure Reason so decisions remain auditable. They are excluded from all active KPIs.":"تبقى السجلات المغلقة في الخطة مع سبب الإغلاق لتظل القرارات قابلة للتدقيق، وتُستبعد من جميع مؤشرات الأداء النشطة.","Data Quality Flags":"تنبيهات جودة البيانات","Rules from the Investment Plan: mandatory fields, stage-conditional fields (Business Case+ needs revenue & term; Approved+ needs gate date & approval body; Contracted/Operational needs contracted value; Rejected/Withdrawn needs closure reason; DG decision flag needs detail) and rule-based status (1–14 days overdue → Attention, >14 → Delayed).":"قواعد خطة الاستثمار: الحقول الإلزامية، والحقول المشروطة بالمرحلة (من دراسة الجدوى فما بعد: الإيراد والمدة؛ من الاعتماد فما بعد: تاريخ البوابة وجهة الاعتماد؛ المتعاقد عليها والتشغيلية: القيمة المتعاقد عليها؛ المرفوضة والمسحوبة: سبب الإغلاق؛ طلب قرار المدير العام: التفاصيل)، والحالة وفق القواعد (تأخر 1–14 يوماً ← تحتاج متابعة، أكثر من 14 يوماً ← متأخرة).","Add a New Opportunity":"إضافة فرصة جديدة","Capture the mandatory fields now; financial and gate detail can be added progressively as the opportunity matures. Missing items appear as Data Quality flags.":"أدخل الحقول الإلزامية الآن، ويمكن إضافة التفاصيل المالية وتفاصيل البوابات تدريجياً مع نضوج الفرصة. تظهر البيانات الناقصة كتنبيهات لجودة البيانات.","+ New opportunity":"+ فرصة جديدة","Upload Investment Plan":"رفع خطة الاستثمار",".xlsx or .csv":".xlsx أو .csv","Drop the Investment Plan workbook here":"أفلت ملف خطة الاستثمار هنا","or click to choose a file. Reads the “Investment Plan” sheet (or the first sheet) using its header row.":"أو انقر لاختيار ملف. تُقرأ ورقة «Investment Plan» (أو الورقة الأولى) اعتماداً على صف العناوين.","Merge by Investment ID (add new, update existing)":"دمج حسب رقم الاستثمار (إضافة الجديد وتحديث الموجود)","Replace all":"استبدال الكل","Download upload template":"تنزيل نموذج الرفع","Monthly Snapshots":"اللقطات الشهرية","drives “vs last snapshot” on the KPI cards":"تُستخدم للمقارنة «مقابل آخر لقطة» في بطاقات المؤشرات","Record snapshot now":"تسجيل لقطة الآن","Partner Logos":"شعارات الشركاء","hover a logo anywhere to see the name; click it to filter by that partner":"مرّر المؤشر فوق أي شعار لعرض الاسم، وانقر عليه للتصفية حسب الشريك","Data Management":"إدارة البيانات","Data and partner logos are saved in this browser. Back them up as JSON, or move them to another browser by restoring a backup.":"تُحفظ البيانات وشعارات الشركاء في هذا المتصفح. احتفظ بنسخة احتياطية بصيغة JSON، أو انقلها إلى متصفح آخر عبر استعادة النسخة الاحتياطية.","Download backup (JSON)":"تنزيل نسخة احتياطية (JSON)","Restore backup…":"استعادة نسخة احتياطية…","Reset to v4 workbook data":"إعادة التعيين إلى بيانات الإصدار 4","Close":"إغلاق","Filter":"تصفية","All {lab}":"{lab}: الكل","Clear filters":"مسح التصفية","Partner":"الشريك","Sector":"القطاع","Stage":"المرحلة","Status":"الحالة","Owning Unit":"الإدارة المالكة","Strategic Objective":"الهدف الاستراتيجي","Delivery Model":"نموذج التنفيذ","Customer Type":"نوع العميل","Priority":"الأولوية","No snapshot yet":"لا توجد لقطة بعد","No change vs {d}":"دون تغيير مقارنة بـ {d}","vs {d}":"مقارنة بـ {d}","Active Opportunities":"الفرص النشطة","All stages except Rejected / Withdrawn":"جميع المراحل عدا المرفوضة والمسحوبة","Pipeline Revenue":"إيرادات المسار","{v} probability-weighted":"{v} مرجّحة بالاحتمالية","Indicative contract revenue (annual revenue × term) for pre-contract stages, Opportunity → Approved. The weighted figure applies planning stage weights (10/25/50/75%), which are assumptions, not measured conversion rates.":"إيرادات العقود التقديرية (الإيراد السنوي × المدة) للمراحل السابقة للتعاقد، من الفرصة حتى الاعتماد. يطبّق الرقم المرجّح أوزان المراحل التخطيطية (10/25/50/75%)، وهي افتراضات وليست معدلات تحويل مقاسة.","Contracted Value":"القيمة المتعاقد عليها","{n} contracted / operational":"{n} متعاقد عليها / تشغيلية","Contracted Value entered for Contracted + Operational opportunities":"القيمة المتعاقد عليها المُدخلة للفرص المتعاقد عليها والتشغيلية","Operational Annual Revenue":"الإيرادات السنوية التشغيلية","{n} live service":"خدمات قائمة: {n}","{n} live services":"خدمات قائمة: {n}","Expected annual revenue of opportunities in the Operational stage":"الإيرادات السنوية المتوقعة للفرص في المرحلة التشغيلية","External Capital Mobilised":"رأس المال الخارجي المستقطب","+ {v} in pipeline":"+ {v} في المسار","Partner / investor share of project CAPEX (Total Project CAPEX − RAKTA CAPEX). The headline counts Contracted + Operational only; the pipeline figure is pre-contract.":"حصة الشريك أو المستثمر من النفقات الرأسمالية للمشروع (إجمالي النفقات الرأسمالية – حصة الهيئة). يحتسب الرقم الرئيسي الفرص المتعاقد عليها والتشغيلية فقط، ورقم المسار للفرص السابقة للتعاقد.","CAPEX Avoided":"النفقات الرأسمالية المتجنَّبة","+ {v} potential, not yet validated":"+ {v} محتملة لم تُعتمد بعد","Counterfactual RAKTA CAPEX − RAKTA CAPEX under the chosen model. Only entered where RAKTA would otherwise have funded the asset. The headline counts Validated + Realised only.":"النفقات الرأسمالية البديلة للهيئة – نفقات الهيئة وفق النموذج المختار. تُدخل فقط حيث كانت الهيئة ستموّل الأصل بنفسها. يحتسب الرقم الرئيسي الحالات المعتمدة والمحققة فقط.","{n} opportunity":"عدد الفرص: {n}","{n} opportunities":"عدد الفرص: {n}","Contract revenue {v}":"إيرادات العقد {v}","Weighted {v} ({p}% planning weight)":"المرجّحة {v} (وزن تخطيطي {p}%)","No data":"لا توجد بيانات","{c} of {t} ({p}%)":"{c} من {t} ({p}%)","Active":"النشطة","Status breakdown":"توزيع الحالات","Overdue":"متأخرة الاستحقاق","Due in next 30 days":"مستحقة خلال 30 يوماً","Due after 30 days":"مستحقة بعد 30 يوماً","No due date set":"دون تاريخ استحقاق","No due date":"دون تاريخ استحقاق","DG decisions pending":"قرارات بانتظار المدير العام","Overdue actions":"إجراءات متأخرة","Delayed":"متأخرة","Needs attention":"تحتاج متابعة","Total project CAPEX":"إجمالي النفقات الرأسمالية للمشروع","Capital split":"توزيع رأس المال","RAKTA":"الهيئة","External":"خارجي","Not yet split":"لم يُوزَّع بعد","RAKTA CAPEX required":"النفقات الرأسمالية المطلوبة من الهيئة","External capital":"رأس المال الخارجي","Not yet split (RAKTA share unknown)":"لم يُوزَّع بعد (حصة الهيئة غير معروفة)","CAPEX avoided by status":"النفقات المتجنَّبة حسب الحالة","(not reported as avoided)":"(لا تُحتسب ضمن المتجنَّبة)","of active opportunities support an approved RAKTA strategic objective.":"من الفرص النشطة تدعم هدفاً استراتيجياً معتمداً للهيئة.","{n} not aligned / TBD":"{n} غير مرتبطة / تُحدَّد لاحقاً","Nothing to show":"لا يوجد ما يُعرض","Opportunity":"الفرصة","Next Action":"الإجراء التالي","Action Owner":"المسؤول عن الإجراء","Due":"الاستحقاق","Days Overdue":"أيام التأخير","Key Issue / Dependency":"القضية الرئيسية / الاعتمادية","Contract Revenue":"إيرادات العقد","RAKTA CAPEX":"نفقات الهيئة الرأسمالية","Owner":"المسؤول","Decision / Escalation Needed":"القرار / التصعيد المطلوب","ID":"الرقم","Contract Revenue (AED)":"إيرادات العقد (درهم)","Weighted (AED)":"المرجّحة (درهم)","Confidence":"الثقة","Due Date":"تاريخ الاستحقاق","Owner / Unit":"المسؤول / الإدارة","DQ":"الجودة","Closure Reason":"سبب الإغلاق","Flags":"التنبيهات","Date":"التاريخ","No owner":"دون مسؤول","No unit":"دون إدارة","All":"الكل","Closed":"المغلقة","Next action: {x}":"الإجراء التالي: {x}","Clear":"مسح","No opportunities match":"لا توجد فرص مطابقة","Showing {a} of {b} opportunities":"عرض {a} من {b} فرصة","Previous":"السابق","Next":"التالي","Open {v}":"غير المرجّحة {v}","Weighted {v}":"المرجّحة {v}","Weighted":"المرجّحة","Indicative (unweighted)":"التقديرية (غير مرجّحة)","{a} of {b} records · {c} flags":"{a} من {b} سجلاً • {c} تنبيهاً","Contracted":"المتعاقد عليها","Op. Revenue":"الإيرادات التشغيلية","External Capital":"رأس المال الخارجي","DG Decisions":"قرارات المدير العام","No snapshots yet. Record one at each month-end review.":"لا توجد لقطات بعد. سجّل لقطة في مراجعة نهاية كل شهر.","Replace":"استبدال","Upload":"رفع","Remove logo":"إزالة الشعار","No partners recorded yet":"لم يُسجَّل أي شريك بعد","No partner recorded":"لا يوجد شريك مسجّل","Click to filter":"انقر للتصفية","{n} data quality flag":"تنبيهات جودة البيانات: {n}","{n} data quality flags":"تنبيهات جودة البيانات: {n}","Overview":"نظرة عامة","Financials (AED)":"البيانات المالية (درهم)","Capital & CAPEX avoidance (AED)":"رأس المال وتجنّب النفقات الرأسمالية (درهم)","Governance":"الحوكمة","Estimate Confidence":"ثقة التقدير","Owner (person)":"المسؤول (شخص)","Expected Annual Revenue":"الإيراد السنوي المتوقع","Term":"المدة","{n} years":"{n} سنوات","Indicative Contract Revenue":"إيرادات العقد التقديرية","Stage Weight (planning)":"وزن المرحلة (تخطيطي)","Weighted Pipeline Revenue":"إيرادات المسار المرجّحة","Total Project CAPEX":"إجمالي النفقات الرأسمالية للمشروع","RAKTA CAPEX Required":"النفقات الرأسمالية المطلوبة من الهيئة","Counterfactual RAKTA CAPEX":"النفقات الرأسمالية البديلة للهيئة","N/A — no avoidance claimed":"لا ينطبق – لا يوجد تجنّب مُطالب به","Baseline Source":"مصدر خط الأساس","({n} days overdue)":"(متأخرة {n} يوماً)","Progress Note":"ملاحظة التقدم","Last Updated":"آخر تحديث","DG Decision Required":"قرار المدير العام مطلوب","DG Decision / Escalation":"قرار المدير العام / التصعيد","Last Gate Decision":"قرار آخر بوابة","Gate Date":"تاريخ البوابة","Approval Body":"جهة الاعتماد","Decision Reference":"مرجع القرار","Delete":"حذف","Edit":"تعديل","View only — the Investment Manager maintains this record.":"عرض فقط – يتولى مدير الاستثمار تحديث هذا السجل.","Investment ID":"رقم الاستثمار","Opportunity Owner":"مسؤول الفرصة","Owner — named person":"المسؤول – اسم الشخص","Customer / Partner":"العميل / الشريك","Partner — company / client / investor":"الشريك – شركة / عميل / مستثمر","Partner Role":"دور الشريك","Total Project CAPEX (AED)":"إجمالي النفقات الرأسمالية للمشروع (درهم)","RAKTA CAPEX Required (AED)":"النفقات الرأسمالية المطلوبة من الهيئة (درهم)","Counterfactual RAKTA CAPEX (AED)":"النفقات الرأسمالية البديلة للهيئة (درهم)","CAPEX Avoidance Status":"حالة تجنّب النفقات الرأسمالية","CAPEX Baseline Source":"مصدر خط أساس النفقات الرأسمالية","Expected Annual Revenue (AED)":"الإيراد السنوي المتوقع (درهم)","Term (Years)":"المدة (سنوات)","Contracted Value (AED)":"القيمة المتعاقد عليها (درهم)","DG Decision / Escalation Detail":"تفاصيل قرار المدير العام / التصعيد","New opportunity":"فرصة جديدة","Add Investment Opportunity":"إضافة فرصة استثمارية","Edit: {x}":"تعديل: {x}","Identity":"البيانات الأساسية","Partner logo":"شعار الشريك","(PNG / JPG / SVG, shared by every opportunity with this partner)":"(PNG أو JPG أو SVG، يُستخدم لجميع فرص هذا الشريك)","Accountability":"المسؤولية","Owner is the individual to follow up with; Owning Unit is the department.":"المسؤول هو الشخص الذي تتم المتابعة معه، والإدارة المالكة هي الإدارة المعنية.","Stage & health":"المرحلة والحالة","Estimate Confidence = quality of the commercial / financial evidence behind the numbers (High: customer or contract evidence · Medium: reasonable assumptions · Low: preliminary estimate). It is not the probability of closing.":"ثقة التقدير = جودة الأدلة التجارية والمالية التي تستند إليها الأرقام (عالية: أدلة من العميل أو العقد • متوسطة: افتراضات معقولة • منخفضة: تقدير أولي)، وهي ليست احتمالية إتمام الصفقة.","Revenue (AED)":"الإيرادات (درهم)","Indicative Contract Revenue (calc)":"إيرادات العقد التقديرية (محسوبة)","Weighted Pipeline Revenue (calc)":"إيرادات المسار المرجّحة (محسوبة)","Capital (AED)":"رأس المال (درهم)","External Capital (calc)":"رأس المال الخارجي (محسوب)","CAPEX avoidance — optional":"تجنّب النفقات الرأسمالية – اختياري","Fill this in only if RAKTA would otherwise have had to fund the asset itself, for example because it is in the approved capital plan. Leave it blank for normal service contracts.":"املأ هذا القسم فقط إذا كانت الهيئة ستموّل الأصل بنفسها، مثلاً لأنه مدرج في الخطة الرأسمالية المعتمدة. اتركه فارغاً لعقود الخدمات العادية.","CAPEX Avoided (calc)":"النفقات الرأسمالية المتجنَّبة (محسوبة)","Next action":"الإجراء التالي","Cancel":"إلغاء","Add opportunity":"إضافة الفرصة","Save changes":"حفظ التغييرات","{v} ({p}% planning weight)":"{v} (وزن تخطيطي {p}%)","Enter RAKTA CAPEX":"أدخل نفقات الهيئة الرأسمالية","N/A":"لا ينطبق","Will be flagged:":"سيتم التنبيه على:","Please complete: {x}":"يرجى استكمال: {x}","{id} added":"تمت إضافة {id}","{id} updated":"تم تحديث {id}","Full name, e.g. A. Al Zaabi":"الاسم الكامل، مثل: أحمد الزعابي","e.g. RAKEZ":"مثل: RAKEZ","{f} missing":"{f}: غير مُدخل","Stage not recognised":"المرحلة غير معروفة","Owner looks like a department — enter the named person":"يبدو أن المسؤول إدارة وليس شخصاً – أدخل اسم الشخص","Expected Annual Revenue required (Business Case+)":"الإيراد السنوي المتوقع مطلوب (من دراسة الجدوى فما بعد)","Term required (Business Case+)":"المدة مطلوبة (من دراسة الجدوى فما بعد)","Gate Date required (Approved+)":"تاريخ البوابة مطلوب (من الاعتماد فما بعد)","Approval Body required (Approved+)":"جهة الاعتماد مطلوبة (من الاعتماد فما بعد)","Contracted Value required (Contracted / Operational)":"القيمة المتعاقد عليها مطلوبة (المتعاقد عليها / التشغيلية)","RAKTA CAPEX share required (Business Case+)":"حصة الهيئة من النفقات الرأسمالية مطلوبة (من دراسة الجدوى فما بعد)","RAKTA CAPEX exceeds Total Project CAPEX":"نفقات الهيئة تتجاوز إجمالي النفقات الرأسمالية للمشروع","CAPEX avoidance claimed without a baseline source":"مطالبة بتجنّب نفقات رأسمالية دون مصدر لخط الأساس","CAPEX avoidance needs RAKTA CAPEX under the proposed model":"احتساب التجنّب يتطلب إدخال نفقات الهيئة وفق النموذج المقترح","CAPEX avoidance should be validated by Finance (Approved+)":"يجب أن تعتمد الإدارة المالية التجنّب (من الاعتماد فما بعد)","CAPEX avoidance can only be Realised once Contracted / Operational":"لا يُعدّ التجنّب محققاً إلا بعد التعاقد أو التشغيل","CAPEX Avoidance Status set without a counterfactual CAPEX":"حُددت حالة التجنّب دون إدخال النفقات البديلة","Closure Reason required (Rejected / Withdrawn)":"سبب الإغلاق مطلوب (المرفوضة / المسحوبة)","DG decision detail required":"تفاصيل قرار المدير العام مطلوبة","Status should be Delayed ({n} days overdue)":"يجب أن تكون الحالة «متأخرة» (متأخرة {n} يوماً)","Status should be Attention ({n} days overdue)":"يجب أن تكون الحالة «تحتاج متابعة» (متأخرة {n} يوماً)","Not updated in over 45 days":"لم تُحدَّث منذ أكثر من 45 يوماً","Please choose an image file (PNG, JPG or SVG).":"يرجى اختيار ملف صورة (PNG أو JPG أو SVG).","Couldn't read the file":"تعذّرت قراءة الملف","That image couldn't be opened":"تعذّر فتح الصورة","Spreadsheet reader didn't load (offline?). Save the sheet as CSV and upload that instead.":"لم يتم تحميل قارئ الجداول (ربما بسبب انقطاع الاتصال). احفظ الورقة بصيغة CSV وارفعها بدلاً من ذلك.","No rows with an Investment ID and Opportunity name were found. Check the header row matches the template.":"لم يُعثر على صفوف تحتوي على رقم الاستثمار واسم الفرصة. تأكد من مطابقة صف العناوين للنموذج.","Replace all {a} records with {b} from {f}?":"استبدال جميع السجلات ({a}) بـ {b} سجلاً من {f}؟","Imported {f}:":"تم استيراد {f}:","{a} added, {u} updated. {q} data quality flags across the plan.":"أُضيف {a} وحُدِّث {u}. عدد تنبيهات جودة البيانات في الخطة: {q}.","Import complete: {a} added, {u} updated":"اكتمل الاستيراد: أُضيف {a} وحُدِّث {u}","Import failed:":"فشل الاستيراد:","Filtered by {x}":"تمت التصفية حسب {x}","Logo saved for {x}":"تم حفظ شعار {x}","Delete {id}? Prefer setting Stage to Rejected or Withdrawn with a Closure Reason so the decision stays auditable.":"حذف {id}؟ يُفضَّل تغيير المرحلة إلى «مرفوضة» أو «مسحوبة» مع ذكر سبب الإغلاق ليبقى القرار قابلاً للتدقيق.","{id} deleted":"تم حذف {id}","Snapshot recorded for {d}":"تم تسجيل لقطة بتاريخ {d}","Backup restored":"تمت استعادة النسخة الاحتياطية","That file isn't a dashboard backup":"هذا الملف ليس نسخة احتياطية للوحة","Discard all changes and reload the 24 opportunities from the v4 workbook?":"تجاهل جميع التغييرات وإعادة تحميل الفرص الـ 24 من ملف الإصدار 4؟","Reset to workbook data":"تمت إعادة التعيين إلى بيانات الملف","Switch language":"تغيير اللغة"},"val":{"Parking":"مواقف السيارات","Staff Transport":"نقل الموظفين","Advertising":"الإعلانات","Vehicle Inspection":"فحص المركبات","Maintenance":"الصيانة","Marine Transport":"النقل البحري","Last-mile Delivery":"توصيل الميل الأخير","EV Charging":"شحن المركبات الكهربائية","Technology":"التكنولوجيا","Transportation":"النقل","Other":"أخرى","Opportunity":"فرصة","Assessment":"تقييم","Business Case":"دراسة الجدوى","Approved":"معتمدة","Contracted":"متعاقد عليها","Operational":"تشغيلية","Rejected":"مرفوضة","Withdrawn":"مسحوبة","On Track":"ضمن المسار","Attention":"تحتاج متابعة","Delayed":"متأخرة","On Hold":"معلّقة","High":"عالية","Medium":"متوسطة","Low":"منخفضة","TBD":"يُحدَّد لاحقاً","Government":"حكومي","Semi-Government":"شبه حكومي","Private":"خاص","Internal":"داخلي","Direct Service":"خدمة مباشرة","Service Contract":"عقد خدمة","Concession":"امتياز","PPP":"شراكة بين القطاعين العام والخاص","Joint Venture":"مشروع مشترك","Lease / Rights":"إيجار / حقوق","FN1 – Financial Sustainability":"FN1 – الاستدامة المالية","ST1 – Cooperative System":"ST1 – المنظومة التعاونية","ST2 – Governance & Legislation":"ST2 – الحوكمة والتشريعات","BF1 – People Happiness":"BF1 – سعادة الناس","BF2 – Integrated Transport":"BF2 – النقل المتكامل","BF3 – Sustainability":"BF3 – الاستدامة","OP1 – Innovation":"OP1 – الابتكار","OP2 – Safety":"OP2 – السلامة","OP3 – Communication Platform":"OP3 – منصة التواصل","OP4 – Institutional Excellence":"OP4 – التميز المؤسسي","DG1 – Work Environment":"DG1 – بيئة العمل","DG2 – Technology Systems":"DG2 – الأنظمة التقنية","DG3 – Workforce":"DG3 – فريق العمل","DG4 – Modern Transport":"DG4 – النقل الحديث","Not aligned":"غير مرتبط","Investment":"الاستثمار","Planning":"التخطيط","Digital":"التحول الرقمي","Operations":"العمليات","Licensing":"الترخيص","Supporting Services":"الخدمات المساندة","AV":"المركبات ذاتية القيادة","HSE":"الصحة والسلامة والبيئة","Proceed":"المضي قدماً","Proceed with conditions":"المضي بشروط","Hold":"تعليق","Reject":"رفض","Unit Director":"مدير الإدارة","Investment Committee":"لجنة الاستثمار","Director General":"المدير العام","Board":"مجلس الإدارة","Not commercially viable":"غير مجدية تجارياً","Customer declined":"اعتذار العميل","Not strategically aligned":"غير متوافقة استراتيجياً","Regulatory / legal barrier":"عائق تنظيمي / قانوني","Superseded by another opportunity":"استُعيض عنها بفرصة أخرى","Y":"نعم","N":"لا","Potential":"محتملة","Validated":"معتمدة","Realised":"محققة","Client":"عميل","Investor":"مستثمر","JV / Co-investor":"شريك في مشروع مشترك / مستثمر مشارك","Operator / Concessionaire":"مشغّل / صاحب امتياز","Landowner / Enabler":"مالك الأرض / جهة تمكين","Unassigned":"غير محدد"}};
+const urlLang = new URLSearchParams(location.search).get("lang");
+let LANG = ["en","ar"].includes(urlLang) ? urlLang : (()=>{try{return JSON.parse(localStorage.getItem("rakta-inv-lang"))||"en"}catch(e){return "en"}})();
+function fill(s,vars){return vars?String(s).replace(/\{(\w+)\}/g,(m,k)=>vars[k]??m):s}
+function t(s,vars){return fill(LANG==="ar"&&AR.ui[s]!=null?AR.ui[s]:s,vars)}
+function v(s){return LANG==="ar"&&s!=null&&AR.val[String(s).trim()]!=null?AR.val[String(s).trim()]:(s??"")}
+const STATIC=[];
+function captureStatic(){
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentNode.closest("script,style,.brand b")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  for(let nd;(nd=w.nextNode());){const k=nd.nodeValue.trim();if(k&&AR.ui[k]!=null)STATIC.push({nd,en:nd.nodeValue,k})}
+  document.querySelectorAll("[placeholder],[title],[aria-label]").forEach(el=>["placeholder","title","aria-label"].forEach(a=>{const k=el.getAttribute(a);if(k&&AR.ui[k]!=null)STATIC.push({el,a,k})}));
+}
+function applyLang(){
+  const h=document.documentElement; h.lang=LANG; h.dir=LANG==="ar"?"rtl":"ltr";
+  STATIC.forEach(x=>{const tr=t(x.k); if(x.nd) x.nd.nodeValue=LANG==="ar"?x.en.replace(x.k,tr):x.en; else x.el.setAttribute(x.a,tr)});
+  document.getElementById("langBtn").textContent=LANG==="ar"?"EN":"ع";
+  document.title=LANG==="ar"?"محفظة الاستثمار – هيئة رأس الخيمة للمواصلات":"RAKTA Investment Portfolio";
+}
 const ACTIVE = L.stage.slice(0,6), PRE = L.stage.slice(0,4), CLOSED = ["Rejected","Withdrawn"];
 const STATUS_C = {"On Track":"var(--ok)","Attention":"var(--warn)","Delayed":"var(--bad)","On Hold":"var(--hold)"};
 
@@ -440,16 +474,16 @@ const pkey=n=>String(n||"").trim().toLowerCase();
 const LOGO_TONES=["#12305A","#1E63C6","#0F766E","#7C3AED","#B45309","#BE185D","#475569","#15803D"];
 function initials(n){const w=String(n).replace(/[^\p{L}\p{N} ]+/gu," ").trim().split(/\s+/).filter(Boolean);return ((w[0]||"?")[0]+(w.length>1?w[1][0]:(w[0]||"")[1]||"")).toUpperCase()}
 function logoHtml(name,role,cls=""){
-  if(!name) return `<span class="logo none ${cls}" data-tip="No partner recorded">—</span>`;
+  if(!name) return `<span class="logo none ${cls}" data-tip="${esc(t("No partner recorded"))}">—</span>`;
   const src=LOGOS[pkey(name)], h=[...pkey(name)].reduce((a,c)=>a*31+c.charCodeAt(0)>>>0,7);
-  const tip=`<b>${esc(name)}</b>${role?"<br>"+esc(role):""}<br><span style=opacity:.75>Click to filter</span>`;
+  const tip=`<b>${esc(name)}</b>${role?"<br>"+esc(v(role)):""}<br><span style=opacity:.75>${t("Click to filter")}</span>`;
   return `<span class="logo ${cls}" data-partner="${esc(name)}" data-tip="${esc(tip)}" role="img" aria-label="${esc(name)}" style="${src?"":"background:"+LOGO_TONES[h%LOGO_TONES.length]}">${src?`<img src="${src}" alt="">`:esc(initials(name))}</span>`;
 }
 function resizeImage(file){return new Promise((ok,no)=>{
-  if(!/^image\//.test(file.type)) return no(new Error("Please choose an image file (PNG, JPG or SVG)."));
-  const fr=new FileReader(); fr.onerror=()=>no(new Error("Couldn't read the file")); fr.onload=()=>{const im=new Image();im.onload=()=>{
+  if(!/^image\//.test(file.type)) return no(new Error(t("Please choose an image file (PNG, JPG or SVG).")));
+  const fr=new FileReader(); fr.onerror=()=>no(new Error(t("Couldn't read the file"))); fr.onload=()=>{const im=new Image();im.onload=()=>{
     const k=Math.min(1,320/Math.max(im.width||320,im.height||320)),c=document.createElement("canvas");c.width=Math.max(1,Math.round((im.width||128)*k));c.height=Math.max(1,Math.round((im.height||128)*k));
-    c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/png"))};im.onerror=()=>no(new Error("That image couldn't be opened"));im.src=fr.result};fr.readAsDataURL(file)})}
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/png"))};im.onerror=()=>no(new Error(t("That image couldn't be opened")));im.src=fr.result};fr.readAsDataURL(file)})}
 function setLogo(name,url){const k=pkey(name);if(!k)return;if(url)LOGOS[k]=url;else delete LOGOS[k];store.set("logos",LOGOS)}
 function clone(x){return JSON.parse(JSON.stringify(x))}
 /* v1 stored a single "capex" field = total project CAPEX */
@@ -474,29 +508,29 @@ function derive(o){
 }
 function flags(o,od,active){
   const f=[]; const miss=k=>o[k]==null||String(o[k]).trim()===""||String(o[k]).trim()==="TBD";
-  ["objective","owner","customer","confidence","nextAction","due","lastUpdated"].forEach(k=>{ if(miss(k) && (active||k==="objective"||k==="owner")) f.push(FK[k][1]+" missing")});
+  ["objective","owner","customer","confidence","nextAction","due","lastUpdated"].forEach(k=>{ if(miss(k) && (active||k==="objective"||k==="owner")) f.push(t("{f} missing",{f:t(FK[k][1])}))});
   const si=L.stage.indexOf(o.stage);
-  if(si<0) f.push("Stage not recognised");
-  if(o.owner&&(pkey(o.owner)===pkey(o.unit)||L.unit.some(u=>pkey(u)===pkey(o.owner)))) f.push("Owner looks like a department — enter the named person");
-  if(si>=2&&si<=5){ if(miss("annualRev")) f.push("Expected Annual Revenue required (Business Case+)"); if(miss("term")) f.push("Term required (Business Case+)") }
-  if(si>=3&&si<=5){ if(miss("gateDate")) f.push("Gate Date required (Approved+)"); if(miss("approvalBody")) f.push("Approval Body required (Approved+)") }
-  if(si===4||si===5){ if(miss("contracted")) f.push("Contracted Value required (Contracted / Operational)") }
-  if(si>=2&&si<=5&&n(o.totalCapex)>0&&miss("raktaCapex")) f.push("RAKTA CAPEX share required (Business Case+)");
-  if(n(o.raktaCapex)>n(o.totalCapex)&&n(o.totalCapex)>0) f.push("RAKTA CAPEX exceeds Total Project CAPEX");
+  if(si<0) f.push(t("Stage not recognised"));
+  if(o.owner&&(pkey(o.owner)===pkey(o.unit)||L.unit.some(u=>pkey(u)===pkey(o.owner)))) f.push(t("Owner looks like a department — enter the named person"));
+  if(si>=2&&si<=5){ if(miss("annualRev")) f.push(t("Expected Annual Revenue required (Business Case+)")); if(miss("term")) f.push(t("Term required (Business Case+)")) }
+  if(si>=3&&si<=5){ if(miss("gateDate")) f.push(t("Gate Date required (Approved+)")); if(miss("approvalBody")) f.push(t("Approval Body required (Approved+)")) }
+  if(si===4||si===5){ if(miss("contracted")) f.push(t("Contracted Value required (Contracted / Operational)")) }
+  if(si>=2&&si<=5&&n(o.totalCapex)>0&&miss("raktaCapex")) f.push(t("RAKTA CAPEX share required (Business Case+)"));
+  if(n(o.raktaCapex)>n(o.totalCapex)&&n(o.totalCapex)>0) f.push(t("RAKTA CAPEX exceeds Total Project CAPEX"));
   if(n(o.baselineCapex)>0){
-    if(miss("baselineSource")) f.push("CAPEX avoidance claimed without a baseline source");
-    if(miss("raktaCapex")) f.push("CAPEX avoidance needs RAKTA CAPEX under the proposed model");
+    if(miss("baselineSource")) f.push(t("CAPEX avoidance claimed without a baseline source"));
+    if(miss("raktaCapex")) f.push(t("CAPEX avoidance needs RAKTA CAPEX under the proposed model"));
     const as=o.avoidStatus||"Potential";
-    if(si>=3&&si<=5&&as==="Potential") f.push("CAPEX avoidance should be validated by Finance (Approved+)");
-    if(as==="Realised"&&!(si===4||si===5)) f.push("CAPEX avoidance can only be Realised once Contracted / Operational");
-  } else if(o.avoidStatus) f.push("CAPEX Avoidance Status set without a counterfactual CAPEX");
-  if(CLOSED.includes(o.stage)&&miss("closure")) f.push("Closure Reason required (Rejected / Withdrawn)");
-  if(o.dgReq==="Y"&&miss("dgDetail")) f.push("DG decision detail required");
+    if(si>=3&&si<=5&&as==="Potential") f.push(t("CAPEX avoidance should be validated by Finance (Approved+)"));
+    if(as==="Realised"&&!(si===4||si===5)) f.push(t("CAPEX avoidance can only be Realised once Contracted / Operational"));
+  } else if(o.avoidStatus) f.push(t("CAPEX Avoidance Status set without a counterfactual CAPEX"));
+  if(CLOSED.includes(o.stage)&&miss("closure")) f.push(t("Closure Reason required (Rejected / Withdrawn)"));
+  if(o.dgReq==="Y"&&miss("dgDetail")) f.push(t("DG decision detail required"));
   if(active&&od!=null&&o.status!=="On Hold"){
-    if(od>14&&o.status!=="Delayed") f.push(`Status should be Delayed (${od} days overdue)`);
-    else if(od>=1&&od<=14&&o.status==="On Track") f.push(`Status should be Attention (${od} days overdue)`);
+    if(od>14&&o.status!=="Delayed") f.push(t("Status should be Delayed ({n} days overdue)",{n:od}));
+    else if(od>=1&&od<=14&&o.status==="On Track") f.push(t("Status should be Attention ({n} days overdue)",{n:od}));
   }
-  if(o.lastUpdated && daysBetween(o.lastUpdated,TODAY)>45 && active) f.push("Not updated in over 45 days");
+  if(o.lastUpdated && daysBetween(o.lastUpdated,TODAY)>45 && active) f.push(t("Not updated in over 45 days"));
   return f;
 }
 function rows(){ return DATA.map(o=>Object.assign({},o,{_:derive(o)})) }
@@ -537,17 +571,20 @@ function sum(a,f){return a.reduce((s,x)=>s+f(x),0)}
 function aed(v,short=true){
   v=n(v); if(!short) return v.toLocaleString("en-US");
   const a=Math.abs(v);
-  if(a>=1e9) return (v/1e9).toFixed(a>=1e10?0:1).replace(/\.0$/,"")+"B";
-  if(a>=1e6) return (v/1e6).toFixed(a>=1e8?0:1).replace(/\.0$/,"")+"M";
-  if(a>=1e3) return Math.round(v/1e3)+"K";
+  const U=LANG==="ar"?{B:" مليار",M:" مليون",K:" ألف"}:{B:"B",M:"M",K:"K"};
+  if(a>=1e9) return (v/1e9).toFixed(a>=1e10?0:1).replace(/\.0$/,"")+U.B;
+  if(a>=1e6) return (v/1e6).toFixed(a>=1e8?0:1).replace(/\.0$/,"")+U.M;
+  if(a>=1e3) return Math.round(v/1e3)+U.K;
   return String(Math.round(v));
 }
-const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function fdate(s){ if(!s) return ""; const [y,m,d]=s.split("-"); return `${+d} ${MON[m-1]} ${y}` }
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], MON_AR=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function cur(x,short=true){return LANG==="ar"?`${aed(x,short)} درهم`:`AED ${aed(x,short)}`}
+function curBig(x){return LANG==="ar"?`${aed(x)} <small>درهم</small>`:`<small>AED</small>${aed(x)}`}
+function fdate(s){ if(!s) return ""; const [y,m,d]=s.split("-"); return `${+d} ${(LANG==="ar"?MON_AR:MON)[m-1]} ${y}` }
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function statusHtml(s){return s?`<span class="status"><i style="background:${STATUS_C[s]||"var(--hold)"}"></i>${esc(s)}</span>`:"<span class='note'>—</span>"}
-function confHtml(c){return c?`<span class="conf ${esc(c)}">${esc(c)}</span>`:""}
-function dueHtml(r){ if(!r.due) return `<span class="note">No date</span>`; return r._.overdue>0?`<span class="late" title="${r._.overdue} days overdue">${fdate(r.due)}</span>`:fdate(r.due) }
+function statusHtml(s){return s?`<span class="status"><i style="background:${STATUS_C[s]||"var(--hold)"}"></i>${esc(v(s))}</span>`:"<span class='note'>—</span>"}
+function confHtml(c){return c?`<span class="conf ${esc(c)}">${esc(v(c))}</span>`:""}
+function dueHtml(r){ if(!r.due) return `<span class="note">${t("No due date")}</span>`; return r._.overdue>0?`<span class="late" title="${esc(t("({n} days overdue)",{n:r._.overdue}))}">${fdate(r.due)}</span>`:fdate(r.due) }
 
 /* ---------- icons ---------- */
 const IC={
@@ -570,6 +607,7 @@ function renderChrome(){
   document.getElementById("today").textContent=fdate(TODAY);
   document.getElementById("asof").textContent=fdate(ASOF);
   if(ROLE!=="im"&&S.view==="manage") S.view="home";
+  applyLang();
   document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.view));
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+S.view));
 }
@@ -577,32 +615,32 @@ function renderFilters(){
   const all=rows();
   const defs=[["customer","Partner"],["sector","Sector"],["stage","Stage"],["status","Status"],["unit","Owning Unit"],["objective","Strategic Objective"],["model","Delivery Model"],["custType","Customer Type"],["priority","Priority"]];
   const el=document.getElementById("filters");
-  el.innerHTML=`<span class="lbl">Filter</span>`+defs.map(([k,lab])=>{
+  el.innerHTML=`<span class="lbl">${t("Filter")}</span>`+defs.map(([k,lab])=>{lab=t(lab);
     const vals=[...new Set(all.map(r=>r[k]).filter(Boolean))].sort((a,b)=>{const l=L[FK[k][3]]||[];return (l.indexOf(a)+1||99)-(l.indexOf(b)+1||99)||String(a).localeCompare(b)});
-    return `<select data-f="${k}" aria-label="${lab}"><option value="">All ${lab}</option>${vals.map(v=>`<option ${S.filters[k]===v?"selected":""}>${esc(v)}</option>`).join("")}</select>`;
-  }).join("")+(Object.values(S.filters).some(Boolean)?`<button class="link" id="clearF">Clear filters</button>`:"");
+    return `<select data-f="${k}" aria-label="${lab}"><option value="">${esc(t("All {lab}",{lab}))}</option>${vals.map(x=>`<option value="${esc(x)}" ${S.filters[k]===x?"selected":""}>${esc(v(x))}</option>`).join("")}</select>`;
+  }).join("")+(Object.values(S.filters).some(Boolean)?`<button class="link" id="clearF">${t("Clear filters")}</button>`:"");
 }
 
 /* ---------- render: home ---------- */
 function delta(cur,key,fmt,goodUp=true){
   const last=SNAPS[SNAPS.length-1];
-  if(!last) return `<div class="d">No snapshot yet</div>`;
+  if(!last) return `<div class="d">${t("No snapshot yet")}</div>`;
   const prev=last[key]; if(prev==null) return `<div class="d">—</div>`;
-  const diff=cur-prev; if(Math.abs(diff)<1e-9) return `<div class="d">No change vs ${fdate(last.date)}</div>`;
+  const diff=cur-prev; if(Math.abs(diff)<1e-9) return `<div class="d">${t("No change vs {d}",{d:fdate(last.date)})}</div>`;
   const up=diff>0, good=up===goodUp;
   const pct=prev?` (${up?"+":""}${Math.round(diff/Math.abs(prev)*100)}%)`:"";
-  return `<div class="d"><span class="${good?"up":"dn"}">${up?"▲":"▼"} ${fmt(Math.abs(diff))}${pct}</span> vs ${fdate(last.date)}</div>`;
+  return `<div class="d"><span class="${good?"up":"dn"}">${up?"▲":"▼"} ${fmt(Math.abs(diff))}${pct}</span> ${t("vs {d}",{d:fdate(last.date)})}</div>`;
 }
 function renderKpis(k){
-  const c=(t,ic,v,d,cls="",tip="")=>`<div class="card kpi ${cls}" ${tip?`data-tip="${esc(tip)}"`:""}><div class="t">${t}<span class="ic">${ic}</span></div><div class="v">${v}</div>${d}</div>`;
+  const c=(ti,ic,val,d,cls="",tip="")=>`<div class="card kpi ${cls}" ${tip?`data-tip="${esc(t(tip))}"`:""}><div class="t">${t(ti)}<span class="ic">${ic}</span></div><div class="v">${val}</div>${d}</div>`;
   const cnt=x=>String(Math.round(x));
   document.getElementById("kpis").innerHTML=[
     c("Active Opportunities",IC.layers,k.active,delta(k.active,"active",cnt),"","All stages except Rejected / Withdrawn"),
-    c("Pipeline Revenue",IC.coins,`<small>AED</small>${aed(k.open)}`,`<div class="d">AED ${aed(k.weighted)} probability-weighted</div>`+delta(k.open,"open",aed),"","Indicative contract revenue (annual revenue × term) for pre-contract stages, Opportunity → Approved. The weighted figure applies planning stage weights (10/25/50/75%), which are assumptions, not measured conversion rates."),
-    c("Contracted Value",IC.doc,`<small>AED</small>${aed(k.contracted)}`,`<div class="d">${k.contractedN} contracted / operational</div>`+delta(k.contracted,"contracted",aed),"","Contracted Value entered for Contracted + Operational opportunities"),
-    c("Operational Annual Revenue",IC.target,`<small>AED</small>${aed(k.opRev)}`,`<div class="d">${k.opN} live service${k.opN===1?"":"s"}</div>`+delta(k.opRev,"opRev",aed),"","Expected annual revenue of opportunities in the Operational stage"),
-    c("External Capital Mobilised",IC.build,`<small>AED</small>${aed(k.external)}`,`<div class="d">+ AED ${aed(k.externalPipe)} in pipeline</div>`+delta(k.external,"external",aed),"","Partner / investor share of project CAPEX (Total Project CAPEX − RAKTA CAPEX). The headline counts Contracted + Operational only; the pipeline figure is pre-contract."),
-    c("CAPEX Avoided",IC.leaf,`<small>AED</small>${aed(k.avoided)}`,`<div class="d">+ AED ${aed(k.avoidedPot)} potential, not yet validated</div>`+delta(k.avoided,"avoided",aed),"","Counterfactual RAKTA CAPEX − RAKTA CAPEX under the chosen model. Only entered where RAKTA would otherwise have funded the asset. The headline counts Validated + Realised only.")
+    c("Pipeline Revenue",IC.coins,curBig(k.open),`<div class="d">${t("{v} probability-weighted",{v:cur(k.weighted)})}</div>`+delta(k.open,"open",aed),"","Indicative contract revenue (annual revenue × term) for pre-contract stages, Opportunity → Approved. The weighted figure applies planning stage weights (10/25/50/75%), which are assumptions, not measured conversion rates."),
+    c("Contracted Value",IC.doc,curBig(k.contracted),`<div class="d">${t("{n} contracted / operational",{n:k.contractedN})}</div>`+delta(k.contracted,"contracted",aed),"","Contracted Value entered for Contracted + Operational opportunities"),
+    c("Operational Annual Revenue",IC.target,curBig(k.opRev),`<div class="d">${t(k.opN===1?"{n} live service":"{n} live services",{n:k.opN})}</div>`+delta(k.opRev,"opRev",aed),"","Expected annual revenue of opportunities in the Operational stage"),
+    c("External Capital Mobilised",IC.build,curBig(k.external),`<div class="d">${t("+ {v} in pipeline",{v:cur(k.externalPipe)})}</div>`+delta(k.external,"external",aed),"","Partner / investor share of project CAPEX (Total Project CAPEX − RAKTA CAPEX). The headline counts Contracted + Operational only; the pipeline figure is pre-contract."),
+    c("CAPEX Avoided",IC.leaf,curBig(k.avoided),`<div class="d">${t("+ {v} potential, not yet validated",{v:cur(k.avoidedPot)})}</div>`+delta(k.avoided,"avoided",aed),"","Counterfactual RAKTA CAPEX − RAKTA CAPEX under the chosen model. Only entered where RAKTA would otherwise have funded the asset. The headline counts Validated + Realised only.")
   ].join("");
 }
 function renderFunnel(rs){
@@ -610,17 +648,17 @@ function renderFunnel(rs){
   const st=ACTIVE.map(s=>{const g=a.filter(r=>r.stage===s);return {s,c:g.length,v:sum(g,r=>r._.life),w:sum(g,r=>r._.weighted)}});
   const max=Math.max(1,...st.map(x=>x.c));
   document.getElementById("funnel").innerHTML=st.map(x=>`
-    <div class="frow" data-stage="${x.s}" data-tip="<b>${x.s}</b><br>${x.c} opportunities<br>Contract revenue AED ${aed(x.v)}<br>Weighted AED ${aed(x.w)} (${Math.round(L.prob[x.s]*100)}% planning weight)">
-      <div class="st">${x.s}</div>
-      <div><div class="track"><div class="bar ${x.c?"":"z"}" style="width:${Math.max(12,x.c/max*100)}%">${x.c}</div></div><div class="fval">AED ${aed(x.v)}</div></div>
+    <div class="frow" data-stage="${x.s}" data-tip="${esc(`<b>${v(x.s)}</b><br>${t("{n} opportunities",{n:x.c})}<br>${t("Contract revenue {v}",{v:cur(x.v)})}<br>${t("Weighted {v} ({p}% planning weight)",{v:cur(x.w),p:Math.round(L.prob[x.s]*100)})}`)}">
+      <div class="st">${v(x.s)}</div>
+      <div><div class="track"><div class="bar ${x.c?"":"z"}" style="width:${Math.max(12,x.c/max*100)}%">${x.c}</div></div><div class="fval">${cur(x.v)}</div></div>
     </div>`).join("");
 }
 function hbars(id,items,cls=""){
   const max=Math.max(1,...items.map(x=>x.v));
   document.getElementById(id).innerHTML=items.length?items.map(x=>`
-    <div class="hb ${cls}" data-fk="${x.fk||""}" data-fv="${esc(x.k)}" data-tip="<b>${esc(x.k)}</b><br>AED ${aed(x.v,false)}<br>${x.c} opportunit${x.c===1?"y":"ies"}">
-      <div class="n" title="${esc(x.k)}">${esc(x.k)}</div><div class="tr"><div class="f" style="width:${x.v/max*100}%"></div></div><div class="val">${aed(x.v)}</div>
-    </div>`).join(""):`<div class="empty">No data</div>`;
+    <div class="hb ${cls}" data-fk="${x.fk||""}" data-fv="${esc(x.k)}" data-tip="${esc(`<b>${esc(v(x.k))}</b><br>${cur(x.v,false)}<br>${t(x.c===1?"{n} opportunity":"{n} opportunities",{n:x.c})}`)}">
+      <div class="n" title="${esc(v(x.k))}">${esc(v(x.k))}</div><div class="tr"><div class="f" style="width:${x.v/max*100}%"></div></div><div class="val">${aed(x.v)}</div>
+    </div>`).join(""):`<div class="empty">${t("No data")}</div>`;
 }
 function groupBy(rs,k,order){
   const m={}; rs.forEach(r=>{const key=(r[k]||"Unassigned");(m[key]=m[key]||{k:key,c:0,v:0,fk:k});m[key].c++;m[key].v+=r._.life});
@@ -633,14 +671,14 @@ function renderDonut(rs){
   const R=62,r=40,cx=75,cy=75; let ang=-Math.PI/2; const gap=tot>1?0.025:0;
   const arcs=parts.filter(p=>p.c).map(p=>{
     const span=p.c/tot*Math.PI*2; const a0=ang+gap/2,a1=ang+span-gap/2; ang+=span;
-    if(p.c===tot) return `<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${STATUS_C[p.s]}" stroke-width="${R-r}" data-tip="${p.s}: ${p.c}"/>`;
+    if(p.c===tot) return `<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${STATUS_C[p.s]}" stroke-width="${R-r}" data-tip="${esc(v(p.s))}: ${p.c}"/>`;
     const lg=a1-a0>Math.PI?1:0, P=(rad,t)=>[cx+rad*Math.cos(t),cy+rad*Math.sin(t)].map(v=>v.toFixed(2)).join(" ");
-    return `<path d="M${P(R,a0)} A${R} ${R} 0 ${lg} 1 ${P(R,a1)} L${P(r,a1)} A${r} ${r} 0 ${lg} 0 ${P(r,a0)}Z" fill="${STATUS_C[p.s]}" data-status="${p.s}" style="cursor:pointer" data-tip="<b>${p.s}</b><br>${p.c} of ${tot} (${Math.round(p.c/tot*100)}%)"/>`;
+    return `<path d="M${P(R,a0)} A${R} ${R} 0 ${lg} 1 ${P(R,a1)} L${P(r,a1)} A${r} ${r} 0 ${lg} 0 ${P(r,a0)}Z" fill="${STATUS_C[p.s]}" data-status="${p.s}" style="cursor:pointer" data-tip="${esc(`<b>${v(p.s)}</b><br>${t("{c} of {t} ({p}%)",{c:p.c,t:tot,p:Math.round(p.c/tot*100)})}`)}"/>`;
   }).join("");
   document.getElementById("donut").innerHTML=`
-   <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Status breakdown">${arcs||`<circle cx="75" cy="75" r="51" fill="none" stroke="var(--line)" stroke-width="22"/>`}
-   <text x="75" y="76" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">${tot}</text><text x="75" y="95" text-anchor="middle" font-size="12" fill="var(--muted)">Active</text></svg>
-   <div class="legend">${parts.map(p=>`<div data-status="${p.s}"><i style="background:${STATUS_C[p.s]}"></i>${p.s}<b>${p.c}</b></div>`).join("")}</div>`;
+   <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="${t("Status breakdown")}">${arcs||`<circle cx="75" cy="75" r="51" fill="none" stroke="var(--line)" stroke-width="22"/>`}
+   <text x="75" y="76" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">${tot}</text><text x="75" y="95" text-anchor="middle" font-size="12" fill="var(--muted)">${t("Active")}</text></svg>
+   <div class="legend">${parts.map(p=>`<div data-status="${p.s}"><i style="background:${STATUS_C[p.s]}"></i>${v(p.s)}<b>${p.c}</b></div>`).join("")}</div>`;
 }
 function timingBuckets(rs){
   const a=rs.filter(r=>r._.active);
@@ -653,38 +691,38 @@ function timingBuckets(rs){
 }
 function renderNA(rs){
   const b=timingBuckets(rs);
-  const it=(k,cls,lab)=>`<button class="${cls}" data-timing="${k}"><b>${b[k].length}</b><span>${lab}</span>${IC.chev}</button>`;
+  const it=(k,cls,lab)=>`<button class="${cls}" data-timing="${k}"><b>${b[k].length}</b><span>${t(lab)}</span>${IC.chev}</button>`;
   document.getElementById("na").innerHTML=it("overdue","od","Overdue")+it("soon","","Due in next 30 days")+it("later","","Due after 30 days")+it("none","nd","No due date set");
 }
 function renderStrip(k){
-  const t=(n,lab,cls,act)=>`<button class="${n?cls:""}" ${act}><b>${n}</b><span>${lab}</span></button>`;
+  const tile=(n,lab,cls,act)=>`<button class="${n?cls:""}" ${act}><b>${n}</b><span>${t(lab)}</span></button>`;
   document.getElementById("strip").innerHTML=
-    t(k.dg,"DG decisions pending","hot",'data-goto="decisions"')+t(k.overdue,"Overdue actions","hot",'data-timing="overdue"')+
-    t(k.delayed,"Delayed","hot",'data-status="Delayed"')+t(k.attn,"Needs attention","wn",'data-status="Attention"');
+    tile(k.dg,"DG decisions pending","hot",'data-goto="decisions"')+tile(k.overdue,"Overdue actions","hot",'data-timing="overdue"')+
+    tile(k.delayed,"Delayed","hot",'data-status="Delayed"')+tile(k.attn,"Needs attention","wn",'data-status="Attention"');
 }
 function renderCapital(k){
   const T=k.totalCapex||1, split=k.raktaCapex+k.external+k.externalPipe;
-  const seg=(v,c,lab)=>v>0?`<div style="flex:${v/T};background:${c}" data-tip="${lab}: AED ${aed(v,false)}"></div>`:"";
+  const seg=(v,c,lab)=>v>0?`<div style="flex:${v/T};background:${c}" data-tip="${esc(t(lab))}: ${esc(cur(v,false))}"></div>`:"";
   const ext=k.external+k.externalPipe;
   document.getElementById("capital").innerHTML=`
-    <div class="caprow"><span>Total project CAPEX</span><b>AED ${aed(k.totalCapex)}</b></div>
-    <div class="stack" role="img" aria-label="Capital split">${seg(k.raktaCapex,"var(--navy)","RAKTA")}${seg(ext,"var(--accent)","External")}${seg(k.unsplit,"var(--line)","Not yet split")}</div>
-    <div class="caprow"><span><i style="background:var(--navy)"></i>RAKTA CAPEX required</span><b>${aed(k.raktaCapex)}</b></div>
-    <div class="caprow"><span><i style="background:var(--accent)"></i>External capital</span><b>${aed(ext)}</b></div>
-    <div class="caprow"><span><i style="background:var(--line)"></i>Not yet split (RAKTA share unknown)</span><b>${aed(k.unsplit)}</b></div>
-    <div class="sec" style="margin-top:12px">CAPEX avoided by status</div>
-    ${L.avoid.map(x=>`<div class="caprow"><span>${x}${x==="Potential"?' <span class="note">(not reported as avoided)</span>':""}</span><b>${aed(k.avoidedBy[x])}</b></div>`).join("")}`;
+    <div class="caprow"><span>${t("Total project CAPEX")}</span><b>${cur(k.totalCapex)}</b></div>
+    <div class="stack" role="img" aria-label="${t("Capital split")}">${seg(k.raktaCapex,"var(--navy)","RAKTA")}${seg(ext,"var(--accent)","External")}${seg(k.unsplit,"var(--line)","Not yet split")}</div>
+    <div class="caprow"><span><i style="background:var(--navy)"></i>${t("RAKTA CAPEX required")}</span><b>${aed(k.raktaCapex)}</b></div>
+    <div class="caprow"><span><i style="background:var(--accent)"></i>${t("External capital")}</span><b>${aed(ext)}</b></div>
+    <div class="caprow"><span><i style="background:var(--line)"></i>${t("Not yet split (RAKTA share unknown)")}</span><b>${aed(k.unsplit)}</b></div>
+    <div class="sec" style="margin-top:12px">${t("CAPEX avoided by status")}</div>
+    ${L.avoid.map(x=>`<div class="caprow"><span>${v(x)}${x==="Potential"?` <span class="note">${t("(not reported as avoided)")}</span>`:""}</span><b>${aed(k.avoidedBy[x])}</b></div>`).join("")}`;
 }
 function renderRing(k){
   const p=k.align, C=2*Math.PI*34;
   document.getElementById("ring").innerHTML=`<svg width="92" height="92" viewBox="0 0 92 92"><circle cx="46" cy="46" r="34" fill="none" stroke="var(--line)" stroke-width="9"/>
    <circle cx="46" cy="46" r="34" fill="none" stroke="var(--ok)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C}" transform="rotate(-90 46 46)"/>
    <text x="46" y="52" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">${Math.round(p*100)}%</text></svg>
-   <p>of active opportunities support an approved RAKTA strategic objective.<br><span class="note">${k.active-Math.round(p*k.active)} not aligned / TBD</span></p>`;
+   <p>${t("of active opportunities support an approved RAKTA strategic objective.")}<br><span class="note">${t("{n} not aligned / TBD",{n:k.active-Math.round(p*k.active)})}</span></p>`;
 }
 function miniTable(list,cols){
-  if(!list.length) return `<div class="empty">Nothing to show</div>`;
-  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?"num":""}" style="cursor:default">${c.h}</th>`).join("")}</tr></thead><tbody>${
+  if(!list.length) return `<div class="empty">${t("Nothing to show")}</div>`;
+  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?"num":""}" style="cursor:default">${t(c.h)}</th>`).join("")}</tr></thead><tbody>${
     list.map(r=>`<tr data-id="${esc(r.id)}">${cols.map(c=>`<td class="${c.num?"num":""} ${c.wrap?"wrapc":""}">${c.f(r)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 function attention(rs){
@@ -693,7 +731,7 @@ function attention(rs){
 }
 const C = {
   opp:{h:"Opportunity",wrap:1,f:r=>`<div class="oppcell">${logoHtml(r.customer,r.partnerRole)}<div><div class="id">${esc(r.id)}</div>${esc(r.name)}</div></div>`},
-  stage:{h:"Stage",f:r=>`<span class="pill">${esc(r.stage)}</span>`},
+  stage:{h:"Stage",f:r=>`<span class="pill">${esc(v(r.stage))}</span>`},
   status:{h:"Status",f:r=>statusHtml(r.status)},
   next:{h:"Next Action",wrap:1,f:r=>esc(r.nextAction||"—")},
   aowner:{h:"Action Owner",f:r=>esc(r.actionOwner||r.owner||"—")},
@@ -711,8 +749,8 @@ const TCOLS=[
   ["id","ID",r=>`<span class="id">${esc(r.id)}</span>`,"idc"],
   ["customer","Partner",r=>logoHtml(r.customer,r.partnerRole)],
   ["name","Opportunity",r=>esc(r.name),"wrapc"],
-  ["sector","Sector",r=>esc(r.sector||"")],
-  ["stage","Stage",r=>`<span class="pill">${esc(r.stage)}</span>`],
+  ["sector","Sector",r=>esc(v(r.sector||""))],
+  ["stage","Stage",r=>`<span class="pill">${esc(v(r.stage))}</span>`],
   ["status","Status",r=>statusHtml(r.status)],
   ["_life","Contract Revenue (AED)",r=>aed(r._.life,false),"num"],
   ["_weighted","Weighted (AED)",r=>aed(r._.weighted,false),"num"],
@@ -722,33 +760,34 @@ const TCOLS=[
   ["owner","Owner / Unit",ownerHtml],
   ["_flags","DQ",r=>r._.flags.length?`<span class="dq" data-tip="${esc(r._.flags.join("<br>"))}">${r._.flags.length}</span>`:`<span class="dq okk">✓</span>`]
 ];
-function ownerHtml(r){return `<div class="who"><b>${r.owner?esc(r.owner):'<span class="note">No owner</span>'}</b><small>${esc(r.unit||"No unit")}</small></div>`}
+function ownerHtml(r){return `<div class="who"><b>${r.owner?esc(r.owner):`<span class="note">${t("No owner")}</span>`}</b><small>${esc(r.unit?v(r.unit):t("No unit"))}</small></div>`}
 function tableRows(rs){
   let t=rs;
   if(S.tab==="Closed") t=t.filter(r=>CLOSED.includes(r.stage));
   else if(S.tab!=="All") t=t.filter(r=>r.stage===S.tab);
   if(S.timing){const b=timingBuckets(rs);const ids=new Set(b[S.timing].map(r=>r.id));t=t.filter(r=>ids.has(r.id))}
   const q=S.q.trim().toLowerCase();
-  if(q) t=t.filter(r=>[r.id,r.name,r.sector,r.customer,r.owner,r.nextAction,r.stage,r.status,r.objective,r.unit].join(" ").toLowerCase().includes(q));
+  if(q) t=t.filter(r=>{const f=[r.id,r.name,r.sector,r.customer,r.owner,r.nextAction,r.stage,r.status,r.objective,r.unit];return f.concat(f.map(x=>AR.val[String(x??"").trim()]||"")).join(" ").toLowerCase().includes(q)});
   const {k,d}=S.sort;
   const val=r=>k==="_life"?r._.life:k==="_weighted"?r._.weighted:k==="_flags"?r._.flags.length:k==="stage"?L.stage.indexOf(r.stage):(r[k]??"");
   return t.slice().sort((a,b)=>{const x=val(a),y=val(b);return (typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y),undefined,{numeric:true}))*d});
 }
 function renderTable(rs){
   const tabs=["All",...ACTIVE,"Closed"];
-  document.getElementById("tabs").innerHTML=tabs.map(t=>{
-    const c=t==="All"?rs.length:t==="Closed"?rs.filter(r=>CLOSED.includes(r.stage)).length:rs.filter(r=>r.stage===t).length;
-    return `<button class="${S.tab===t?"on":""}" data-tab="${t}">${t} (${c})</button>`}).join("");
+  document.getElementById("tabs").innerHTML=tabs.map(tb=>{
+    const c=tb==="All"?rs.length:tb==="Closed"?rs.filter(r=>CLOSED.includes(r.stage)).length:rs.filter(r=>r.stage===tb).length;
+    return `<button class="${S.tab===tb?"on":""}" data-tab="${tb}">${tb==="All"||tb==="Closed"?t(tb):esc(v(tb))} (${c})</button>`}).join("");
   const labels={overdue:"Overdue",soon:"Due in next 30 days",later:"Due after 30 days",none:"No due date"};
-  document.getElementById("timingChip").innerHTML=S.timing?`<span class="pill">Next action: ${labels[S.timing]} <button class="link" id="clearTiming" style="margin-left:6px" aria-label="Clear">✕</button></span>`:"";
-  const t=tableRows(rs), pages=Math.max(1,Math.ceil(t.length/PER));
+  document.getElementById("timingChip").innerHTML=S.timing?`<span class="pill">${t("Next action: {x}",{x:t(labels[S.timing])})} <button class="link" id="clearTiming" style="margin-inline-start:6px" aria-label="${t("Clear")}">✕</button></span>`:"";
+  const t_=tableRows(rs), pages=Math.max(1,Math.ceil(t_.length/PER));
   S.page=Math.min(S.page,pages);
-  const pg=t.slice((S.page-1)*PER,S.page*PER);
-  document.getElementById("tbl").innerHTML=`<thead><tr>${TCOLS.map(c=>`<th class="${c[3]==="num"?"num":""}" data-sort="${c[0]}">${c[1]}${S.sort.k===c[0]?(S.sort.d>0?" ▲":" ▼"):""}</th>`).join("")}</tr></thead>
-    <tbody>${pg.length?pg.map(r=>`<tr data-id="${esc(r.id)}">${TCOLS.map(c=>`<td class="${c[3]||""}">${c[2](r)}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${TCOLS.length}" class="empty">No opportunities match</td></tr>`}</tbody>`;
-  let pb=`<span>Showing ${pg.length} of ${t.length} opportunities</span><button data-pg="${S.page-1}" ${S.page<=1?"disabled":""} aria-label="Previous">‹</button>`;
+  const pg=t_.slice((S.page-1)*PER,S.page*PER);
+  document.getElementById("tbl").innerHTML=`<thead><tr>${TCOLS.map(c=>`<th class="${c[3]==="num"?"num":""}" data-sort="${c[0]}">${t(c[1])}${S.sort.k===c[0]?(S.sort.d>0?" ▲":" ▼"):""}</th>`).join("")}</tr></thead>
+    <tbody>${pg.length?pg.map(r=>`<tr data-id="${esc(r.id)}">${TCOLS.map(c=>`<td class="${c[3]||""}">${c[2](r)}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${TCOLS.length}" class="empty">${t("No opportunities match")}</td></tr>`}</tbody>`;
+  const rtl=LANG==="ar";
+  let pb=`<span>${t("Showing {a} of {b} opportunities",{a:pg.length,b:t_.length})}</span><button data-pg="${S.page-1}" ${S.page<=1?"disabled":""} aria-label="${t("Previous")}">${rtl?"›":"‹"}</button>`;
   for(let i=1;i<=pages;i++) pb+=`<button data-pg="${i}" class="${i===S.page?"on":""}">${i}</button>`;
-  pb+=`<button data-pg="${S.page+1}" ${S.page>=pages?"disabled":""} aria-label="Next">›</button>`;
+  pb+=`<button data-pg="${S.page+1}" ${S.page>=pages?"disabled":""} aria-label="${t("Next")}">${rtl?"‹":"›"}</button>`;
   document.getElementById("pager").innerHTML=pb;
 }
 
@@ -760,13 +799,13 @@ function renderDecisions(rs){
   document.getElementById("attnTbl").innerHTML=miniTable(at,[C.opp,C.stage,C.status,C.next,C.aowner,C.due,C.od,C.issue]);
   const pre=rs.filter(r=>PRE.includes(r.stage));
   const max=Math.max(1,...PRE.map(s=>sum(pre.filter(r=>r.stage===s),r=>r._.life)));
-  document.getElementById("weighted").innerHTML=`<div class="hbars">${PRE.map(s=>{const g=pre.filter(r=>r.stage===s),v=sum(g,r=>r._.life),w=sum(g,r=>r._.weighted);
-    return `<div class="hb" data-tip="<b>${s}</b> (${Math.round(L.prob[s]*100)}%)<br>Open AED ${aed(v,false)}<br>Weighted AED ${aed(w,false)}"><div class="n">${s}</div>
-      <div class="tr" style="background:var(--accent-soft);width:${v/max*100}%;border-radius:0 4px 4px 0"><div class="f" style="width:${v?w/v*100:0}%"></div></div><div class="val">${aed(w)}</div></div>`}).join("")}</div>
-      <div class="legend" style="flex-direction:row;gap:16px;margin-top:12px"><div><i style="background:var(--accent);border-radius:2px"></i>Weighted</div><div><i style="background:var(--accent-soft);border-radius:2px;outline:1px solid var(--line)"></i>Indicative (unweighted)</div></div>`;
+  document.getElementById("weighted").innerHTML=`<div class="hbars">${PRE.map(s=>{const g=pre.filter(r=>r.stage===s),o=sum(g,r=>r._.life),w=sum(g,r=>r._.weighted);
+    return `<div class="hb" data-tip="${esc(`<b>${v(s)}</b> (${Math.round(L.prob[s]*100)}%)<br>${t("Open {v}",{v:cur(o,false)})}<br>${t("Weighted {v}",{v:cur(w,false)})}`)}"><div class="n">${v(s)}</div>
+      <div class="tr bg" style="width:${o/max*100}%"><div class="f" style="width:${o?w/o*100:0}%"></div></div><div class="val">${aed(w)}</div></div>`}).join("")}</div>
+      <div class="legend" style="flex-direction:row;gap:16px;margin-top:12px"><div><i style="background:var(--accent);border-radius:2px"></i>${t("Weighted")}</div><div><i style="background:var(--accent-soft);border-radius:2px;outline:1px solid var(--line)"></i>${t("Indicative (unweighted)")}</div></div>`;
   const cl=rs.filter(r=>CLOSED.includes(r.stage));
-  document.getElementById("closed").innerHTML=`<div class="legend" style="margin-bottom:10px">${CLOSED.map(s=>`<div><i style="background:var(--hold)"></i>${s}<b>${cl.filter(r=>r.stage===s).length}</b></div>`).join("")}</div>`+
-    (cl.length?`<div class="tscroll">${miniTable(cl,[C.opp,C.stage,{h:"Closure Reason",f:r=>esc(r.closure||"—")}])}</div>`:"");
+  document.getElementById("closed").innerHTML=`<div class="legend" style="margin-bottom:10px">${CLOSED.map(s=>`<div><i style="background:var(--hold)"></i>${v(s)}<b>${cl.filter(r=>r.stage===s).length}</b></div>`).join("")}</div>`+
+    (cl.length?`<div class="tscroll">${miniTable(cl,[C.opp,C.stage,{h:"Closure Reason",f:r=>esc(r.closure?v(r.closure):"—")}])}</div>`:"");
 }
 function renderAttnMini(rs){
   const at=attention(rs);
@@ -776,22 +815,22 @@ function renderAttnMini(rs){
 function renderQuality(rs){
   const f=rs.filter(r=>r._.flags.length).sort((a,b)=>b._.flags.length-a._.flags.length||a.id.localeCompare(b.id));
   const total=sum(rs,r=>r._.flags.length);
-  document.getElementById("dqSum").textContent=`${f.length} of ${rs.length} records · ${total} flags`;
-  document.getElementById("dqTbl").innerHTML=miniTable(f,[C.opp,C.stage,C.status,{h:"Owner",f:r=>esc(r.owner||"—")},{h:"Flags",wrap:1,f:r=>`<ul style="margin:0;padding-left:16px">${r._.flags.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}]);
+  document.getElementById("dqSum").textContent=t("{a} of {b} records · {c} flags",{a:f.length,b:rs.length,c:total});
+  document.getElementById("dqTbl").innerHTML=miniTable(f,[C.opp,C.stage,C.status,{h:"Owner",f:r=>esc(r.owner||"—")},{h:"Flags",wrap:1,f:r=>`<ul style="margin:0;padding-inline-start:16px">${r._.flags.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}]);
 }
 const SNAPK=[["active","Active"],["open","Pipeline Revenue"],["contracted","Contracted"],["opRev","Op. Revenue"],["external","External Capital"],["avoided","CAPEX Avoided"],["overdue","Overdue"],["dg","DG Decisions"]];
 function renderSnaps(){
   const el=document.getElementById("snapTbl");
-  if(!SNAPS.length){el.innerHTML=`<div class="empty">No snapshots yet. Record one at each month-end review.</div>`;return}
-  el.innerHTML=`<table><thead><tr><th>Date</th>${SNAPK.map(s=>`<th class="num">${s[1]}</th>`).join("")}</tr></thead><tbody>${
+  if(!SNAPS.length){el.innerHTML=`<div class="empty">${t("No snapshots yet. Record one at each month-end review.")}</div>`;return}
+  el.innerHTML=`<table><thead><tr><th>${t("Date")}</th>${SNAPK.map(s=>`<th class="num">${t(s[1])}</th>`).join("")}</tr></thead><tbody>${
     SNAPS.slice().reverse().map(s=>`<tr style="cursor:default"><td>${fdate(s.date)}</td>${SNAPK.map(([k])=>`<td class="num">${["open","contracted","opRev","external","avoided"].includes(k)?(s[k]==null?"—":aed(s[k])):s[k]??"—"}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function renderPartners(){
   const el=document.getElementById("plist"); if(!el) return;
   const names=[...new Set(DATA.map(d=>d.customer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-  el.innerHTML=names.length?names.map(nm=>{const c=DATA.filter(d=>d.customer===nm).length;return `<div class="prow">${logoHtml(nm)}<span class="nm" title="${esc(nm)}">${esc(nm)}<br><span class="note">${c} opportunit${c===1?"y":"ies"}</span></span>
-    <button class="btn" data-up="${esc(nm)}">${LOGOS[pkey(nm)]?"Replace":"Upload"}</button>${LOGOS[pkey(nm)]?`<button class="btn danger" data-rm="${esc(nm)}" aria-label="Remove logo">✕</button>`:""}</div>`}).join(""):`<div class="empty">No partners recorded yet</div>`;
+  el.innerHTML=names.length?names.map(nm=>{const c=DATA.filter(d=>d.customer===nm).length;return `<div class="prow">${logoHtml(nm)}<span class="nm" title="${esc(nm)}">${esc(nm)}<br><span class="note">${t(c===1?"{n} opportunity":"{n} opportunities",{n:c})}</span></span>
+    <button class="btn" data-up="${esc(nm)}">${t(LOGOS[pkey(nm)]?"Replace":"Upload")}</button>${LOGOS[pkey(nm)]?`<button class="btn danger" data-rm="${esc(nm)}" aria-label="${t("Remove logo")}">✕</button>`:""}</div>`}).join(""):`<div class="empty">${t("No partners recorded yet")}</div>`;
 }
 function render(){
   renderChrome(); renderFilters();
@@ -810,64 +849,64 @@ function openDrawer(){drawer.classList.add("on");scrim.classList.add("on")}
 function closeDrawer(){drawer.classList.remove("on");scrim.classList.remove("on")}
 function showDetail(id){
   const o=DATA.find(x=>x.id===id); if(!o) return; const d=derive(o);
-  document.getElementById("dId").innerHTML=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:4px">${logoHtml(o.customer,o.partnerRole,"lg")}<span>${esc(o.id)} · ${esc(o.sector||"")}</span></div>`;
+  document.getElementById("dId").innerHTML=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:4px">${logoHtml(o.customer,o.partnerRole,"lg")}<span>${esc(o.id)} · ${esc(v(o.sector||""))}</span></div>`;
   document.getElementById("dTitle").textContent=o.name;
-  const kv=(pairs)=>`<dl class="kv">${pairs.map(([k,v])=>`<dt>${k}</dt><dd>${v||"<span class='note'>—</span>"}</dd>`).join("")}</dl>`;
-  const g=k=>esc(o[k]??"");
+  const kv=(pairs)=>`<dl class="kv">${pairs.map(([k,x])=>`<dt>${t(k)}</dt><dd>${x||"<span class='note'>—</span>"}</dd>`).join("")}</dl>`;
+  const g=k=>esc(o[k]??""), gv=k=>esc(v(o[k]??""));
   document.getElementById("dBody").innerHTML=
-    (d.flags.length?`<div class="flags"><b>${d.flags.length} data quality flag${d.flags.length>1?"s":""}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:"")+
-    `<div class="sec">Overview</div>`+kv([["Stage",`<span class="pill">${g("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Estimate Confidence",confHtml(o.confidence)],["Strategic Objective",g("objective")],["Delivery Model",g("model")],["Partner",g("customer")+[o.partnerRole,o.custType].filter(Boolean).map(x=>` <span class="note">· ${esc(x)}</span>`).join("")],["Owner (person)",g("owner")],["Owning Unit",g("unit")]])+
-    `<div class="sec">Financials (AED)</div>`+kv([["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?o.term+" years":""],["Indicative Contract Revenue",aed(d.life,false)],["Stage Weight (planning)",Math.round(d.prob*100)+"%"],["Weighted Pipeline Revenue",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
-    `<div class="sec">Capital &amp; CAPEX avoidance (AED)</div>`+kv([["Total Project CAPEX",o.totalCapex!=null?aed(o.totalCapex,false):""],["RAKTA CAPEX Required",o.raktaCapex!=null?aed(o.raktaCapex,false):""],["External Capital",d.external?aed(d.external,false):""],["Counterfactual RAKTA CAPEX",o.baselineCapex!=null?aed(o.baselineCapex,false):"N/A — no avoidance claimed"],["CAPEX Avoided",d.avoidStatus?aed(d.avoided,false)+` <span class="pill">${esc(d.avoidStatus)}</span>`:""],["Baseline Source",g("baselineSource")]])+
-    `<div class="sec">Next Action</div>`+kv([["Next Action",g("nextAction")],["Action Owner",g("actionOwner")],["Due Date",o.due?dueHtml(Object.assign({},o,{_:d}))+(d.overdue?` <span class="late">(${d.overdue} days overdue)</span>`:""):""],["Key Issue / Dependency",g("issue")],["Progress Note",g("note")],["Last Updated",fdate(o.lastUpdated)]])+
-    `<div class="sec">Governance</div>`+kv([["DG Decision Required",g("dgReq")],["DG Decision / Escalation",g("dgDetail")],["Last Gate Decision",g("gateDecision")],["Gate Date",fdate(o.gateDate)],["Approval Body",g("approvalBody")],["Decision Reference",g("decisionRef")],["Closure Reason",g("closure")]]);
-  document.getElementById("dFoot").innerHTML=ROLE==="im"?`<button class="btn danger" data-del="${esc(o.id)}">Delete</button><span style="flex:1"></span><button class="btn pri" data-edit="${esc(o.id)}">Edit</button>`:`<span class="note">View only — the Investment Manager maintains this record.</span>`;
+    (d.flags.length?`<div class="flags"><b>${t(d.flags.length>1?"{n} data quality flags":"{n} data quality flag",{n:d.flags.length})}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:"")+
+    `<div class="sec">${t("Overview")}</div>`+kv([["Stage",`<span class="pill">${gv("stage")}</span>`],["Status",statusHtml(o.status)],["Priority",g("priority")],["Estimate Confidence",confHtml(o.confidence)],["Strategic Objective",gv("objective")],["Delivery Model",gv("model")],["Partner",g("customer")+[o.partnerRole,o.custType].filter(Boolean).map(x=>` <span class="note">· ${esc(v(x))}</span>`).join("")],["Owner (person)",g("owner")],["Owning Unit",gv("unit")]])+
+    `<div class="sec">${t("Financials (AED)")}</div>`+kv([["Expected Annual Revenue",o.annualRev!=null?aed(o.annualRev,false):""],["Term",o.term?t("{n} years",{n:o.term}):""],["Indicative Contract Revenue",aed(d.life,false)],["Stage Weight (planning)",Math.round(d.prob*100)+"%"],["Weighted Pipeline Revenue",aed(d.weighted,false)],["Contracted Value",o.contracted!=null?aed(o.contracted,false):""]])+
+    `<div class="sec">${t("Capital & CAPEX avoidance (AED)")}</div>`+kv([["Total Project CAPEX",o.totalCapex!=null?aed(o.totalCapex,false):""],["RAKTA CAPEX Required",o.raktaCapex!=null?aed(o.raktaCapex,false):""],["External Capital",d.external?aed(d.external,false):""],["Counterfactual RAKTA CAPEX",o.baselineCapex!=null?aed(o.baselineCapex,false):t("N/A — no avoidance claimed")],["CAPEX Avoided",d.avoidStatus?aed(d.avoided,false)+` <span class="pill">${esc(v(d.avoidStatus))}</span>`:""],["Baseline Source",g("baselineSource")]])+
+    `<div class="sec">${t("Next Action")}</div>`+kv([["Next Action",g("nextAction")],["Action Owner",g("actionOwner")],["Due Date",o.due?dueHtml(Object.assign({},o,{_:d}))+(d.overdue?` <span class="late">${t("({n} days overdue)",{n:d.overdue})}</span>`:""):""],["Key Issue / Dependency",g("issue")],["Progress Note",g("note")],["Last Updated",fdate(o.lastUpdated)]])+
+    `<div class="sec">${t("Governance")}</div>`+kv([["DG Decision Required",gv("dgReq")],["DG Decision / Escalation",g("dgDetail")],["Last Gate Decision",gv("gateDecision")],["Gate Date",fdate(o.gateDate)],["Approval Body",gv("approvalBody")],["Decision Reference",g("decisionRef")],["Closure Reason",gv("closure")]]);
+  document.getElementById("dFoot").innerHTML=ROLE==="im"?`<button class="btn danger" data-del="${esc(o.id)}">${t("Delete")}</button><span style="flex:1"></span><button class="btn pri" data-edit="${esc(o.id)}">${t("Edit")}</button>`:`<span class="note">${t("View only — the Investment Manager maintains this record.")}</span>`;
   openDrawer();
 }
 function nextId(){const m=Math.max(0,...DATA.map(o=>+(String(o.id).match(/(\d+)$/)||[0,0])[1]));return "INV-"+String(m+1).padStart(3,"0")}
-function inputFor(f,v){
-  const [k,head,type,list,req,disp]=f; const lab=disp||head; const val=esc(v??"");
+function inputFor(f,cv){
+  const [k,head,type,list,req,disp]=f; const lab=t(disp||head); const val=esc(cv??"");
   const l=`<span>${lab}${req?" <em>*</em>":""}</span>`;
   let inp;
-  if(type==="sel") inp=`<select name="${k}"><option value="">—</option>${L[list].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}${v&&!L[list].includes(v)?`<option selected>${val}</option>`:""}</select>`;
+  if(type==="sel") inp=`<select name="${k}"><option value="">—</option>${L[list].map(x=>`<option value="${esc(x)}" ${x===cv?"selected":""}>${esc(v(x))}</option>`).join("")}${cv&&!L[list].includes(cv)?`<option value="${val}" selected>${val}</option>`:""}</select>`;
   else if(type==="area") inp=`<textarea name="${k}">${val}</textarea>`;
-  else inp=`<input name="${k}" type="${type==="num"?"number":type==="date"?"date":"text"}" ${type==="num"?'min="0" step="any"':""} value="${val}" ${k==="id"?"readonly class='calc'":""} ${k==="owner"?'placeholder="Full name, e.g. A. Al Zaabi"':""} ${k==="customer"?'list="partnerList" placeholder="e.g. RAKEZ"':""}>`;
+  else inp=`<input name="${k}" type="${type==="num"?"number":type==="date"?"date":"text"}" ${type==="num"?'min="0" step="any"':""} value="${val}" ${k==="id"?"readonly class='calc'":""} ${k==="owner"?`placeholder="${t("Full name, e.g. A. Al Zaabi")}"`:""} ${k==="customer"?`list="partnerList" placeholder="${t("e.g. RAKEZ")}"`:""}>`;
   return `<label class="${type==="area"?"full":""}" data-k="${k}">${l}${inp}</label>`;
 }
 function showForm(id){
   const isNew=!id; const o=isNew?{id:nextId(),stage:"Opportunity",status:"On Track",lastUpdated:TODAY,dgReq:"N"}:clone(DATA.find(x=>x.id===id));
-  document.getElementById("dId").textContent=isNew?"New opportunity":o.id;
-  document.getElementById("dTitle").textContent=isNew?"Add Investment Opportunity":"Edit: "+o.name;
-  const grp=(t,keys)=>`<h4>${t}</h4>`+keys.map(k=>inputFor(FK[k],o[k])).join("");
+  document.getElementById("dId").textContent=isNew?t("New opportunity"):o.id;
+  document.getElementById("dTitle").textContent=isNew?t("Add Investment Opportunity"):t("Edit: {x}",{x:o.name});
+  const grp=(ti,keys)=>`<h4>${t(ti)}</h4>`+keys.map(k=>inputFor(FK[k],o[k])).join("");
   document.getElementById("dBody").innerHTML=`<form class="form" id="oppForm" autocomplete="off">
     ${grp("Identity",["id","name","sector","model","objective"])}
-    <h4>Partner</h4>
+    <h4>${t("Partner")}</h4>
     ${["customer","partnerRole","custType"].map(k=>inputFor(FK[k],o[k])).join("")}
-    <label>Partner logo <span class="note" style="font-weight:400">(PNG / JPG / SVG, shared by every opportunity with this partner)</span>
+    <label>${t("Partner logo")} <span class="note" style="font-weight:400">${t("(PNG / JPG / SVG, shared by every opportunity with this partner)")}</span>
       <span style="display:flex;gap:8px;align-items:center"><span id="logoPrev"></span><input type="file" id="logoIn" accept="image/*"></span></label>
     <datalist id="partnerList">${[...new Set(DATA.map(d=>d.customer).filter(Boolean))].sort().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
-    <h4>Accountability</h4>
+    <h4>${t("Accountability")}</h4>
     ${["owner","unit"].map(k=>inputFor(FK[k],o[k])).join("")}
-    <p class="hint">Owner is the individual to follow up with; Owning Unit is the department.</p>
+    <p class="hint">${t("Owner is the individual to follow up with; Owning Unit is the department.")}</p>
     ${grp("Stage & health",["stage","status","priority","confidence"])}
-    <p class="hint">Estimate Confidence = quality of the commercial / financial evidence behind the numbers (High: customer or contract evidence · Medium: reasonable assumptions · Low: preliminary estimate). It is not the probability of closing.</p>
+    <p class="hint">${t("Estimate Confidence = quality of the commercial / financial evidence behind the numbers (High: customer or contract evidence · Medium: reasonable assumptions · Low: preliminary estimate). It is not the probability of closing.")}</p>
     ${grp("Revenue (AED)",["annualRev","term","contracted"])}
-    <label>Indicative Contract Revenue (calc)<input class="calc" id="cLife" readonly></label><label>Weighted Pipeline Revenue (calc)<input class="calc" id="cW" readonly></label>
+    <label>${t("Indicative Contract Revenue (calc)")}<input class="calc" id="cLife" readonly></label><label>${t("Weighted Pipeline Revenue (calc)")}<input class="calc" id="cW" readonly></label>
     ${grp("Capital (AED)",["totalCapex","raktaCapex"])}
-    <label>External Capital (calc)<input class="calc" id="cExt" readonly></label><span></span>
-    <h4>CAPEX avoidance — optional</h4>
-    <p class="hint">Fill this in only if RAKTA would otherwise have had to fund the asset itself, for example because it is in the approved capital plan. Leave it blank for normal service contracts.</p>
+    <label>${t("External Capital (calc)")}<input class="calc" id="cExt" readonly></label><span></span>
+    <h4>${t("CAPEX avoidance — optional")}</h4>
+    <p class="hint">${t("Fill this in only if RAKTA would otherwise have had to fund the asset itself, for example because it is in the approved capital plan. Leave it blank for normal service contracts.")}</p>
     ${["baselineCapex","avoidStatus","baselineSource"].map(k=>inputFor(FK[k],o[k])).join("")}
-    <label>CAPEX Avoided (calc)<input class="calc" id="cAv" readonly></label>
+    <label>${t("CAPEX Avoided (calc)")}<input class="calc" id="cAv" readonly></label>
     ${grp("Next action",["nextAction","actionOwner","due","issue","note","lastUpdated"])}
     ${grp("Governance",["dgReq","dgDetail","gateDecision","gateDate","approvalBody","decisionRef","closure"])}
     <div class="full flags" id="formFlags" hidden></div>
   </form>`;
-  document.getElementById("dFoot").innerHTML=`<button class="btn" id="cancelForm">Cancel</button><button class="btn pri" id="saveForm">${isNew?"Add opportunity":"Save changes"}</button>`;
+  document.getElementById("dFoot").innerHTML=`<button class="btn" id="cancelForm">${t("Cancel")}</button><button class="btn pri" id="saveForm">${t(isNew?"Add opportunity":"Save changes")}</button>`;
   const form=document.getElementById("oppForm");
-  const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=aed(d.weighted,false)+` (${Math.round(d.prob*100)}% planning weight)`;
-    document.getElementById("cExt").value=x.raktaCapex!=null?aed(d.external,false):"Enter RAKTA CAPEX";document.getElementById("cAv").value=d.avoidStatus?aed(d.avoided,false):"N/A";
-    const ff=document.getElementById("formFlags");ff.hidden=!d.flags.length;ff.innerHTML=`<b>Will be flagged:</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`};
+  const upd=()=>{const x=readForm(form);const d=derive(x);document.getElementById("cLife").value=aed(d.life,false);document.getElementById("cW").value=t("{v} ({p}% planning weight)",{v:aed(d.weighted,false),p:Math.round(d.prob*100)});
+    document.getElementById("cExt").value=x.raktaCapex!=null?aed(d.external,false):t("Enter RAKTA CAPEX");document.getElementById("cAv").value=d.avoidStatus?aed(d.avoided,false):t("N/A");
+    const ff=document.getElementById("formFlags");ff.hidden=!d.flags.length;ff.innerHTML=`<b>${t("Will be flagged:")}</b><ul>${d.flags.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`};
   let newLogo=null;
   const prev=()=>{const nm=form.querySelector("[name=customer]").value.trim();document.getElementById("logoPrev").innerHTML=newLogo?`<span class="logo"><img src="${newLogo}" alt=""></span>`:logoHtml(nm)};
   form.querySelector("[name=customer]").addEventListener("input",prev); prev();
@@ -877,12 +916,12 @@ function showForm(id){
   document.getElementById("saveForm").onclick=()=>{
     const x=readForm(form); const bad=["name","sector","stage","status"].filter(k=>!x[k]);
     form.querySelectorAll("label").forEach(l=>l.querySelector("input,select,textarea")?.classList.toggle("bad",bad.includes(l.dataset.k)));
-    if(bad.length){toast("Please complete: "+bad.map(k=>FK[k][1]).join(", "));return}
+    if(bad.length){toast(t("Please complete: {x}",{x:bad.map(k=>t(FK[k][1])).join(LANG==="ar"?"، ":", ")}));return}
     if(isNew&&DATA.some(d=>d.id===x.id)) x.id=nextId();
     x.lastUpdated=TODAY;
     if(newLogo&&x.customer) setLogo(x.customer,newLogo);
     if(isNew) DATA.push(x); else DATA[DATA.findIndex(d=>d.id===id)]=x;
-    save(); toast(isNew?`${x.id} added`:`${x.id} updated`); showDetail(x.id);
+    save(); toast(t(isNew?"{id} added":"{id} updated",{id:x.id})); showDetail(x.id);
   };
   openDrawer();
 }
@@ -926,21 +965,21 @@ async function importFile(file){
     let recs;
     if(/\.csv$/i.test(file.name)) recs=parseCSV(await file.text());
     else{
-      if(!window.XLSX) throw new Error("Spreadsheet reader didn't load (offline?). Save the sheet as CSV and upload that instead.");
+      if(!window.XLSX) throw new Error(t("Spreadsheet reader didn't load (offline?). Save the sheet as CSV and upload that instead."));
       const wb=XLSX.read(await file.arrayBuffer(),{type:"array",cellDates:true});
       const name=wb.SheetNames.find(s=>/investment plan/i.test(s))||wb.SheetNames[0];
       recs=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:null,raw:true});
     }
     const clean=recs.map(cleanRecord).filter(Boolean);
-    if(!clean.length) throw new Error("No rows with an Investment ID and Opportunity name were found. Check the header row matches the template.");
+    if(!clean.length) throw new Error(t("No rows with an Investment ID and Opportunity name were found. Check the header row matches the template."));
     const mode=document.querySelector("input[name=mode]:checked").value;
     let added=0,updated=0;
-    if(mode==="replace"){ if(!confirm(`Replace all ${DATA.length} records with ${clean.length} from ${file.name}?`)) return; DATA=clean; added=clean.length }
+    if(mode==="replace"){ if(!confirm(t("Replace all {a} records with {b} from {f}?",{a:DATA.length,b:clean.length,f:file.name}))) return; DATA=clean; added=clean.length }
     else clean.forEach(c=>{const i=DATA.findIndex(d=>d.id===c.id); if(i>=0){DATA[i]=Object.assign({},DATA[i],c);updated++} else {DATA.push(c);added++}});
     save();
-    msg.innerHTML=`<b style="color:var(--ok)">Imported ${file.name}:</b> ${added} added, ${updated} updated. ${sum(rows(),r=>r._.flags.length)} data quality flags across the plan.`;
-    toast(`Import complete: ${added} added, ${updated} updated`);
-  }catch(e){msg.innerHTML=`<b style="color:var(--crit)">Import failed:</b> ${esc(e.message)}`}
+    msg.innerHTML=`<b style="color:var(--ok)">${esc(t("Imported {f}:",{f:file.name}))}</b> ${t("{a} added, {u} updated. {q} data quality flags across the plan.",{a:added,u:updated,q:sum(rows(),r=>r._.flags.length)})}`;
+    toast(t("Import complete: {a} added, {u} updated",{a:added,u:updated}));
+  }catch(e){msg.innerHTML=`<b style="color:var(--crit)">${t("Import failed:")}</b> ${esc(e.message)}`}
 }
 function exportRows(list,fmt){
   const hdr=[...F.map(f=>f[1]),"Indicative Contract Revenue (AED)","Stage Weight (planning)","Weighted Pipeline Revenue (AED)","External Capital (AED)","CAPEX Avoided (AED)","Days Overdue","Data Quality Flag"];
@@ -978,26 +1017,26 @@ document.addEventListener("mousemove",e=>{
 });
 
 document.addEventListener("click",e=>{
-  const t=e.target;
-  const nav=t.closest("#nav button"); if(nav){go(nav.dataset.v);return}
-  const g=t.closest("[data-goto]"); if(g){go(g.dataset.goto);return}
-  if(t.closest("#clearF")){S.filters={};S.page=1;render();return}
-  if(t.closest("#clearTiming")){S.timing=null;render();return}
-  const tm=t.closest("[data-timing]"); if(tm){S.timing=tm.dataset.timing;S.tab="All";S.page=1;go("opps");return}
-  const st=t.closest("[data-stage]"); if(st){S.tab=st.dataset.stage;S.timing=null;S.page=1;go("opps");return}
-  const lg=t.closest("[data-partner]"); if(lg&&!t.closest("#v-manage")&&!t.closest("#oppForm")){S.filters.customer=lg.dataset.partner;S.page=1;closeDrawer();render();toast("Filtered by "+lg.dataset.partner);return}
-  const up=t.closest("[data-up]"); if(up){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.onchange=async()=>{try{setLogo(up.dataset.up,await resizeImage(inp.files[0]));render();toast("Logo saved for "+up.dataset.up)}catch(err){toast(err.message)}};inp.click();return}
-  const rm=t.closest("[data-rm]"); if(rm){setLogo(rm.dataset.rm,null);render();return}
-  const ss=t.closest("[data-status]"); if(ss){S.filters.status=ss.dataset.status;S.page=1;render();return}
-  const hb=t.closest(".hb[data-fk]"); if(hb&&hb.dataset.fk){S.filters[hb.dataset.fk]=hb.dataset.fv==="Unassigned"?"":hb.dataset.fv;S.page=1;render();return}
-  const tab=t.closest("[data-tab]"); if(tab){S.tab=tab.dataset.tab;S.page=1;render();return}
-  const so=t.closest("th[data-sort]"); if(so){const k=so.dataset.sort;S.sort={k,d:S.sort.k===k?-S.sort.d:1};render();return}
-  const pg=t.closest("[data-pg]"); if(pg&&!pg.disabled){S.page=+pg.dataset.pg;render();return}
-  const ed=t.closest("[data-edit]"); if(ed){showForm(ed.dataset.edit);return}
-  const del=t.closest("[data-del]"); if(del){const id=del.dataset.del;
-    if(confirm(`Delete ${id}? Prefer setting Stage to Rejected or Withdrawn with a Closure Reason so the decision stays auditable.`)){DATA=DATA.filter(d=>d.id!==id);save();closeDrawer();toast(id+" deleted")}return}
-  const nw=t.closest("[data-act=new]"); if(nw){showForm(null);return}
-  const tr=t.closest("tr[data-id]"); if(tr){showDetail(tr.dataset.id);return}
+  const tg=e.target;
+  const nav=tg.closest("#nav button"); if(nav){go(nav.dataset.v);return}
+  const g=tg.closest("[data-goto]"); if(g){go(g.dataset.goto);return}
+  if(tg.closest("#clearF")){S.filters={};S.page=1;render();return}
+  if(tg.closest("#clearTiming")){S.timing=null;render();return}
+  const tm=tg.closest("[data-timing]"); if(tm){S.timing=tm.dataset.timing;S.tab="All";S.page=1;go("opps");return}
+  const st=tg.closest("[data-stage]"); if(st){S.tab=st.dataset.stage;S.timing=null;S.page=1;go("opps");return}
+  const lg=tg.closest("[data-partner]"); if(lg&&!tg.closest("#v-manage")&&!tg.closest("#oppForm")){S.filters.customer=lg.dataset.partner;S.page=1;closeDrawer();render();toast(t("Filtered by {x}",{x:lg.dataset.partner}));return}
+  const up=tg.closest("[data-up]"); if(up){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.onchange=async()=>{try{setLogo(up.dataset.up,await resizeImage(inp.files[0]));render();toast(t("Logo saved for {x}",{x:up.dataset.up}))}catch(err){toast(err.message)}};inp.click();return}
+  const rm=tg.closest("[data-rm]"); if(rm){setLogo(rm.dataset.rm,null);render();return}
+  const ss=tg.closest("[data-status]"); if(ss){S.filters.status=ss.dataset.status;S.page=1;render();return}
+  const hb=tg.closest(".hb[data-fk]"); if(hb&&hb.dataset.fk){S.filters[hb.dataset.fk]=hb.dataset.fv==="Unassigned"?"":hb.dataset.fv;S.page=1;render();return}
+  const tab=tg.closest("[data-tab]"); if(tab){S.tab=tab.dataset.tab;S.page=1;render();return}
+  const so=tg.closest("th[data-sort]"); if(so){const k=so.dataset.sort;S.sort={k,d:S.sort.k===k?-S.sort.d:1};render();return}
+  const pg=tg.closest("[data-pg]"); if(pg&&!pg.disabled){S.page=+pg.dataset.pg;render();return}
+  const ed=tg.closest("[data-edit]"); if(ed){showForm(ed.dataset.edit);return}
+  const del=tg.closest("[data-del]"); if(del){const id=del.dataset.del;
+    if(confirm(t("Delete {id}? Prefer setting Stage to Rejected or Withdrawn with a Closure Reason so the decision stays auditable.",{id}))){DATA=DATA.filter(d=>d.id!==id);save();closeDrawer();toast(t("{id} deleted",{id}))}return}
+  const nw=tg.closest("[data-act=new]"); if(nw){showForm(null);return}
+  const tr=tg.closest("tr[data-id]"); if(tr){showDetail(tr.dataset.id);return}
 });
 document.getElementById("filters").addEventListener("change",e=>{const k=e.target.dataset.f;if(k){S.filters[k]=e.target.value;S.page=1;render()}});
 document.getElementById("q").addEventListener("input",e=>{S.q=e.target.value;S.page=1;renderTable(filtered())});
@@ -1014,16 +1053,18 @@ drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)importFile
 document.getElementById("tplBtn").onclick=template;
 document.getElementById("snapBtn").onclick=()=>{
   const k=kpis(rows()); const s={date:TODAY,...Object.fromEntries(SNAPK.map(([x])=>[x,k[x]]))};
-  SNAPS=SNAPS.filter(x=>x.date!==TODAY).concat(s); store.set("snaps",SNAPS); render(); toast("Snapshot recorded for "+fdate(TODAY));
+  SNAPS=SNAPS.filter(x=>x.date!==TODAY).concat(s); store.set("snaps",SNAPS); render(); toast(t("Snapshot recorded for {d}",{d:fdate(TODAY)}));
 };
 document.getElementById("backupBtn").onclick=()=>download(new Blob([JSON.stringify({version:2,asof:ASOF,data:DATA,snapshots:SNAPS,logos:LOGOS},null,1)],{type:"application/json"}),`RAKTA_Investment_Backup_${TODAY}.json`);
 const rf=document.getElementById("restoreFile");
 document.getElementById("restoreBtn").onclick=()=>rf.click();
-rf.onchange=async()=>{try{const j=JSON.parse(await rf.files[0].text());if(!Array.isArray(j.data))throw 0;DATA=migrate(j.data);SNAPS=j.snapshots||[];if(j.logos){LOGOS=j.logos;store.set("logos",LOGOS)}store.set("snaps",SNAPS);save();toast("Backup restored")}catch(e){toast("That file isn't a dashboard backup")}rf.value=""};
-document.getElementById("resetBtn").onclick=()=>{if(confirm("Discard all changes and reload the 24 opportunities from the v4 workbook?")){DATA=clone(SEED);ASOF=SEED_ASOF;store.set("data",DATA);store.set("asof",ASOF);render();toast("Reset to workbook data")}};
+rf.onchange=async()=>{try{const j=JSON.parse(await rf.files[0].text());if(!Array.isArray(j.data))throw 0;DATA=migrate(j.data);SNAPS=j.snapshots||[];if(j.logos){LOGOS=j.logos;store.set("logos",LOGOS)}store.set("snaps",SNAPS);save();toast(t("Backup restored"))}catch(e){toast(t("That file isn't a dashboard backup"))}rf.value=""};
+document.getElementById("resetBtn").onclick=()=>{if(confirm(t("Discard all changes and reload the 24 opportunities from the v4 workbook?"))){DATA=clone(SEED);ASOF=SEED_ASOF;store.set("data",DATA);store.set("asof",ASOF);render();toast(t("Reset to workbook data"))}};
 document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";store.set("theme",r.dataset.theme)};
 (()=>{const th=store.get("theme",null);if(th)document.documentElement.dataset.theme=th})();
+document.getElementById("langBtn").onclick=()=>{LANG=LANG==="ar"?"en":"ar";store.set("lang",LANG);const open=drawer.classList.contains("on");closeDrawer();render()};
 
+captureStatic();
 render();
 </script>
 </body>
