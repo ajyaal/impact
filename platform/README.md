@@ -19,18 +19,42 @@ The role selector controls what the screen shows. It is **not** access control.
 
 - **Home**: six outcome KPI cards (Active Opportunities, Pipeline Revenue, Contracted Value,
   Operational Annual Revenue, External Capital Mobilised, CAPEX Avoided), each with a change
-  since the last snapshot. Below them: stage funnel, contract revenue by sector, status donut,
+  since the last snapshot. Below them: the Development Pipeline with its health indicators (see below), status donut,
   and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
   attention list. Further down: next actions, Capital & CAPEX Avoidance, and breakdowns by
   objective (with strategic alignment) and by delivery model. Click any chart element to filter
   or drill down.
 - **Opportunities**: the full register, with stage tabs, search, sortable columns,
   pagination and Excel export. Click a row to see its full record and data quality flags.
-- **Pipeline & Actions**: decisions required from the DG, the management attention list
+- **Pipeline & Actions**: Time in Stage ageing table, decisions required from the DG, the management attention list
   (sorted earliest due first), weighted vs open pipeline, and closed opportunities.
 - **Data Quality**: every rule from the workbook's *Definitions* sheet, checked for each record.
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
+
+## Development pipeline health
+
+The funnel shows only the **development pipeline** (Opportunity → Contracted). **Operational** sits in a separate
+*Operating portfolio* strip. Contracted is a short, passing stage, and Operational keeps accumulating, so putting
+them in one funnel made "0 Contracted → 3 Operational" look like an impossible jump.
+
+Each stage has two RAG indicators:
+
+| Indicator | What it measures | Green | Amber | Red |
+|---|---|---|---|---|
+| **Stage mix vs guide** | stage's share of the development pipeline compared with a guide shape (Opportunity 35%, Assessment 25%, Business Case 20%, Approved 12%, Contracted 8%) | within ±10 pts | ±10–20 pts | more than 20 pts off |
+| **Median time in stage** | days since *Stage Entry Date*, against a per-stage limit (Opportunity 30, Assessment 45, Business Case 90, Approved 60, Contracted 90 days) | ≤ limit | ≤ 2 × limit | > 2 × limit |
+
+The pipeline is grey ("too few to judge") when it has fewer than 5 opportunities, or when no entry dates are recorded.
+The *Pipeline & Actions* page breaks each stage into ageing buckets (< 30, 30–90, 90–180, > 180 days), and the
+register has an **In Stage** column.
+
+The guide shares and time limits are **planning assumptions**, set as `GUIDE` and `AGE_LIMIT` at the top of the script.
+Replace them with RAKTA's own conversion rates and stage durations after 12–18 months of gate history.
+
+**Stage Entry Date** is a new field. It fills in automatically with today's date when the Stage is changed in the
+form, and it can be edited for back-dating. Active opportunities without it get a Data Quality flag. The v4 workbook
+has no such column, so it must be entered once for existing opportunities.
 
 ## Language (English / العربية)
 
@@ -57,7 +81,7 @@ with `?lang=ar`, and it combines with the role parameter, for example `?role=dg&
   table. Hover over it to see the name; click it to filter the whole dashboard by that partner.
   Partners without a logo show coloured initials.
 - **Logos** are uploaded in the opportunity form or under *Add / Upload → Partner Logos*.
-  Each logo is stored at up to 320 px and shared by every opportunity with the same partner name.
+  Empty white or transparent margins are trimmed automatically when a logo is uploaded, so wide and tall logos fill their box. Each logo is stored at up to 480 px and shared by every opportunity with the same partner name.
   Backups include the logos.
 - **Owner** is the named person to follow up with. **Owning Unit** is the department. The register
   shows the owner with the unit underneath, and a Data Quality flag appears when the owner field
