@@ -60,8 +60,15 @@ This page answers *when* value is expected, not just how much. It relies on thre
   operating costs. Net cash contribution needs operating-cost data and is planned for phase 2.
 - An **Opportunity Timeline** table and a **Revenue Realisation** panel on Home (with a link to this page) complete it.
 
-Version 1 assumes **flat** annual revenue from the start date over the term. Ramp-up, one-off and custom revenue
-profiles, and operating contribution, can be added later without changing the page.
+**Revenue Profile** (in the form's *Timing* section) decides how revenue lands in the yearly chart:
+- **Recurring** (default): annual revenue is spread evenly from the start date over the term, so each calendar year
+  only counts the months it covers. A 1-year contract starting in October counts 3 months this year and 9 next year.
+- **One-off**: the whole amount (annual revenue × term) lands on the start date. Use it for sponsorship fees,
+  recovery payments, event deals and other single receipts.
+
+Hovering a yearly bar lists the opportunities behind it, with the months counted or "one-off". Operational
+opportunities whose revenue start date is still in the future get a Data Quality flag. Ramp-up and custom profiles,
+and operating contribution, can come later.
 
 ## Development pipeline health
 
