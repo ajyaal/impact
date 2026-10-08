@@ -24,6 +24,7 @@ The role selector controls what the screen shows. It is **not** access control.
   of active opportunities, the pipeline revenue (and any secured revenue), a mini stage bar, the delayed and attention counts,
   and the change since the last monthly snapshot. Click a card to filter the whole dashboard to that department; click it
   again to clear. Snapshots now also record the department figures, so the change line works from the next snapshot onwards.
+  Next, **Where Opportunities Come From** (source channel, see below) and **Top Introducers**.
   Below them: the Development Pipeline with its health indicators (see below), status donut,
   and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
   attention list. Further down: next actions, Capital & CAPEX Avoidance, and breakdowns by
@@ -121,6 +122,23 @@ with `?lang=ar`, and it combines with the role parameter, for example `?role=dg&
 - The Arabic text sits in one dictionary (`AR.ui` for interface text, `AR.val` for list values) near the
   top of the script, so wording can be changed in one place. The authority's Arabic name and the
   strategic objective titles should be checked against RAKTA's approved Arabic terminology.
+
+## Opportunity source (separate from ownership)
+
+The **Owner** is accountable for delivering an opportunity. The **source** records where it came from. They are kept apart, because an
+idea raised at an event or by the Innovation Hub is often handed to another unit to deliver. Three fields sit in the form's *Source* section:
+
+| Field | Type | Purpose |
+|---|---|---|
+| **Source Channel** | dropdown | Internal unit · Innovation Hub / ideas programme · Leadership directive · Inbound partner proposal · Outbound business development · Event / exhibition / conference · Government entity referral · Existing contract (renewal / expansion) · Market study / tender · Other |
+| **Introduced By** | name (suggests names already used) | the person, internal or external, who brought the opportunity in |
+| **Source Detail** | text, optional | event name, Innovation Hub idea number, referring entity |
+
+On Home, **Where Opportunities Come From** ranks the channels by pipeline revenue, with their counts and the share that
+reached Business Case or later. That share shows which channels produce real deals, not just ideas. Click a channel to filter
+the dashboard. **Top Introducers** lists the six people whose opportunities carry the most pipeline value; click a name
+to open their opportunities in the register. A *Source* filter is in the filter bar, and active opportunities without a
+Source Channel get a Data Quality flag.
 
 ## Partners and owners
 
