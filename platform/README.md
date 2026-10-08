@@ -150,9 +150,21 @@ idea raised at an event or by the Innovation Hub is often handed to another unit
 
 | Field | Type | Purpose |
 |---|---|---|
-| **Source Channel** | dropdown | Internal unit · Innovation Hub / ideas programme · Leadership directive · Inbound partner proposal · Outbound business development · Event / exhibition / conference · Government entity referral · Existing contract (renewal / expansion) · Market study / tender · Other |
+| **Source Channel** | dropdown | Internal Unit · Leadership Directive · Outbound Business Development · Inbound Private-Sector Approach · Government Entity Referral · Event / Exhibition / Conference · Formal Tender / RFP · Market Intelligence / Research |
 | **Introduced By** | name (suggests names already used) | the person, internal or external, who brought the opportunity in |
 | **Source Detail** | text, optional | event name, Innovation Hub idea number, referring entity |
+
+Innovation Hub ideas are recorded as **Internal Unit**, with "Innovation Hub" and the idea number in Source Detail.
+Records that use the earlier channel list are converted automatically on load, restore and upload:
+
+| Earlier value | Becomes |
+|---|---|
+| Innovation Hub / ideas programme | Internal Unit, with Source Detail "Innovation Hub" if empty |
+| Inbound partner proposal | Inbound Private-Sector Approach |
+| Existing contract (renewal / expansion) | Outbound Business Development, with Source Detail "Existing contract renewal / expansion" if empty |
+| Market study / tender | Formal Tender / RFP if Source Detail mentions a tender, RFP or RFQ, otherwise Market Intelligence / Research |
+| Other | not recorded (Source Detail "Other" if empty), so it shows as a Data Quality flag |
+| others | same channel, new capitalisation |
 
 On Home, **Where Opportunities Come From** ranks the channels by pipeline revenue, with their counts and the share that
 reached Business Case or later. That share shows which channels produce real deals, not just ideas. Click a channel to filter
