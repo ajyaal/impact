@@ -19,7 +19,12 @@ The role selector controls what the screen shows. It is **not** access control.
 
 - **Home**: six outcome KPI cards (Active Opportunities, Pipeline Revenue, Contracted Value,
   Operational Annual Revenue, External Capital Mobilised, CAPEX Avoided), each with a change
-  since the last snapshot. Below them: the Development Pipeline with its health indicators (see below), status donut,
+  since the last snapshot. Then **Where Opportunities Come From**: one card per owning department (Investment, Planning,
+  Operations, Licensing, Digital, AV, plus any other unit in use), each with its own colour and icon. A card shows the number
+  of active opportunities, the pipeline revenue (and any secured revenue), a mini stage bar, the delayed and attention counts,
+  and the change since the last monthly snapshot. Click a card to filter the whole dashboard to that department; click it
+  again to clear. Snapshots now also record the department figures, so the change line works from the next snapshot onwards.
+  Below them: the Development Pipeline with its health indicators (see below), status donut,
   and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
   attention list. Further down: next actions, Capital & CAPEX Avoidance, and breakdowns by
   objective (with strategic alignment) and by delivery model. Click any chart element to filter
