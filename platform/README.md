@@ -25,15 +25,17 @@ department; click it again to clear. On a phone the cards form a row you can swi
 The **⟲ Reset** button at the end of the filter bar clears everything at once: all filters, the department, the search box,
 the stage tab, the timing filter and any chart drill-down. It is greyed out when nothing is filtered.
 
-- **Home**: six outcome KPI cards (Active Opportunities, Pipeline Revenue, Contracted Value,
-  Operational Annual Revenue, External Capital Mobilised, CAPEX Avoided), each with a change
-  since the last snapshot.
-  Next, **Where Opportunities Come From** (source channel, see below) and **Top Introducers**.
-  Below them: the Development Pipeline with its health indicators (see below), status donut,
-  and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
-  attention list. Further down: next actions, Capital & CAPEX Avoidance, and breakdowns by
-  objective (with strategic alignment) and by delivery model. Click any chart element to filter
-  or drill down.
+- **Home**, ordered by importance from top to bottom:
+  1. **Outcome KPIs**: Active Opportunities, Pipeline Revenue, Contracted Value, Operational Annual Revenue,
+     External Capital Mobilised and CAPEX Avoided, each with the change since the last snapshot.
+  2. **Pipeline health**: the Development Pipeline with its health indicators (see below), the status donut and a
+     Revenue Realisation preview.
+  3. **What needs action**: the Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
+     attention list, then Next Actions and Capital & CAPEX Avoidance.
+  4. **Portfolio composition**: by sector, by strategic objective (with strategic alignment) and by delivery model.
+  5. **Origination**: Where Opportunities Come From (source channel, see below) and Top Introducers.
+
+  Click any chart element to filter or drill down.
 - **Opportunities**: the full register, with stage tabs, search, sortable columns,
   pagination and Excel export. Click a row to see its full record and data quality flags.
   The Investment Manager can **Duplicate** a record from its panel. This opens the form pre-filled with a new ID and the
