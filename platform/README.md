@@ -17,13 +17,17 @@ The role selector controls what the screen shows. It is **not** access control.
 
 ## Views
 
+Every tab shares one **filter bar** and, just below it, the **Owning Department cards**: one card per owning department
+(Investment, Planning, Operations, Licensing, Digital, AV, plus any other unit in use), each with its own colour and icon.
+A card shows the number of active opportunities, the pipeline revenue (and any secured revenue), a mini stage bar, the
+delayed and attention counts, and the change since the last monthly snapshot. Click a card to filter every tab to that
+department; click it again to clear. On a phone the cards form a row you can swipe sideways.
+The **⟲ Reset** button at the end of the filter bar clears everything at once: all filters, the department, the search box,
+the stage tab, the timing filter and any chart drill-down. It is greyed out when nothing is filtered.
+
 - **Home**: six outcome KPI cards (Active Opportunities, Pipeline Revenue, Contracted Value,
   Operational Annual Revenue, External Capital Mobilised, CAPEX Avoided), each with a change
-  since the last snapshot. Then **Where Opportunities Come From**: one card per owning department (Investment, Planning,
-  Operations, Licensing, Digital, AV, plus any other unit in use), each with its own colour and icon. A card shows the number
-  of active opportunities, the pipeline revenue (and any secured revenue), a mini stage bar, the delayed and attention counts,
-  and the change since the last monthly snapshot. Click a card to filter the whole dashboard to that department; click it
-  again to clear. Snapshots now also record the department figures, so the change line works from the next snapshot onwards.
+  since the last snapshot.
   Next, **Where Opportunities Come From** (source channel, see below) and **Top Introducers**.
   Below them: the Development Pipeline with its health indicators (see below), status donut,
   and a Management Attention strip (DG decisions, overdue, delayed, needs attention) above the
@@ -41,6 +45,20 @@ The role selector controls what the screen shows. It is **not** access control.
 - **Data Quality**: every rule from the workbook's *Definitions* sheet, checked for each record.
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
+
+## Monthly snapshots
+
+Snapshots store the headline KPIs and the department figures, and drive every "vs last snapshot" line.
+
+- **Automatic month-end snapshot.** When the dashboard is opened on the last day of a month, it records that month's snapshot.
+  If nobody opened it that day, it records the snapshot for the month that just ended the next time it is opened. These rows are
+  labelled *Auto · Sep 2026 month-end* (for example) and cannot be deleted, so the monthly trail stays complete.
+- **Manual snapshots.** *Record snapshot now* (Investment Manager) adds an extra snapshot at any time, such as before a DG review.
+  Recording again on the same day replaces that day's manual snapshot. Manual rows have a ✕ button to delete them, with confirmation.
+- **Comparison baseline.** The "vs" lines compare against the latest snapshot taken *before today*, so a snapshot taken today does
+  not reset every change to zero.
+- Data is stored in each browser. The automatic snapshot is recorded in whichever browser opens the dashboard. Use backup/restore
+  to keep the Investment Manager's copy as the master.
 
 ## Financial Outlook
 
