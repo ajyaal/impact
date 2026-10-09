@@ -48,6 +48,27 @@ the stage tab, the timing filter and any chart drill-down. It is greyed out when
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
 
+## Excel snapshot of the dashboard
+
+The **Excel snapshot** button in the header (available to every role) downloads what the dashboard shows now as one workbook.
+It respects the current filters and department selection; a filtered export has `_filtered` in its file name, and the filters are listed
+on the Summary sheet. Sheets:
+
+| Sheet | Contents |
+|---|---|
+| Summary | Generated date, data-as-of date, filters, and the headline measures with the value at the last snapshot and the change |
+| Departments | Per owning department: active, pipeline, secured revenue, delayed, attention, count by stage, and last-snapshot figures |
+| Pipeline Health | Per stage: count, contract and weighted revenue, share vs guide, stage-mix and time-in-stage RAG, age bands |
+| Financial Outlook | Revenue horizons (earning now, short, medium, long term) and revenue by calendar year and certainty, unweighted and weighted |
+| Sources | Source channels (count, revenue, share reaching Business Case or later) and introducers |
+| Management Attention | Active opportunities not On Track or overdue, earliest due first |
+| DG Decisions | Opportunities flagged as needing a DG decision, with the decision detail |
+| Data Quality | Every opportunity with flags, and the flags |
+| Register | The full register, same columns as the Opportunities export |
+| Snapshot History | All recorded monthly snapshots |
+
+Figures are numbers (not text), so they can be charted or summed in Excel.
+
 ## Monthly snapshots
 
 Snapshots store the headline KPIs and the department figures, and drive every "vs last snapshot" line.
