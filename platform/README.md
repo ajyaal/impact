@@ -48,6 +48,21 @@ the stage tab, the timing filter and any chart drill-down. It is greyed out when
 - **Add / Upload** (Investment Manager only): new-opportunity form, workbook upload
   (merge by Investment ID, or replace all), upload template, snapshots, backup and restore.
 
+## Offline copy (for email)
+
+The **Offline copy** button in the header (every role) saves the dashboard as a single `.html` file
+(`RAKTA_Investment_Dashboard_<date>.html`, about 1–2 MB with logos). It can be attached to an email and opened in any browser
+without the internet.
+
+- It contains the current data, partner logos and monthly snapshots, and opens on the same tab, filters and language as when saved.
+- It stays fully interactive: tabs, filters, Reset, drill-downs, the record panel and the Arabic switch all work.
+- It is **read-only**: it opens as Director General (or Strategy Director with `?role=sd`), the Investment Manager functions are hidden,
+  and it never reads or writes the browser's saved data, so opening it cannot change anyone's live dashboard.
+- The date is frozen at the moment it was saved, so days in stage and overdue counts do not change later.
+- A yellow banner states when it was saved and the data-as-of date.
+- The Excel exports are hidden in the copy because they need the internet; the Arabic web font falls back to a system font offline.
+- Some email systems block `.html` attachments. If that happens, zip the file before attaching it.
+
 ## Excel snapshot of the dashboard
 
 The **Excel snapshot** button in the header (available to every role) downloads what the dashboard shows now as one workbook.
